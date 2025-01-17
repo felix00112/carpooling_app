@@ -3,7 +3,7 @@ import 'package:carpooling_app/constants/button.dart';
 import 'package:carpooling_app/constants/textField.dart';
 
 class TestPage extends StatelessWidget {
-  TestPage({Key? key}) : super(key: key);
+  TestPage({super.key});
 
   final TextEditingController _inputController = TextEditingController();
 
