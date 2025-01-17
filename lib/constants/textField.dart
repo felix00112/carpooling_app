@@ -26,6 +26,20 @@ CustomTextField(
     fontWeight: FontWeight.bold,
   ),
 ),
+
+
+wenn du nur svg file laden willst dann benutz das hier in deinem code.
+beachte das du flutter.svg  importieren musst wie oben:
+
+body: Center(
+          child: SvgPicture.asset(
+            'assets/icons/user.svg', // Der Pfad zu deiner SVG-Datei
+            width: 100,  // Die Breite des SVGs
+            height: 100, // Die Höhe des SVGs
+          ),
+        ),
+
+
 */
 
 class CustomTextField extends StatelessWidget {
