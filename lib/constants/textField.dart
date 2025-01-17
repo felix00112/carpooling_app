@@ -18,7 +18,7 @@ CustomTextField(
 Callable like this:
 CustomTextField(
   labelText: 'Enter your email',
-  svgIconPath: 'lib/assets/icons/email_icon.svg',
+  svgIconPath: 'assets/icons/email_icon.svg',
   backgroundColor: Colors.grey[200]!,
   labelTextStyle: const TextStyle(
     color: Colors.blue,
