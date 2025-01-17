@@ -5,7 +5,7 @@ import 'package:carpooling_app/pages/testOfComponents.dart';
 
 void main() {
   runApp(MaterialApp(
-      home: TestPage()
+      home: HomePage()
 
   ));
 }
