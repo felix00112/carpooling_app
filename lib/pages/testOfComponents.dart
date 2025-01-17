@@ -22,7 +22,7 @@ class TestPage extends StatelessWidget {
             // TextField Widget
             CustomTextField(
               labelText: 'Enter your email',
-              icon: Icons.email,
+              svgIconPath: 'lib/assets/icons/user.svg',
               backgroundColor: Colors.grey[200]!,
               labelTextStyle: const TextStyle(
                 color: Colors.blue,
