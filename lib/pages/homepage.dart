@@ -45,9 +45,11 @@ class _HomePageState extends State<HomePage> {
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Center(
-                child: Text(
-                  "Hier könnte ein Bild sein",
-                  style: TextStyle(color: Colors.grey),
+                child: SvgPicture.asset(
+                  'assets/images/undraw_city_driver.svg',
+                  width: 700,
+                  height: 700,
+                  fit: BoxFit.contain,
                 ),
               ),
             ),
