@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../constants/colors.dart';
 
@@ -16,10 +17,6 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Startseite"),
-        backgroundColor: button_blue,
-      ),
       bottomNavigationBar: BottomNavigationBar(
         items: [
           BottomNavigationBarItem(
@@ -57,7 +54,11 @@ class _HomePageState extends State<HomePage> {
             SizedBox(height: 16),
             Text(
               "Wohin möchtest du fahren?",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                fontSize: 20, 
+                fontWeight: FontWeight.bold,
+                color: button_blue,
+              ),
             ),
             SizedBox(height: 16),
             TextField(
@@ -118,11 +119,29 @@ class _HomePageState extends State<HomePage> {
                 onPressed: () {
                   // Button-Action hier einfügen
                 },
-                icon: Icon(Icons.send),
-                label: Text("Start"),
+                icon: SvgPicture.asset(
+                  'assets/icons/route.svg',
+                  height: 24,
+                  colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                ), // Verwende SVG-Icon
+                label: Text(
+                  "Start",
+                  style: TextStyle(
+                    fontSize: 18, // Schriftgröße anpassen
+                    fontWeight: FontWeight.bold, // Schriftstärke anpassen
+                    color: Colors.white, // Textfarbe anpassen
+                  ),
+                ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: button_blue,
-                  padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                  minimumSize: Size(double.infinity, 60), // Button länger machen
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(30), // Nur untere Ecken abrunden
+                      bottomRight: Radius.circular(30),
+                    ), // Abgerundete Ecken
+                  ),
                 ),
               ),
             ),
