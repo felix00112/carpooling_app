@@ -1,10 +1,11 @@
-import 'package:carpooling_app/pages/fahrt_anbieten.dart';
+import 'package:carpooling_app/pages/fahrtAnbieten.dart';
+import 'package:carpooling_app/pages/fahrtFahrerin.dart';
 import 'package:flutter/material.dart';
 
 
 void main() {
   runApp(MaterialApp(
-      home: OfferRidePage()
+      home: RideDetailsPage()
 
   ));
 }
