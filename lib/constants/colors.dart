@@ -8,4 +8,4 @@ const Color button_blue = Color.fromARGB(255, 91, 118, 213);
 
 const Color button_orange = Color.fromARGB(255,255,166,43);
 const Color button_lightblue = Color.fromARGB(255,173,187,234);
-
+const Color dark_blue = Color.fromARGB(255,26,39,86);
