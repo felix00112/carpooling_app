@@ -57,9 +57,9 @@ class _HomePageState extends State<HomePage> {
             Text(
               "Wohin möchtest du fahren?",
               style: TextStyle(
-                fontSize: 20, 
-                fontWeight: FontWeight.bold,
-                color: button_blue,
+                fontSize: 24,
+                fontWeight: FontWeight.w900,
+                color: dark_blue,
               ),
             ),
             SizedBox(height: 16),
@@ -91,7 +91,9 @@ class _HomePageState extends State<HomePage> {
               children: [
                 Expanded(
                   child: RadioListTile(
-                    title: Text("Anbieten"),
+                    title: Text("Anbieten", 
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
                     value: "Anbieten",
                     groupValue: _selectedOption,
                     onChanged: (value) {
@@ -103,7 +105,9 @@ class _HomePageState extends State<HomePage> {
                 ),
                 Expanded(
                   child: RadioListTile(
-                    title: Text("Suchen"),
+                    title: Text("Suchen",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
                     value: "Suchen",
                     groupValue: _selectedOption,
                     onChanged: (value) {
