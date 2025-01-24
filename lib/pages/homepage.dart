@@ -25,6 +25,21 @@ class _HomePageState extends State<HomePage> {
       initialDate: date,
       firstDate: DateTime(2000),
       lastDate: DateTime(2101),
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: ThemeData.light().copyWith(
+            primaryColor: Colors.blue, // Farbe der Kopfzeile
+            colorScheme: ColorScheme.light(
+              primary: Colors.blue, // Farbe der ausgewählten Zeit
+              secondary: Colors.blue, // Farbe der Schaltflächen
+            ),
+            buttonTheme: ButtonThemeData(
+              textTheme: ButtonTextTheme.primary, // Farbe des Textes der Schaltflächen
+            ),
+          ),
+          child: child!,
+        );
+      },
     );
 
     if (pickedDate != null) {
@@ -32,6 +47,21 @@ class _HomePageState extends State<HomePage> {
       final TimeOfDay? pickedTime = await showTimePicker(
         context: context,
         initialTime: time,
+        builder: (BuildContext context, Widget? child) {
+          return Theme(
+            data: ThemeData.light().copyWith(
+              primaryColor: Colors.blue, // Farbe der Kopfzeile
+              colorScheme: ColorScheme.light(
+                primary: Colors.blue, // Farbe der ausgewählten Zeit
+                secondary: Colors.blue, // Farbe der Schaltflächen
+              ),
+              buttonTheme: ButtonThemeData(
+                textTheme: ButtonTextTheme.primary, // Farbe des Textes der Schaltflächen
+              ),
+            ),
+            child: child!,
+          );
+        },        
       );
 
       if (pickedTime != null) {
