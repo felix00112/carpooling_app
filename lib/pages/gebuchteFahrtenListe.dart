@@ -47,13 +47,34 @@ class _GebuchteFahrtenListeState extends State<GebuchteFahrtenListe> with Single
     super.dispose();
   }
 
-  final Map<String, List<String>> fahrten = {
-    'Heute': ['Fahrt 1', 'Fahrt 2', 'Fahrt 3', 'Fahrt 4', 'Fahrt 5'],
+  //hier sind fahrten: die titel bzw dann auch datum und die fahrten in den tagen
+  Map<String, List<String>> fahrten = {
+    'Heute': ['Fahrt 1', 'Fahrt 2', 'Fahrt 30000', 'Fahrt 4', 'Fahrt 5'],
     'Morgen': ['Fahrt 1', 'Fahrt 2', 'Fahrt 3'],
     'Übermorgen': ['Fahrt 1', 'Fahrt 2'],
     'Nächste Woche': ['Fahrt 1', 'Fahrt 2', 'Fahrt 3', 'Fahrt 4'],
   };
 
+  void addFahrt(String tag, String fahrt) {
+    setState(() {
+      if (fahrten.containsKey(tag)) {
+        fahrten[tag]?.add(fahrt);
+      } else {
+        fahrten[tag] = [fahrt];
+      }
+    });
+  }
+
+  void removeFahrt(String tag, String fahrt) {
+    setState(() {
+      if (fahrten.containsKey(tag)) {
+        fahrten[tag]?.remove(fahrt);
+        if (fahrten[tag]?.isEmpty ?? false) {
+          fahrten.remove(tag);
+        }
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
