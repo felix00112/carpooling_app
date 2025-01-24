@@ -28,10 +28,10 @@ class _HomePageState extends State<HomePage> {
       builder: (BuildContext context, Widget? child) {
         return Theme(
           data: ThemeData.light().copyWith(
-            primaryColor: Colors.blue, // Farbe der Kopfzeile
+            primaryColor: button_blue, // Farbe der Kopfzeile
             colorScheme: ColorScheme.light(
-              primary: Colors.blue, // Farbe der ausgewählten Zeit
-              secondary: Colors.blue, // Farbe der Schaltflächen
+              primary: button_blue, // Farbe der ausgewählten Zeit
+              secondary: button_blue, // Farbe der Schaltflächen
             ),
             buttonTheme: ButtonThemeData(
               textTheme: ButtonTextTheme.primary, // Farbe des Textes der Schaltflächen
@@ -50,10 +50,10 @@ class _HomePageState extends State<HomePage> {
         builder: (BuildContext context, Widget? child) {
           return Theme(
             data: ThemeData.light().copyWith(
-              primaryColor: Colors.blue, // Farbe der Kopfzeile
+              primaryColor: button_blue, // Farbe der Kopfzeile
               colorScheme: ColorScheme.light(
-                primary: Colors.blue, // Farbe der ausgewählten Zeit
-                secondary: Colors.blue, // Farbe der Schaltflächen
+                primary: button_blue, // Farbe der ausgewählten Zeit
+                secondary: button_blue, // Farbe der Schaltflächen
               ),
               buttonTheme: ButtonThemeData(
                 textTheme: ButtonTextTheme.primary, // Farbe des Textes der Schaltflächen
