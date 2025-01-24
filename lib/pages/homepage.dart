@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart'; // Import hinzufügen
 
 import '../constants/colors.dart';
 
@@ -13,6 +14,39 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   String _selectedOption = "Anbieten";
+  TextEditingController _dateTimeController = TextEditingController();
+
+  Future<void> _selectDateTime(BuildContext context) async {
+    DateTime? date = DateTime.now();
+    TimeOfDay? time = TimeOfDay.now();
+
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: date,
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
+    );
+
+    if (pickedDate != null) {
+      date = pickedDate;
+      final TimeOfDay? pickedTime = await showTimePicker(
+        context: context,
+        initialTime: time,
+      );
+
+      if (pickedTime != null) {
+        time = pickedTime;
+        final DateTime finalDateTime = DateTime(
+          date.year,
+          date.month,
+          date.day,
+          time.hour,
+          time.minute,
+        );
+        _dateTimeController.text = DateFormat('yyyy-MM-dd – kk:mm').format(finalDateTime);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,11 +114,14 @@ class _HomePageState extends State<HomePage> {
             ),
             SizedBox(height: 16),
             TextField(
+              controller: _dateTimeController,
+              readOnly: true,
               decoration: InputDecoration(
                 labelText: "Zeitpunkt",
                 prefixIcon: Icon(Icons.calendar_today),
                 border: OutlineInputBorder(),
               ),
+              onTap: () => _selectDateTime(context),
             ),
             SizedBox(height: 16),
             Row(
