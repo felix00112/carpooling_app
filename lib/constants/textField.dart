@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:carpooling_app/constants/colors.dart';
 
 /*
 Callable like this:
@@ -22,12 +21,12 @@ class CustomTextField extends StatelessWidget {
   final TextStyle? labelTextStyle; // Custom text style for the label
 
   const CustomTextField({
-    Key? key,
+    super.key,
     required this.labelText,
     this.icon,
     this.backgroundColor = Colors.transparent, // Default: Transparent background
     this.labelTextStyle,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
