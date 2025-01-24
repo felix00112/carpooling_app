@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart'; // Import hinzufügen
+import '../constants/navigationBar.dart'; // Import der NavigationBar
 
 import '../constants/colors.dart';
 
@@ -13,6 +14,29 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
+  ////////////////////Navigation bar/////////////////////
+  int _currentIndex = 0; // Index für die aktuell ausgewählte Seite
+
+  void _onTabTapped(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+    // Navigation zu den entsprechenden Seiten basierend auf dem Index
+    switch (index) {
+      case 0:
+        Navigator.pushNamed(context, '/home');
+        break;
+      case 1:
+        Navigator.pushNamed(context, '/fahrten');
+        break;
+      case 2:
+        Navigator.pushNamed(context, '/profil');
+        break;
+    }
+  }
+/////////////////////////////////////////////////////////
+
   String _selectedOption = "Anbieten";
   TextEditingController _dateTimeController = TextEditingController();
 
@@ -81,21 +105,9 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: BottomNavigationBar(
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.list),
-            label: 'Menü',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profil',
-          ),
-        ],
+      bottomNavigationBar: CustomBottomNavigationBar(
+        currentIndex: _currentIndex,
+        onTap: _onTabTapped,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
