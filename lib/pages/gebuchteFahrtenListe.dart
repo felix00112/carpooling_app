@@ -47,6 +47,14 @@ class _GebuchteFahrtenListeState extends State<GebuchteFahrtenListe> with Single
     super.dispose();
   }
 
+  final Map<String, List<String>> fahrten = {
+    'Heute': ['Fahrt 1', 'Fahrt 2', 'Fahrt 3', 'Fahrt 4', 'Fahrt 5'],
+    'Morgen': ['Fahrt 1', 'Fahrt 2', 'Fahrt 3'],
+    'Übermorgen': ['Fahrt 1', 'Fahrt 2'],
+    'Nächste Woche': ['Fahrt 1', 'Fahrt 2', 'Fahrt 3', 'Fahrt 4'],
+  };
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -84,34 +92,65 @@ class _GebuchteFahrtenListeState extends State<GebuchteFahrtenListe> with Single
               ),
             ),
             SizedBox(height: 16),
-            TabBar(
-            controller: _tabController,
-            tabs: [
-              Tab(text: 'Alle'),
-              Tab(text: 'Mitfahrer'),
-              Tab(text: 'Fahrer'),
-            ],
-            indicatorColor: Colors.blue,
+            Container(
+            decoration: BoxDecoration(
+                color: Colors.white, // Hintergrundfarbe des Containers
+                borderRadius: BorderRadius.circular(8), // Abrundung der Ecken
+                boxShadow: [
+                    BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 4.0,
+                        spreadRadius: 1.0,
+                        offset: Offset(0.0, 2.0),
+                    ),
+                ],
+            ),
+                child: TabBar(
+                    controller: _tabController,
+                        tabs: [
+                        Tab(text: 'Alle'),
+                        Tab(text: 'Mitfahrer'),
+                        Tab(text: 'Fahrer'),
+                        ],
+                    indicatorColor: button_blue,
+                    labelStyle: TextStyle(fontWeight: FontWeight.bold), // Text fett formatieren
+                    labelColor: button_blue, // Farbe des ausgewählten Tabs
+                    unselectedLabelColor: Colors.grey, // Farbe der nicht ausgewählten Tabs
+                ),
             ),
             SizedBox(height: 16),
             Expanded(
-              child: ListView.builder(
-                itemCount: 10, // Beispielanzahl der gebuchten Fahrten
-                itemBuilder: (context, index) {
-                  return Card(
-                    margin: EdgeInsets.symmetric(vertical: 8),
-                    child: ListTile(
-                      leading: Icon(Icons.directions_car, color: button_blue),
-                      title: Text('Fahrt ${index + 1}'),
-                      subtitle: Text('Details zur Fahrt ${index + 1}'),
-                      trailing: Icon(Icons.arrow_forward_ios),
-                      onTap: () {
-                        // Aktion bei Klick auf eine Fahrt
-                      },
-                    ),
-                  );
-                },
-              ),
+                child: ListView(
+                children: fahrten.entries.map((entry) {
+                    return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                        ListTile(
+                        title: Text(entry.key, style: TextStyle(fontWeight: FontWeight.bold)),
+                        ),
+                        ListView.builder(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: entry.value.length,
+                        itemBuilder: (context, index) {
+                            return Card(
+                            margin: EdgeInsets.symmetric(vertical: 8),
+                            child: ListTile(
+                                leading: Icon(Icons.directions_car, color: button_blue),
+                                title: Text(entry.value[index]),
+                                subtitle: Text('Details zur ${entry.value[index]}'),
+                                trailing: Icon(Icons.arrow_forward_ios),
+                                onTap: () {
+                                // Aktion bei Klick auf eine Fahrt
+                                },
+                            ),
+                            );
+                        },
+                        ),
+                    ],
+                    );
+                }).toList(),
+                ),
             ),
           ],
         ),
