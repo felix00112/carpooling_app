@@ -105,7 +105,7 @@ class _GebuchteFahrtenListeState extends State<GebuchteFahrtenListe> with Single
             ),
             SizedBox(height: 16),
             Text(
-              "Deine gebuchten Fahrten",
+              "Gebuchte Fahrten",
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.w900,
