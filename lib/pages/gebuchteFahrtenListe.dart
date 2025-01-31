@@ -130,36 +130,56 @@ class _GebuchteFahrtenListeState extends State<GebuchteFahrtenListe> with Single
             ),
             SizedBox(height: 16),
             Expanded(
-                child: ListView(
-                children: fahrten.entries.map((entry) {
-                    return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                child: TabBarView(
+                    controller: _tabController,
                     children: [
-                        ListTile(
-                        title: Text(entry.key, style: TextStyle(fontWeight: FontWeight.bold)),
+                        // Inhalt für den Tab 'Alle'
+                          ListView(
+                              children: fahrten.entries.map((entry) {
+                          return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                              ListTile(
+                              title: Text(entry.key, style: TextStyle(fontWeight: FontWeight.bold)),
+                              ),
+                              ListView.builder(
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              itemCount: entry.value.length,
+                              itemBuilder: (context, index) {
+                                  return Card(
+                                  margin: EdgeInsets.symmetric(vertical: 8),
+                                  child: ListTile(
+                                      leading: Icon(Icons.directions_car, color: button_blue),
+                                      title: Text(entry.value[index]),
+                                      subtitle: Text('Details zur ${entry.value[index]}'),
+                                      trailing: Icon(Icons.arrow_forward_ios),
+                                      onTap: () {
+                                      // Aktion bei Klick auf eine Fahrt
+                                      },
+                                  ),
+                                  );
+                              },
+                              ),
+                          ],
+                          );
+                          }).toList(),
                         ),
-                        ListView.builder(
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        itemCount: entry.value.length,
-                        itemBuilder: (context, index) {
-                            return Card(
-                            margin: EdgeInsets.symmetric(vertical: 8),
-                            child: ListTile(
-                                leading: Icon(Icons.directions_car, color: button_blue),
-                                title: Text(entry.value[index]),
-                                subtitle: Text('Details zur ${entry.value[index]}'),
-                                trailing: Icon(Icons.arrow_forward_ios),
-                                onTap: () {
-                                // Aktion bei Klick auf eine Fahrt
-                                },
+                        // Inhalt für den Tab 'Mitfahrer'
+                        Center(
+                            child: ElevatedButton(
+                                onPressed: () {  },
+                                child: Text('filtern die fahrten wo man gefahren wird.'),
                             ),
-                            );
-                        },
+                        ),
+                        // Inhalt für den Tab 'Fahrer'
+                        Center(
+                            child: ElevatedButton(
+                                onPressed: () {  },
+                                child: Text('filtern die fahrten wo man fährt.'),
+                            ),
                         ),
                     ],
-                    );
-                }).toList(),
                 ),
             ),
           ],
@@ -168,3 +188,5 @@ class _GebuchteFahrtenListeState extends State<GebuchteFahrtenListe> with Single
     );
   }
 }
+
+           

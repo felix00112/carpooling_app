@@ -7,9 +7,16 @@ void main() {
   runApp(MaterialApp(
     initialRoute: '/',
     routes: {
+      //hier die drei routen für die bottom navigation bar
+
       '/': (context) => HomePage(),
       '/fahrten': (context) => GebuchteFahrtenListe(),
       //'/profil': (context) => ProfilePage(),
+
+      // weitere routen:
+
+
+      
     },
   ));
 }
