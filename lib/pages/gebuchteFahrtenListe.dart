@@ -18,18 +18,7 @@ class _GebuchteFahrtenListeState extends State<GebuchteFahrtenListe> with Single
     setState(() {
       _currentIndex = index;
     });
-    // Navigation zu den entsprechenden Seiten basierend auf dem Index
-    switch (index) {
-      case 0:
-        Navigator.pushNamed(context, '/home');
-        break;
-      case 1:
-        Navigator.pushNamed(context, '/fahrten');
-        break;
-      case 2:
-        Navigator.pushNamed(context, '/profil');
-        break;
-    }
+    // Navigation zu den entsprechenden Seiten basierend auf dem Index ist nicht mehr notwendig
   }
   /////////////////////////////////////////////////////////
 
