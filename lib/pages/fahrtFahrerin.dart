@@ -13,24 +13,30 @@ class RideDetailsPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: background_grey,
       bottomNavigationBar: CustomBottomNavigationBar(
-        currentIndex: 1, // Set to "Fahrten"
+        currentIndex: 1,
         onTap: (index) {},
       ),
       body: Column(
         children: [
-          // Überschrift mit Box
           Container(
             color: background_grey,
             padding: EdgeInsets.only(bottom: Sizes.paddingSmall),
-
             child: Container(
               width: double.infinity,
+              height:Sizes.deviceHeight*0.15,
               padding: EdgeInsets.symmetric(
                 vertical: Sizes.paddingRegular,
                 horizontal: Sizes.paddingBig,
               ),
-              color: button_lightblue,
 
+              decoration: BoxDecoration(
+                color: button_lightblue,
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(Sizes.borderRadius * 2),
+                  bottomRight: Radius.circular(Sizes.borderRadius * 2),
+                ),
+              ),
+              child: Center(
               child: Text(
                 'Deine Fahrt',
                 style: TextStyle(
@@ -40,24 +46,23 @@ class RideDetailsPage extends StatelessWidget {
                 ),
                 textAlign: TextAlign.center,
               ),
+              ),
             ),
           ),
-          SizedBox(height: Sizes.paddingSmall), // Mehr Abstand zwischen Überschrift und Startadresse
+          SizedBox(height: Sizes.paddingSmall),
           Expanded(
             child: Stack(
               children: [
-                // Scrollbare Mitfahrer-Liste
                 ListView.builder(
                   padding: EdgeInsets.only(
-                    top: Sizes.deviceHeight * 0.2, // Platz für Start- und Zieladressen
-                    bottom: Sizes.deviceHeight * 0.15, // Platz für Zieladresse und Button
+                    top: Sizes.deviceHeight * 0.2,
+                    bottom: Sizes.deviceHeight * 0.15,
                   ),
-                  itemCount: 5, // Beispiel: Nur Mitfahrer
+                  itemCount: 5,
                   itemBuilder: (context, index) {
-                    return _buildPassengerTile(index + 1);
+                    return _buildPassengerTile(index + 1, context);
                   },
                 ),
-                // Fixierte Start- und Zieladressen
                 Align(
                   alignment: Alignment.topCenter,
                   child: Column(
@@ -76,7 +81,6 @@ class RideDetailsPage extends StatelessWidget {
                             width: double.infinity,
                             height: Sizes.deviceHeight * 0.06,
                             icon: Icons.gps_fixed,
-
                           ),
                         ),
                       ),
@@ -101,7 +105,6 @@ class RideDetailsPage extends StatelessWidget {
                             width: double.infinity,
                             height: Sizes.deviceHeight * 0.06,
                             icon: Icons.location_on,
-
                           ),
                         ),
                       ),
@@ -131,11 +134,7 @@ class RideDetailsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildVerticalIndicator({bool start = false, bool end = false}) {
-    return SizedBox.shrink();
-  }
-
-  Widget _buildPassengerTile(int index) {
+  Widget _buildPassengerTile(int index, BuildContext context) {
     return Center(
       child: Container(
         width: Sizes.deviceWidth * 0.85,
@@ -155,14 +154,17 @@ class RideDetailsPage extends StatelessWidget {
                 fontSize: Sizes.textTitle,
               ),
             ),
-            Divider(color: Colors.grey), // Horizontale Trennlinie
+            Divider(color: Colors.grey),
             Row(
               children: [
-                // Unsichtbarer Button für Mitfahrername und Bewertung
                 Expanded(
                   flex: 3,
-                  child: GestureDetector(
-                    onTap: () {},
+                  child: InkWell(
+                    onTap: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Mitfahrer $index Profil geöffnet')),
+                      );
+                    },
                     child: Row(
                       children: [
                         Text(
@@ -177,11 +179,14 @@ class RideDetailsPage extends StatelessWidget {
                     ),
                   ),
                 ),
-                // Unsichtbarer Button für Telefonicon
                 Expanded(
                   flex: 1,
-                  child: GestureDetector(
-                    onTap: () {},
+                  child: InkWell(
+                    onTap: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Telefonanruf für Mitfahrer $index gestartet')),
+                      );
+                    },
                     child: Icon(Icons.phone, color: Colors.black, size: Sizes.textSubtitle),
                   ),
                 ),
