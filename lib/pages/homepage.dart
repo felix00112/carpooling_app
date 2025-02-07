@@ -27,7 +27,7 @@ class _HomePageState extends State<HomePage> {
 /////////////////////////////////////////////////////////
 
   String _selectedOption = "Anbieten";
-  TextEditingController _dateTimeController = TextEditingController();
+  final TextEditingController _dateTimeController = TextEditingController();
 
   Future<void> _selectDateTime(BuildContext context) async {
     DateTime? date = DateTime.now();
@@ -191,7 +191,11 @@ class _HomePageState extends State<HomePage> {
             Center(
               child: ElevatedButton.icon(
                 onPressed: () {
-                  // Button-Action hier einfügen
+                  if (_selectedOption == "Suchen") {
+                    Navigator.pushNamed(context, '/Suchen');
+                  } else if (_selectedOption == "Anbieten") {
+                    Navigator.pushNamed(context, '/Anbieten');
+                  }
                 },
                 icon: SvgPicture.asset(
                   'assets/icons/route.svg',
