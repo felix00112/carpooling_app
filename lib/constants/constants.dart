@@ -15,7 +15,7 @@ class Sizes {
   static const double textSizeMedium = 20; // Unterüberschrift
   static const double textSizeBig = 24; // Überschrift
 
-  static const double borderRadius = 10;
+  static const double borderRadius10 = 10;
 
   void initialize(BuildContext context) {
     MediaQueryData m = MediaQuery.of(context);

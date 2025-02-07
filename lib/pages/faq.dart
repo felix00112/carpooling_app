@@ -1,7 +1,10 @@
 import 'package:carpooling_app/constants/colors.dart';
+import 'package:carpooling_app/constants/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:carpooling_app/constants/navigationBar.dart';
+
+import 'faq_detail.dart';
 
 List<Map<String,dynamic>> faq_inhalt = [
   {
@@ -79,7 +82,7 @@ class _FaqsPageState extends State<FaqsPage> {
         ),
         title: Text(
           'FAQ',
-          style: TextStyle(color: Colors.black),
+          style: TextStyle(color: dark_blue, fontSize: Sizes.textSizeMedium),
         ),
         centerTitle: true,
       ),
@@ -90,8 +93,7 @@ class _FaqsPageState extends State<FaqsPage> {
           Container(
             height: 200,
             decoration: BoxDecoration( //box around picture
-              //color: background_box_white,
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(Sizes.borderRadius10),
             ),
             child: Center(
               child: SvgPicture.asset(
@@ -106,15 +108,15 @@ class _FaqsPageState extends State<FaqsPage> {
           // Faqs options
           Expanded(
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16), //Seitenabstand
+              padding: EdgeInsets.symmetric(horizontal: Sizes.paddingMediumLarge), //Seitenabstand
               child: Align( // Damit der Block nicht die ganze Breite einnimmt
                 alignment: Alignment.topCenter, // Oben bündig, horizontal zentriert
                 child: Container(
                   decoration: BoxDecoration(
                     color: background_box_white,
-                    borderRadius: BorderRadius.circular(12), // Abgerundete Ecken
+                    borderRadius: BorderRadius.circular(Sizes.borderRadius10),
                   ),
-                  padding: EdgeInsets.symmetric(vertical: 16), // Innenabstand für die Liste
+                  padding: EdgeInsets.symmetric(vertical: Sizes.paddingMediumLarge), // Innenabstand für die Liste
                   child: ListView.separated(
                     shrinkWrap: true,
                     itemCount: faq_inhalt.length,
@@ -122,11 +124,19 @@ class _FaqsPageState extends State<FaqsPage> {
                       return ListTile(
                         title: Text(faq_inhalt[index]["question"]),
                         onTap: () {
-                          Navigator.pushNamed(context, '/search_faqs');
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => FaqDetailPage(
+                                question: faq_inhalt[index]["question"],
+                                answer: faq_inhalt[index]["answer"],
+                              ),
+                            ),
+                          );
                         },
                       );
                     },
-                    separatorBuilder: (context, index) => Divider(), // Fügt einen Divider NUR zwischen den Items hinzu
+                    separatorBuilder: (context, index) => Divider(),
                   ),
                 ),
                 ),
@@ -153,8 +163,8 @@ class FaqsTile extends StatelessWidget {
     return Column(
       children: [
         ListTile(
-          title: Text(title, style: TextStyle(fontSize: 16)),
-          trailing: Icon(Icons.arrow_forward_ios, size: 16,),
+          title: Text(title, style: TextStyle(fontSize: Sizes.textSizeRegular)),
+          trailing: Icon(Icons.arrow_forward_ios, size: Sizes.textSizeRegular,),
           onTap: onTap,
         ),
       ],
