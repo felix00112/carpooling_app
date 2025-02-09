@@ -1,6 +1,7 @@
 import 'package:carpooling_app/pages/gebuchteFahrtenListe.dart';
 import 'package:carpooling_app/pages/homepage.dart';
 import 'package:flutter/material.dart';
+import 'package:carpooling_app/pages/profilePage.dart';
 
 
 void main() {
@@ -11,7 +12,7 @@ void main() {
 
       '/': (context) => HomePage(),
       '/fahrten': (context) => GebuchteFahrtenListe(),
-      //'/profil': (context) => ProfilePage(),
+      '/profil': (context) => ProfilePage(),
 
       // weitere routen:
 
