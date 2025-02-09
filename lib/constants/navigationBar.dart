@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:carpooling_app/constants/colors.dart';
 
 /*
 Indexing required to color the correct item corresponding to page

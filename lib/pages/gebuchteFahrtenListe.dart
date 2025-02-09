@@ -119,8 +119,8 @@ class _GebuchteFahrtenListeState extends State<GebuchteFahrtenListe> with Single
                     controller: _tabController,
                         tabs: [
                         Tab(text: 'Alle'),
-                        Tab(text: 'Mitfahrer'),
-                        Tab(text: 'Fahrer'),
+                        Tab(text: 'Mitfahrer*in'),
+                        Tab(text: 'Fahrer*in'),
                         ],
                     indicatorColor: button_blue,
                     labelStyle: TextStyle(fontWeight: FontWeight.bold), // Text fett formatieren
