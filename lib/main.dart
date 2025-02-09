@@ -22,7 +22,7 @@ void main() {
       '/profil': (context) => ProfilePage(),
 
       //suche starten
-      '/Suchen': (context) => findRide(),
+      '/Suchen': (context) => FindRide(),
       '/Anbieten': (context) => OfferRidePage(),
       '/RideDetails': (context) => RideDetailsPage()
       // weitere routen:
