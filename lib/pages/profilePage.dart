@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:carpooling_app/constants/colors.dart';
+import '../constants/navigationBar.dart'; // Import der NavigationBar
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -8,11 +9,24 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  ////////////////////Navigation bar/////////////////////
+  int _currentIndex = 2; // Index für die aktuell ausgewählte Seite
+
+  void _onTabTapped(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+    // Navigation zu den entsprechenden Seiten basierend auf dem Index ist nicht mehr notwendig
+  }
+/////////////////////////////////////////////////////////
+
+
+
   bool _isExpanded = false;
 
   final Map<String, dynamic> userData = {
     'name': 'Julia Meier',
-    'memberSince': '2024',
+    'memberSince': '2020',
     'isSmoker': true,
     'hasPets': true,
     'points': 200,
@@ -31,6 +45,10 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      bottomNavigationBar: CustomBottomNavigationBar(
+        currentIndex: _currentIndex,
+        onTap: _onTabTapped,
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -145,28 +163,6 @@ class _ProfilePageState extends State<ProfilePage> {
             ],
           ),
         ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 2,
-        onTap: (index) {
-          if (index == 0) {
-            Navigator.pop(context);
-          }
-        },
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(FontAwesomeIcons.house, size: 24),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(FontAwesomeIcons.list, size: 24),
-            label: 'Menü',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(FontAwesomeIcons.solidUser, size: 24),
-            label: 'Profil',
-          ),
-        ],
       ),
     );
   }
