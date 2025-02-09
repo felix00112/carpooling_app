@@ -1,5 +1,5 @@
 import 'package:carpooling_app/constants/colors.dart';
-import 'package:carpooling_app/constants/constants.dart';
+import 'package:carpooling_app/constants/sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:carpooling_app/constants/navigationBar.dart';
@@ -82,7 +82,7 @@ class _FaqsPageState extends State<FaqsPage> {
         ),
         title: Text(
           'FAQ',
-          style: TextStyle(color: dark_blue, fontSize: Sizes.textSizeMedium),
+          style: TextStyle(color: dark_blue, fontSize: Sizes.textSubtitle),
         ),
         centerTitle: true,
       ),
@@ -93,7 +93,7 @@ class _FaqsPageState extends State<FaqsPage> {
           Container(
             height: 200,
             decoration: BoxDecoration( //box around picture
-              borderRadius: BorderRadius.circular(Sizes.borderRadius10),
+              borderRadius: BorderRadius.circular(Sizes.borderRadius),
             ),
             child: Center(
               child: SvgPicture.asset(
@@ -108,15 +108,15 @@ class _FaqsPageState extends State<FaqsPage> {
           // Faqs options
           Expanded(
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: Sizes.paddingMediumLarge), //Seitenabstand
+              padding: EdgeInsets.symmetric(horizontal: Sizes.paddingRegular), //Seitenabstand
               child: Align( // Damit der Block nicht die ganze Breite einnimmt
                 alignment: Alignment.topCenter, // Oben bündig, horizontal zentriert
                 child: Container(
                   decoration: BoxDecoration(
                     color: background_box_white,
-                    borderRadius: BorderRadius.circular(Sizes.borderRadius10),
+                    borderRadius: BorderRadius.circular(Sizes.borderRadius),
                   ),
-                  padding: EdgeInsets.symmetric(vertical: Sizes.paddingMediumLarge), // Innenabstand für die Liste
+                  padding: EdgeInsets.symmetric(vertical: Sizes.paddingRegular), // Innenabstand für die Liste
                   child: ListView.separated(
                     shrinkWrap: true,
                     itemCount: faq_inhalt.length,
@@ -163,10 +163,11 @@ class FaqsTile extends StatelessWidget {
     return Column(
       children: [
         ListTile(
-          title: Text(title, style: TextStyle(fontSize: Sizes.textSizeRegular)),
-          trailing: Icon(Icons.arrow_forward_ios, size: Sizes.textSizeRegular,),
-          onTap: onTap,
+          title: Text(title, style: TextStyle(fontSize: Sizes.textSubheading),)
+          //trailing: Icon(Icons.arrow_forward_ios, size: Sizes.textSubheading,),
+          //onTap: onTap,
         ),
+
       ],
     );
   }
