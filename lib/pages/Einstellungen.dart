@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:carpooling_app/constants/navigationBar.dart';
 
-class SettingsPage extends StatefulWidget {
-  const SettingsPage({super.key});
+import '../constants/constants.dart';
 
+class SettingsPage extends StatefulWidget {
   @override
   _SettingsPageState createState() => _SettingsPageState();
 }
@@ -55,7 +55,7 @@ class _SettingsPageState extends State<SettingsPage> {
         ),
         title: Text(
           'Einstellungen',
-          style: TextStyle(color: Colors.black),
+          style: TextStyle(color: dark_blue),
         ),
         centerTitle: true,
       ),
@@ -82,15 +82,15 @@ class _SettingsPageState extends State<SettingsPage> {
           // Settings options
           Expanded(
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16), //Seitenabstand
+              padding: EdgeInsets.symmetric(horizontal: Sizes.paddingMediumLarge), //Seitenabstand
               child: Align( // Damit der Block nicht die ganze Breite einnimmt
                 alignment: Alignment.topCenter, // Oben bündig, horizontal zentriert
                 child: Container(
                   decoration: BoxDecoration(
                     color: background_box_white,
-                    borderRadius: BorderRadius.circular(12), // Abgerundete Ecken
+                    borderRadius: BorderRadius.circular(Sizes.borderRadius10), // Abgerundete Ecken
                   ),
-                  padding: EdgeInsets.symmetric(vertical: 16), // Innenabstand für die Liste
+                  padding: EdgeInsets.symmetric(vertical: Sizes.paddingMediumLarge), // Innenabstand für die Liste
                   child: ListView(
                     shrinkWrap: true, // Damit ListView nur so groß wie nötig ist
                     children: [
@@ -138,7 +138,7 @@ class SettingsTile extends StatelessWidget {
   final String title;
   final VoidCallback onTap;
 
-  const SettingsTile({super.key, 
+  const SettingsTile({
     required this.title,
     required this.onTap,
   });
@@ -148,8 +148,8 @@ class SettingsTile extends StatelessWidget {
     return Column(
       children: [
         ListTile(
-          title: Text(title, style: TextStyle(fontSize: 16)),
-          trailing: Icon(Icons.arrow_forward_ios, size: 16,),
+          title: Text(title, style: TextStyle(fontSize: Sizes.textSizeRegular)),
+          //trailing: Icon(Icons.arrow_forward_ios, size: Sizes.textSizeRegular,),
           onTap: onTap,
         ),
       ],

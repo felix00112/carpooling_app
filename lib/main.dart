@@ -19,6 +19,8 @@ void main() {
       '/': (context) => HomePage(),
       '/fahrten': (context) => GebuchteFahrtenListe(),
       '/profil': (context) => ProfilePage(),
+
+      //suche starten
       '/Suchen': (context) => findRide(),
       '/Anbieten': (context) => OfferRidePage(),
       '/RideDetails': (context) => RideDetailsPage()
