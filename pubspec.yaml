@@ -37,10 +37,10 @@ dependencies:
   flutter_svg: ^2.0.0 #für eigene icons
   intl: ^0.17.0
   font_awesome_flutter: ^10.8.0
-  flutter_map: ^7.0.0
-  latlong2: ^0.9.1
-
-
+  flutter_map: ^4.0.0
+  latlong2: ^0.8.2
+  geocoding_resolver: 0.0.3
+  http: ^0.13.5
 
 dev_dependencies:
   flutter_test:

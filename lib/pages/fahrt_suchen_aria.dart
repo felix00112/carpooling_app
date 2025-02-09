@@ -3,133 +3,217 @@ import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:carpooling_app/constants/button.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'dart:convert';
+import 'package:geocoding_resolver/geocoding_resolver.dart';
+import 'package:http/http.dart' as http;
 
 
-class findRide extends StatelessWidget {
-  final LatLng _startLocation = LatLng(52.5200, 13.4050);
+class FindRide extends StatefulWidget {
+  const FindRide({super.key});
+  @override
+  _FindRideState createState() => _FindRideState();
+}
 
-  findRide({super.key}); // Beispiel-Koordinaten für Berlin
+class _FindRideState extends State<FindRide> {
+  LatLng? _startMarker;
+  LatLng? _destinationMarker;
+  String? _startAddress;
+  String? _destinationAddress;
+  final LatLng _initialCenter = LatLng(52.5200, 13.4050);
+  List<LatLng> _routePoints = [];
+
+  String get _startLabel => _startAddress ?? "Start";
+  String get _zielLabel => _destinationAddress ?? "Ziel";
 
   @override
   Widget build(BuildContext context) {
+    final LatLng center = _startMarker ?? _destinationMarker ?? _initialCenter;
+
     return SafeArea(
-
-      child: Container(
-        //
-        color: Colors.black,
-        child: Scaffold(
+      child: Scaffold(
+        backgroundColor: background_grey,
+        appBar: AppBar(
           backgroundColor: background_grey,
-          appBar: AppBar(
-              backgroundColor: background_grey,
-              title:
-              Padding(
-                padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.04), // 2% der Bildschirmhöhe
-                child: Container(
-                  width: MediaQuery.of(context).size.width * 0.925,
-                  color: background_grey,
-                  alignment: Alignment.centerLeft,
-                  child: Text("Fahrt suchen",
-                      //textAlign: TextAlign.left,
-                      style: TextStyle(
-                        fontSize: MediaQuery.of(context).size.width * 0.050,
-                        fontWeight: FontWeight.w900,
-                      )
-                  ),
-                ),
-              )),
-          body: Column(
-            children: [
-              _buildStartButton(context),
-              _buildZielButton(context),
-              _buildMap(context),
-              _buildDriverList(context),
-            ],
-          ),
-          bottomNavigationBar: _buildBottomNavigationBar(),
+          title: Text("Fahrt suchen",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900)),
         ),
-      ),
-    );
-  }
-
-  Widget _buildStartButton(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.02), // 1% der Bildschirmhöhe
-      child: Center( // Zentriert den gesamten Button
-        child: Stack(
-          alignment: Alignment.center, // Zentriert den Text
+        body: Column(
           children: [
-            CustomButton(
-              label: "Start",
-              onPressed: () {
-                print("Start-Button gedrückt");
-              },
-              color: button_blue,
-              textColor: Colors.white,
-              width: MediaQuery.of(context).size.width * 0.925,
-              height: MediaQuery.of(context).size.width * 0.12,
-            ),
-            Positioned(
-              left: 16, // Positioniert das Icon am linken Rand
-              child: Icon(Icons.my_location, color: Colors.white),
-            ),
+            _buildStartButton(context),
+            _buildZielButton(context),
+            _buildMap(context, center),
+            _buildDriverList(context),
           ],
         ),
+        bottomNavigationBar: _buildBottomNavigationBar(),
       ),
     );
   }
 
+  Future<void> _fetchRoute() async {
+    if (_startMarker == null || _destinationMarker == null) return;
+
+    final String url =
+        "https://router.project-osrm.org/route/v1/driving/${_startMarker!.longitude},${_startMarker!.latitude};${_destinationMarker!.longitude},${_destinationMarker!.latitude}?overview=full&geometries=geojson";
+
+    final response = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      final List<dynamic> coordinates =
+      data['routes'][0]['geometry']['coordinates'];
+
+      setState(() {
+        _routePoints = coordinates
+            .map((coord) => LatLng(coord[1], coord[0]))
+            .toList();
+      });
+    } else {
+      print("Fehler beim Abrufen der Route: ${response.statusCode}");
+    }
+  }
+
+  void _showLocationInputDialog(String type) {
+    final TextEditingController _controller = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Gib die $type-Adresse ein"),
+          content: TextField(
+            controller: _controller,
+            decoration: InputDecoration(hintText: "z.B. Alexanderplatz, Berlin"),
+            keyboardType: TextInputType.text,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text("Abbrechen"),
+            ),
+            TextButton(
+              onPressed: () async {
+                final input = _controller.text;
+                if (input.isEmpty) {
+                  Navigator.of(context).pop();
+                  return;
+                }
+                try {
+                  GeoCoder geoCoder = GeoCoder();
+                  List<LookupAddress> suggestions =
+                  await geoCoder.getAddressSuggestions(address: input);
+                  if (suggestions.isNotEmpty) {
+                    LookupAddress suggestion = suggestions.first;
+                    setState(() {
+                      if (type == "Start") {
+                        _startMarker = LatLng(
+                          double.parse(suggestion.latitude),
+                          double.parse(suggestion.longitude),
+                        );
+                        _startAddress = suggestion.displayName;
+                      } else {
+                        _destinationMarker = LatLng(
+                          double.parse(suggestion.latitude),
+                          double.parse(suggestion.longitude),
+                        );
+                        _destinationAddress = suggestion.displayName;
+                      }
+                      _fetchRoute(); // Route berechnen
+                    });
+                  }
+                } catch (e) {
+                  print("Fehler beim Geocoding: $e");
+                }
+                Navigator.of(context).pop();
+              },
+              child: Text("OK"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
+  Widget _buildStartButton(BuildContext context) {
+    return _buildButton(_startLabel, "Start", Icons.my_location, button_blue);
+  }
 
   Widget _buildZielButton(BuildContext context) {
+    return _buildButton(_zielLabel, "Ziel", Icons.location_on, dark_blue);
+  }
+
+  Widget _buildButton(String label, String type, IconData icon, Color color) {
     return Padding(
-      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.02),
+      padding: EdgeInsets.only(top: 10),
       child: Stack(
-        alignment: Alignment.center, // Zentriert den Text
+        alignment: Alignment.center,
         children: [
           CustomButton(
-            label: "Ziel",
-            onPressed: () {
-              print("Ziel-Button gedrückt");
-            },
-            color: dark_blue,
+            label: label,
+            onPressed: () => _showLocationInputDialog(type),
+            color: color,
             textColor: Colors.white,
             width: MediaQuery.of(context).size.width * 0.925,
             height: MediaQuery.of(context).size.width * 0.12,
           ),
-          Positioned(
-            left: 16, // Abstand zum linken Rand (je nach Button-Design anpassen)
-            child: Icon(Icons.location_on, color: Colors.white),
-          ),
+          Positioned(left: 16, child: Icon(icon, color: Colors.white)),
         ],
       ),
     );
   }
 
-
-  Widget _buildMap(BuildContext context) {
-    // Beispielkoordinaten, passe _startLocation entsprechend an
-    final LatLng startLocation = LatLng(52.5200, 13.4050); // z.B. Berlin
-
+  Widget _buildMap(BuildContext context, LatLng center) {
     return Padding(
-      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.02),
+      padding: EdgeInsets.only(top: 10),
       child: Container(
         width: MediaQuery.of(context).size.width * 0.925,
         height: 250,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-        ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(10),
           child: FlutterMap(
-            options: MapOptions(
-              //onTap: _handleTap,
-              initialZoom: 12,
-            ),
+            options: MapOptions(center: center, zoom: 12),
             children: [
+              // Karten-Hintergrund
               TileLayer(
-                urlTemplate:
-                "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                subdomains: const ['a', 'b', 'c'],
-                userAgentPackageName: 'com.example.app', // Passe den Paketnamen an
+                urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                subdomains: ['a', 'b', 'c'],
+              ),
+
+              // Route (hinter den Markern)
+              PolylineLayer(
+                polylines: [
+                  if (_routePoints.isNotEmpty)
+                    Polyline(
+                      points: _routePoints,
+                      strokeWidth: 4.0,
+                      color: Colors.black, // Farbe der Route
+                    ),
+                ],
+              ),
+
+              // Marker (im Vordergrund)
+              MarkerLayer(
+                markers: [
+                  if (_startMarker != null)
+                    Marker(
+                      point: _startMarker!,
+                      builder: (ctx) => Icon(
+                        Icons.circle,
+                        color: Colors.black, // Farbe des Startmarkers
+                        size: 15,
+                      ),
+                    ),
+                  if (_destinationMarker != null)
+                    Marker(
+                      point: _destinationMarker!,
+                      builder: (ctx) => Icon(
+                        Icons.flag,
+                        color: Colors.red, // Farbe des Zielmarkers
+                        size: 40,
+                      ),
+                    ),
+                ],
               ),
             ],
           ),
@@ -138,59 +222,27 @@ class findRide extends StatelessWidget {
     );
   }
 
+
   Widget _buildDriverList(BuildContext context) {
     return Expanded(
-      child: SizedBox(
-        width: MediaQuery.of(context).size.width * 0.94,
-        child: ListView(
-          children: [
-            _buildDriverCard("Sascha", 4.0, "15:30", "2 freie Plätze", context),
-            _buildDriverCard("Jonas", 4.5, "16:00", "3 freie Plätze", context),
-          ],
-        ),
+      child: ListView(
+        children: [
+          _buildDriverCard("Sascha", 4.0, "15:30", "2 freie Plätze"),
+          _buildDriverCard("Jonas", 4.5, "16:00", "3 freie Plätze"),
+        ],
       ),
     );
   }
 
-  Widget _buildDriverCard(String name, double rating, String time, String seats, BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.01), // 5% der Bildschirmhöhe
-      child: SizedBox(
-
-        child: Card(
-          color: Colors.white,
-          child: Padding( // Fügt etwas Innenabstand hinzu
-            padding: EdgeInsets.all(8.0),
-            child: ListTile(
-
-              leading: CircleAvatar(child: Icon(Icons.person)),
-              title: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween, // Vermeidet Überlauf
-                children: [
-                  Text(name),
-                  Icon(Icons.directions_car),
-                ],
-              ),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Divider(),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween, // Automatische Abstände
-                    children: [
-                      Text("Start: $time"),
-                      Text(seats, style: TextStyle(color: Colors.orange)),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
+  Widget _buildDriverCard(String name, double rating, String time, String seats) {
+    return Card(
+      child: ListTile(
+        leading: CircleAvatar(child: Icon(Icons.person)),
+        title: Text(name),
+        subtitle: Text("$time Uhr - $seats"),
       ),
     );
   }
-
 
   Widget _buildBottomNavigationBar() {
     return BottomNavigationBar(
