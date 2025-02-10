@@ -1,5 +1,5 @@
 import 'package:carpooling_app/constants/colors.dart';
-import 'package:carpooling_app/constants/sizes.dart';
+import 'package:carpooling_app/constants/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import '../constants/navigationBar.dart'; // Custom Bottom Navigation Bar importieren
@@ -71,7 +71,7 @@ class _FaqDetailPageState extends State<FaqDetailPage> {
           Container(
             height: 200,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(Sizes.borderRadius),
+              borderRadius: BorderRadius.circular(Sizes.borderRadius10),
             ),
             child: Center(
               child: SvgPicture.asset(
@@ -92,17 +92,17 @@ class _FaqDetailPageState extends State<FaqDetailPage> {
                     widget.question,
                     style: TextStyle(
                       color: dark_blue,
-                      fontSize: Sizes.textSubtitle,
+                      fontSize: Sizes.textSizeMedium,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   SizedBox(height: Sizes.paddingSmall), // Abstand zur Antwort-Box
                   Container( //Antwort
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(Sizes.borderRadius),
+                      borderRadius: BorderRadius.circular(Sizes.borderRadius10),
                       color: background_box_white,
                     ),
-                    padding: EdgeInsets.all(Sizes.paddingRegular), // Innenabstand für bessere Lesbarkeit
+                    padding: const EdgeInsets.all(Sizes.paddingMediumLarge), // Innenabstand für bessere Lesbarkeit
                     child: ListView(
                       shrinkWrap: true,
                       children: [
@@ -138,7 +138,7 @@ class FaqDetailTile extends StatelessWidget {
       children: [
         ListTile(
           //title: Text(quest, style: TextStyle(fontSize: Sizes.textSizeMedium)),
-          title: Text(answ, style: TextStyle(color: dark_blue,fontSize: Sizes.textSubtitle)),
+          title: Text(answ, style: TextStyle(color: dark_blue,fontSize: Sizes.textSizeRegular)),
         ),
       ],
     );
