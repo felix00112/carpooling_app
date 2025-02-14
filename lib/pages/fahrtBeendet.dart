@@ -83,7 +83,16 @@ class _FahrtBeendetState extends State<FahrtBeendet> with SingleTickerProviderSt
                                   controller: _feedbackController,
                                   decoration: InputDecoration(
                                     labelText: 'Zusätzliches Feedback',
+                                    labelStyle: TextStyle(color: dark_blue), // Farbe des Labels
+                                    enabledBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(color: dark_blue), // Farbe der Unterstreichung
+                                    ),
+                                    focusedBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(color: dark_blue), // Farbe der Unterstreichung beim Fokussieren
+                                    ),
                                   ),
+                                  cursorColor: dark_blue, // Farbe des Cursors
+                                  style: TextStyle(color: dark_blue), // Farbe des eingegebenen Textes
                                   maxLines: 3,
                                 ),
                               ],
@@ -94,6 +103,9 @@ class _FahrtBeendetState extends State<FahrtBeendet> with SingleTickerProviderSt
                                   Navigator.of(context).pop();
                                 },
                                 child: Text('Abbrechen'),
+                                style: TextButton.styleFrom(
+                                  foregroundColor: dark_blue, // Textfarbe
+                                ),
                               ),
                               TextButton(
                                 onPressed: () {
@@ -104,6 +116,9 @@ class _FahrtBeendetState extends State<FahrtBeendet> with SingleTickerProviderSt
                                   Navigator.of(context).pop();
                                 },
                                 child: Text('Absenden'),
+                                style: TextButton.styleFrom(
+                                  foregroundColor: dark_blue, // Textfarbe
+                                ),
                               ),
                             ],
                           );
