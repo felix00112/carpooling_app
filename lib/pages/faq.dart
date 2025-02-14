@@ -62,6 +62,7 @@ class _FaqsPageState extends State<FaqsPage> {
 
   @override
   Widget build(BuildContext context) {
+    Sizes.initialize(context);
     return Scaffold(
       bottomNavigationBar: CustomBottomNavigationBar(
         currentIndex: _currentIndex,
