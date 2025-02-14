@@ -1,3 +1,4 @@
+import 'package:carpooling_app/pages/fahrt_suchen_aria.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart'; // Import hinzufügen
@@ -9,6 +10,8 @@ import '../constants/colors.dart';
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
+
+
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -17,6 +20,8 @@ class _HomePageState extends State<HomePage> {
 
   ////////////////////Navigation bar/////////////////////
   int _currentIndex = 0; // Index für die aktuell ausgewählte Seite
+  final Startinputcontroller = TextEditingController();
+  final Zielinputcontroller = TextEditingController();
 
   void _onTabTapped(int index) {
     setState(() {
@@ -129,6 +134,7 @@ class _HomePageState extends State<HomePage> {
             ),
             SizedBox(height: 16),
             TextField(
+              controller: Startinputcontroller,
               decoration: InputDecoration(
                 labelText: "Start",
                 prefixIcon: Icon(Icons.gps_fixed),
@@ -137,6 +143,7 @@ class _HomePageState extends State<HomePage> {
             ),
             SizedBox(height: 16),
             TextField(
+              controller: Zielinputcontroller,
               decoration: InputDecoration(
                 labelText: "Ziel",
                 prefixIcon: Icon(Icons.location_on),
@@ -192,7 +199,10 @@ class _HomePageState extends State<HomePage> {
               child: ElevatedButton.icon(
                 onPressed: () {
                   if (_selectedOption == "Suchen") {
-                    Navigator.pushNamed(context, '/Suchen');
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => FindRide(Starteingabe: Startinputcontroller.text, Zieleingabe: Zielinputcontroller.text,)),
+                    );
                   } else if (_selectedOption == "Anbieten") {
                     Navigator.pushNamed(context, '/Anbieten');
                   }

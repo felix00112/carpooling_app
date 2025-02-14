@@ -9,7 +9,9 @@ import 'package:http/http.dart' as http;
 
 
 class FindRide extends StatefulWidget {
-  const FindRide({super.key});
+  final String Starteingabe;
+  final String Zieleingabe;
+  FindRide({super.key, required this.Starteingabe, required this.Zieleingabe});
   @override
   _FindRideState createState() => _FindRideState();
 }
@@ -22,9 +24,63 @@ class _FindRideState extends State<FindRide> {
   final LatLng _initialCenter = LatLng(52.5200, 13.4050);
   List<LatLng> _routePoints = [];
 
-  String get _startLabel => _startAddress ?? "Start";
-  String get _zielLabel => _destinationAddress ?? "Ziel";
+  String _startLabel = "Start";
+  String _zielLabel = "Ziel";
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    //_startLabel = widget.Starteingabe;
+    //_zielLabel = widget.Zieleingabe;
+    firstMarker();
+    secondMarker();
+  }
+
+  void firstMarker() async{
+    try {
+      GeoCoder geoCoder = GeoCoder();
+      List<LookupAddress> suggestions =
+      await geoCoder.getAddressSuggestions(address: widget.Starteingabe);
+      if (suggestions.isNotEmpty) {
+        print("hello");
+        LookupAddress suggestion = suggestions.first;
+        print(suggestion.displayName);
+        setState(() {
+          _startMarker = LatLng(
+            double.parse(suggestion.latitude),
+            double.parse(suggestion.longitude),
+          );
+          _startLabel = suggestion.displayName;
+        });
+      }
+    } catch (e) {
+      print("Fehler beim Geocoding: $e");
+    }
+  }
+
+  void secondMarker() async{
+    try {
+      GeoCoder geoCoder = GeoCoder();
+      List<LookupAddress> suggestions =
+      await geoCoder.getAddressSuggestions(address: widget.Zieleingabe);
+      if (suggestions.isNotEmpty) {
+        print("hello");
+        LookupAddress suggestion = suggestions.first;
+        print(suggestion.displayName);
+        setState(() {
+          _destinationMarker = LatLng(
+            double.parse(suggestion.latitude),
+            double.parse(suggestion.longitude),
+          );
+          _zielLabel = suggestion.displayName;
+        });
+      }
+    } catch (e) {
+      print("Fehler beim Geocoding: $e");
+    }
+    _fetchRoute();
+  }
   @override
   Widget build(BuildContext context) {
     final LatLng center = _startMarker ?? _destinationMarker ?? _initialCenter;
@@ -62,7 +118,6 @@ class _FindRideState extends State<FindRide> {
       final data = jsonDecode(response.body);
       final List<dynamic> coordinates =
       data['routes'][0]['geometry']['coordinates'];
-
       setState(() {
         _routePoints = coordinates
             .map((coord) => LatLng(coord[1], coord[0]))
@@ -73,12 +128,12 @@ class _FindRideState extends State<FindRide> {
     }
   }
 
-  void _showLocationInputDialog(String type) {
+  void _showLocationInputDialog(String type) async{
     final TextEditingController _controller = TextEditingController();
-
-    showDialog(
+    String label = await showDialog(
       context: context,
       builder: (context) {
+      String response = "";
         return AlertDialog(
           title: Text("Gib die $type-Adresse ein"),
           content: TextField(
@@ -88,21 +143,35 @@ class _FindRideState extends State<FindRide> {
           ),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () {
+                if(type == "Start"){
+                  Navigator.of(context).pop(_startLabel);
+                }else{
+                  Navigator.of(context).pop(_zielLabel);
+                }
+              },
               child: Text("Abbrechen"),
             ),
             TextButton(
+
               onPressed: () async {
                 final input = _controller.text;
                 if (input.isEmpty) {
-                  Navigator.of(context).pop();
-                  return;
+                  if(type == "Start"){
+                    Navigator.of(context).pop(_startLabel);
+                    return;
+                  }else{
+                    Navigator.of(context).pop(_zielLabel);
+                    return;
+
+                  }
                 }
                 try {
                   GeoCoder geoCoder = GeoCoder();
                   List<LookupAddress> suggestions =
                   await geoCoder.getAddressSuggestions(address: input);
                   if (suggestions.isNotEmpty) {
+                    print("hello");
                     LookupAddress suggestion = suggestions.first;
                     setState(() {
                       if (type == "Start") {
@@ -111,12 +180,16 @@ class _FindRideState extends State<FindRide> {
                           double.parse(suggestion.longitude),
                         );
                         _startAddress = suggestion.displayName;
+                        _startLabel = suggestion.displayName;
+                        response = suggestion.displayName;
                       } else {
                         _destinationMarker = LatLng(
                           double.parse(suggestion.latitude),
                           double.parse(suggestion.longitude),
                         );
                         _destinationAddress = suggestion.displayName;
+                        _zielLabel = suggestion.displayName;
+                        response = suggestion.displayName;
                       }
                       _fetchRoute(); // Route berechnen
                     });
@@ -124,7 +197,7 @@ class _FindRideState extends State<FindRide> {
                 } catch (e) {
                   print("Fehler beim Geocoding: $e");
                 }
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(response);
               },
               child: Text("OK"),
             ),
@@ -132,6 +205,13 @@ class _FindRideState extends State<FindRide> {
         );
       },
     );
+    setState(() {
+      if(type == "Start"){
+        _startLabel = label;
+      }else{
+        _zielLabel = label;
+      }
+    });
   }
 
 
