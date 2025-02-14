@@ -14,8 +14,10 @@ class Sizes {
   static late double textHeading;
 
   static late double bottomBarHeight;
+  static late double topBarHeight; //subheader/bilder
 
   static late double borderRadius;
+  static late double borderRadiusButton;
 
   static void initialize(BuildContext context) {
     MediaQueryData m = MediaQuery.of(context);
@@ -27,12 +29,16 @@ class Sizes {
     paddingRegular = deviceWidth * 0.04;
     paddingBig = deviceWidth * 0.06;
 
+    bottomBarHeight = deviceHeight * 0.06;
+    topBarHeight = deviceHeight * 0.25;
+
     textSubtitle = deviceWidth * 0.031;
     textTitle = deviceWidth * 0.041;
     textSubheading = deviceWidth * 0.051;
     textHeading = deviceWidth * 0.062;
 
     borderRadius = deviceWidth * 0.025;
+    borderRadiusButton = deviceWidth * 0.005;
   }
 }
 

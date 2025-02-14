@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../constants/colors.dart';
+import 'package:carpooling_app/constants/sizes.dart';
 import '../constants/navigationBar.dart'; // Import der NavigationBar
 
 class GebuchteFahrtenListe extends StatefulWidget {
@@ -67,6 +68,7 @@ class _GebuchteFahrtenListeState extends State<GebuchteFahrtenListe> with Single
 
   @override
   Widget build(BuildContext context) {
+    Sizes.initialize(context);
     return Scaffold(
       bottomNavigationBar: CustomBottomNavigationBar(
         currentIndex: _currentIndex,
@@ -79,10 +81,6 @@ class _GebuchteFahrtenListeState extends State<GebuchteFahrtenListe> with Single
           children: [
             Container(
               height: 200,
-              decoration: BoxDecoration(
-                color: background_box_white,
-                borderRadius: BorderRadius.circular(16),
-              ),
               child: Center(
                 child: SvgPicture.asset(
                   'assets/images/undraw_order_ride.svg',
@@ -104,7 +102,7 @@ class _GebuchteFahrtenListeState extends State<GebuchteFahrtenListe> with Single
             SizedBox(height: 16),
             Container(
             decoration: BoxDecoration(
-                color: Colors.white, // Hintergrundfarbe des Containers
+                color: background_box_white, // Hintergrundfarbe des Containers
                 borderRadius: BorderRadius.circular(8), // Abrundung der Ecken
                 boxShadow: [
                     BoxShadow(
@@ -125,7 +123,7 @@ class _GebuchteFahrtenListeState extends State<GebuchteFahrtenListe> with Single
                     indicatorColor: button_blue,
                     labelStyle: TextStyle(fontWeight: FontWeight.bold), // Text fett formatieren
                     labelColor: button_blue, // Farbe des ausgewählten Tabs
-                    unselectedLabelColor: Colors.grey, // Farbe der nicht ausgewählten Tabs
+                    unselectedLabelColor: text_sekundr, // Farbe der nicht ausgewählten Tabs
                 ),
             ),
             SizedBox(height: 16),
@@ -148,9 +146,14 @@ class _GebuchteFahrtenListeState extends State<GebuchteFahrtenListe> with Single
                               itemCount: entry.value.length,
                               itemBuilder: (context, index) {
                                   return Card(
-                                  margin: EdgeInsets.symmetric(vertical: 8),
+                                    margin: EdgeInsets.symmetric(vertical: 8),
+                                    color: background_box_white,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(Sizes.borderRadiusButton), // Auch die ListTile abrunden
+                                    ),
+                                    //tileColor: background_box_white, // Hier wird die Hintergrundfarbe auf Rot gesetzt
                                   child: ListTile(
-                                      leading: Icon(Icons.directions_car, color: button_blue),
+                                    leading: Icon(Icons.directions_car, color: button_blue),
                                       title: Text(entry.value[index]),
                                       subtitle: Text('Details zur ${entry.value[index]}'),
                                       trailing: Icon(Icons.arrow_forward_ios),
