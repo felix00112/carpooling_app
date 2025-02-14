@@ -16,6 +16,9 @@ class Sizes {
   static late double bottomBarHeight;
   static late double topBarHeight; //subheader/bilder
 
+  static late double ContentWidth;
+  static late double ButtonHeight;
+
   static late double borderRadius;
   static late double borderRadiusButton;
 
@@ -31,6 +34,9 @@ class Sizes {
 
     bottomBarHeight = deviceHeight * 0.06;
     topBarHeight = deviceHeight * 0.25;
+
+    ContentWidth = deviceWidth * 0.925;
+    ButtonHeight = deviceHeight * 0.12;
 
     textSubtitle = deviceWidth * 0.031;
     textTitle = deviceWidth * 0.041;
