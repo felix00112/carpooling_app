@@ -75,12 +75,12 @@ class _GebuchteFahrtenListeState extends State<GebuchteFahrtenListe> with Single
         onTap: _onTabTapped,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(Sizes.paddingSmall), //allgemeiner Rand zwischen Inhalt und handyrand
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              height: 200,
+              height: Sizes.topBarHeight,
               child: Center(
                 child: SvgPicture.asset(
                   'assets/images/undraw_order_ride.svg',
@@ -90,7 +90,7 @@ class _GebuchteFahrtenListeState extends State<GebuchteFahrtenListe> with Single
                 ),
               ),
             ),
-            SizedBox(height: 16),
+            SizedBox(height: Sizes.paddingRegular), // platz über überschrift
             Text(
               "Gebuchte Fahrten",
               style: TextStyle(
@@ -99,7 +99,8 @@ class _GebuchteFahrtenListeState extends State<GebuchteFahrtenListe> with Single
                 color: dark_blue,
               ),
             ),
-            SizedBox(height: 16),
+
+            SizedBox(height: Sizes.paddingRegular), // platz unter überschrift
             Container(
             decoration: BoxDecoration(
                 color: background_box_white, // Hintergrundfarbe des Containers
@@ -126,7 +127,12 @@ class _GebuchteFahrtenListeState extends State<GebuchteFahrtenListe> with Single
                     unselectedLabelColor: text_sekundr, // Farbe der nicht ausgewählten Tabs
                 ),
             ),
-            SizedBox(height: 16),
+            SizedBox(
+              height: 16,
+              child: Container(
+                color: Colors.blue, // Hier die gewünschte Farbe einfügen
+              ),
+            ),
             Expanded(
                 child: TabBarView(
                     controller: _tabController,
