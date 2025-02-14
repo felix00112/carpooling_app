@@ -6,6 +6,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'dart:convert';
 import 'package:geocoding_resolver/geocoding_resolver.dart';
 import 'package:http/http.dart' as http;
+import 'package:carpooling_app/constants/button2.dart';
 
 
 class FindRide extends StatefulWidget {
@@ -29,7 +30,7 @@ class _FindRideState extends State<FindRide> {
 
   @override
   void initState() {
-    // TODO: implement initState
+
     super.initState();
     //_startLabel = widget.Starteingabe;
     //_zielLabel = widget.Zieleingabe;
@@ -229,7 +230,7 @@ class _FindRideState extends State<FindRide> {
       child: Stack(
         alignment: Alignment.center,
         children: [
-          CustomButton(
+          CustomButton2(
             label: label,
             onPressed: () => _showLocationInputDialog(type),
             color: color,
