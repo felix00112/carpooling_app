@@ -2,7 +2,6 @@ import 'package:carpooling_app/constants/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:carpooling_app/constants/navigationBar.dart';
-
 import 'package:carpooling_app/constants/sizes.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -35,6 +34,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    Sizes.initialize(context);
     return Scaffold(
       bottomNavigationBar: CustomBottomNavigationBar(
         currentIndex: _currentIndex,

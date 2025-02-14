@@ -1,3 +1,4 @@
+import 'package:carpooling_app/pages/faq.dart';
 import 'package:carpooling_app/pages/gebuchteFahrtenListe.dart';
 import 'package:carpooling_app/pages/homepage.dart';
 import 'package:carpooling_app/pages/fahrt_suchen_aria.dart';
@@ -6,6 +7,7 @@ import 'package:carpooling_app/pages/fahrtAnbieten.dart';
 import 'package:carpooling_app/pages/profilePage.dart';
 import 'package:carpooling_app/pages/fahrtFahrerin.dart';
 import 'package:carpooling_app/pages/fahrtMitfahrerin.dart';
+import 'package:carpooling_app/pages/Einstellungen.dart';
 
 import 'package:flutter/material.dart';
 import 'package:carpooling_app/pages/profilePage.dart';
@@ -24,8 +26,9 @@ void main() {
       //suche starten
       //'/Suchen': (context) => FindRide(),
       '/Anbieten': (context) => OfferRidePage(),
-      '/RideDetails': (context) => RideDetailsPage()
+      '/RideDetails': (context) => RideDetailsPage(),
       // weitere routen:
+      '/Settings': (context) => SettingsPage()
 
 
       

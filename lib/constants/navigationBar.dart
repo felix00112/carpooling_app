@@ -1,3 +1,4 @@
+import 'package:carpooling_app/constants/colors.dart';
 import 'package:flutter/material.dart';
 
 /*
@@ -46,8 +47,8 @@ class CustomBottomNavigationBar extends StatelessWidget {
           label: 'Profil',
         ),
       ],
-      selectedItemColor: Colors.blue, // Color for selected item
-      unselectedItemColor: Colors.grey, // Color for unselected items
+      selectedItemColor: button_blue, // Color for selected item
+      unselectedItemColor: text_sekundr, // Color for unselected items
     );
   }
 }
