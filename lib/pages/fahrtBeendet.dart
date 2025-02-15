@@ -6,6 +6,8 @@ import 'package:carpooling_app/constants/sizes.dart';
 class FahrtBeendet extends StatefulWidget {
   const FahrtBeendet({super.key});
 
+  //TODO Startmarker und destinationmarker müssen hier beim aufruf der seite übergeben werden. -> Implementierung einer Kleinen Karte anzeige
+
   @override
   _FahrtBeendetState createState() => _FahrtBeendetState();
 }
