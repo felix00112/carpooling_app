@@ -17,7 +17,7 @@ class Sizes {
 
   static const double borderRadius10 = 10;
 
-  void initialize(BuildContext context) {
+  static void initialize(BuildContext context) {
     MediaQueryData m = MediaQuery.of(context);
     width = m.size.width;
     height = m.size.height;

@@ -8,6 +8,7 @@ import 'package:carpooling_app/pages/profilePage.dart';
 import 'package:carpooling_app/pages/fahrtFahrerin.dart';
 import 'package:carpooling_app/pages/fahrtMitfahrerin.dart';
 import 'package:carpooling_app/pages/Einstellungen.dart';
+import 'package:carpooling_app/pages/fahrtBeendet.dart';
 
 import 'package:flutter/material.dart';
 import 'package:carpooling_app/pages/profilePage.dart';
@@ -28,7 +29,9 @@ void main() {
       '/Anbieten': (context) => OfferRidePage(),
       '/RideDetails': (context) => RideDetailsPage(),
       // weitere routen:
-      '/Settings': (context) => SettingsPage()
+      '/Settings': (context) => SettingsPage(),
+      '/goal': (context) => FahrtBeendet()
+
 
 
       
