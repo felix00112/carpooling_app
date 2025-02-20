@@ -9,12 +9,34 @@ import 'package:carpooling_app/pages/fahrtFahrerin.dart';
 import 'package:carpooling_app/pages/fahrtMitfahrerin.dart';
 import 'package:carpooling_app/pages/Einstellungen.dart';
 import 'package:carpooling_app/pages/fahrtBeendet.dart';
-
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:carpooling_app/pages/profilePage.dart';
 
 
-void main() {
+void main() async {
+  // supabase setup
+  await Supabase.initialize(
+    anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhybWRwZGJ2bGxxanRjYm11ampjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDAwMDE5MDIsImV4cCI6MjA1NTU3NzkwMn0.rXGUkK0LUYOnyvkHIYRG0NFVPkMfjXlEF7QmYFSpgH4",
+    url: "https://hrmdpdbvllqjtcbmujjc.supabase.co",
+  );
+
+  // Data base connection check
+  try {
+    final response = await Supabase.instance.client
+        .from('car') // Ersetze mit einer existierenden Tabelle
+        .select()
+        .limit(1);
+
+    if (response.isNotEmpty) {
+      print('✅ Verbindung erfolgreich: $response');
+    } else {
+      print('⚠️ Verbindung erfolgreich, aber keine Daten gefunden');
+    }
+  } catch (e) {
+    print('❌ Verbindung fehlgeschlagen: $e');
+  }
+
+
   runApp(MaterialApp(
     initialRoute: '/',
     routes: {
