@@ -2,6 +2,7 @@ import 'package:carpooling_app/pages/fahrt_suchen_aria.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart'; // Import hinzufügen
+import 'package:carpooling_app/constants/sizes.dart';
 import '../constants/navigationBar.dart'; // Import der NavigationBar
 
 import '../constants/colors.dart';
@@ -98,6 +99,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    Sizes.initialize(context);
     return Scaffold(
       bottomNavigationBar: CustomBottomNavigationBar(
         currentIndex: _currentIndex,
@@ -109,9 +111,30 @@ class _HomePageState extends State<HomePage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
+              height: Sizes.topBarHeight,
+              child: Center(
+                child: SvgPicture.asset(
+                  'assets/images/undraw_city_driver.svg',
+                  width: 700,
+                  height: 700,
+                  fit: BoxFit.contain,
+                ),
+              ),
+            ),
+            SizedBox(height: Sizes.paddingRegular), // platz über überschrift
+            Text(
+              "Wohin möchtest du fahren?",
+              style: TextStyle(
+                fontSize: Sizes.textHeading,
+                fontWeight: FontWeight.w900,
+                color: dark_blue,
+              ),
+            ),
+
+            /*Container(
               height: 200,
               decoration: BoxDecoration(
-                color: background_box_white,
+                color: Colors.pink, //background_box_white
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Center(
@@ -131,8 +154,9 @@ class _HomePageState extends State<HomePage> {
                 fontWeight: FontWeight.w900,
                 color: dark_blue,
               ),
-            ),
-            SizedBox(height: 16),
+            ),*/ //alter bild plus überschrift
+
+            SizedBox(height: Sizes.paddingBig), // platz unter überschrift
             TextField(
               controller: Startinputcontroller,
               decoration: InputDecoration(
@@ -141,7 +165,7 @@ class _HomePageState extends State<HomePage> {
                 border: OutlineInputBorder(),
               ),
             ),
-            SizedBox(height: 16),
+            SizedBox(height: Sizes.paddingSmall), // platz zwischen den boxen
             TextField(
               controller: Zielinputcontroller,
               decoration: InputDecoration(
@@ -150,7 +174,7 @@ class _HomePageState extends State<HomePage> {
                 border: OutlineInputBorder(),
               ),
             ),
-            SizedBox(height: 16),
+            SizedBox(height: Sizes.paddingSmall), // platz zwischen den boxen
             TextField(
               controller: _dateTimeController,
               readOnly: true,
@@ -161,13 +185,13 @@ class _HomePageState extends State<HomePage> {
               ),
               onTap: () => _selectDateTime(context),
             ),
-            SizedBox(height: 16),
+            SizedBox(height: Sizes.paddingSmall), // platz zwischen den Zeitpunkt und anbieten und suchen
             Row(
               children: [
                 Expanded(
                   child: RadioListTile(
-                    title: Text("Anbieten", 
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                    title: Text("Anbieten",
+                      style: TextStyle(fontSize: Sizes.textTitle, fontWeight: FontWeight.bold),
                     ),
                     value: "Anbieten",
                     groupValue: _selectedOption,
@@ -181,7 +205,7 @@ class _HomePageState extends State<HomePage> {
                 Expanded(
                   child: RadioListTile(
                     title: Text("Suchen",
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: TextStyle(fontSize: Sizes.textTitle, fontWeight: FontWeight.bold),
                     ),
                     value: "Suchen",
                     groupValue: _selectedOption,
@@ -194,7 +218,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ],
             ),
-            SizedBox(height: 16),
+            SizedBox(height: Sizes.paddingSmall),
             Center(
               child: ElevatedButton.icon(
                 onPressed: () {
@@ -215,8 +239,8 @@ class _HomePageState extends State<HomePage> {
                 label: Text(
                   "Start",
                   style: TextStyle(
-                    fontSize: 18, // Schriftgröße anpassen
-                    fontWeight: FontWeight.bold, // Schriftstärke anpassen
+                    fontSize: Sizes.textSubheading,  // Schriftgröße anpassen
+                    //fontWeight: FontWeight.bold, // Schriftstärke anpassen
                     color: Colors.white, // Textfarbe anpassen
                   ),
                 ),
