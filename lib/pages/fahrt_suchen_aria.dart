@@ -7,7 +7,9 @@ import 'dart:convert';
 import 'package:geocoding_resolver/geocoding_resolver.dart';
 import 'package:http/http.dart' as http;
 import 'package:carpooling_app/constants/button2.dart';
-
+import 'package:carpooling_app/constants/sizes.dart';
+import 'package:carpooling_app/constants/navigationBar.dart';
+import 'package:intl/intl.dart'; // Für Zeitformatierung
 
 class FindRide extends StatefulWidget {
   final String Starteingabe;
@@ -15,6 +17,7 @@ class FindRide extends StatefulWidget {
   FindRide({super.key, required this.Starteingabe, required this.Zieleingabe});
   @override
   _FindRideState createState() => _FindRideState();
+
 }
 
 class _FindRideState extends State<FindRide> {
@@ -22,11 +25,32 @@ class _FindRideState extends State<FindRide> {
   LatLng? _destinationMarker;
   String? _startAddress;
   String? _destinationAddress;
-  final LatLng _initialCenter = LatLng(52.5200, 13.4050);
+  LatLng _mapCenter = LatLng(52.5200, 13.4050);
   List<LatLng> _routePoints = [];
 
   String _startLabel = "Start";
   String _zielLabel = "Ziel";
+  int _currentIndex = 1;
+
+  final MapController _mapController = MapController();
+
+  void _onTabTapped(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+
+    switch (index) {
+      case 0:
+        Navigator.pushNamed(context, '/home');
+        break;
+      case 1:
+        Navigator.pushNamed(context, '/fahrten');
+        break;
+      case 2:
+        Navigator.pushNamed(context, '/profil');
+        break;
+    }
+  }
 
   @override
   void initState() {
@@ -38,15 +62,24 @@ class _FindRideState extends State<FindRide> {
     secondMarker();
   }
 
-  void firstMarker() async{
+  void _updateMapCenter() {
+    if (_startMarker != null && _destinationMarker != null) {
+      double midLat = (_startMarker!.latitude + _destinationMarker!.latitude) / 2;
+      double midLng = (_startMarker!.longitude + _destinationMarker!.longitude) / 2;
+      setState(() {
+        _mapCenter = LatLng(midLat, midLng);
+      });
+      _mapController.move(_mapCenter, 12); // Karte auf die Mitte zentrieren
+    }
+  }
+
+  void firstMarker() async {
     try {
       GeoCoder geoCoder = GeoCoder();
       List<LookupAddress> suggestions =
       await geoCoder.getAddressSuggestions(address: widget.Starteingabe);
       if (suggestions.isNotEmpty) {
-        print("hello");
         LookupAddress suggestion = suggestions.first;
-        print(suggestion.displayName);
         setState(() {
           _startMarker = LatLng(
             double.parse(suggestion.latitude),
@@ -54,21 +87,20 @@ class _FindRideState extends State<FindRide> {
           );
           _startLabel = suggestion.displayName;
         });
+        _updateMapCenter(); // Mitte berechnen
       }
     } catch (e) {
       print("Fehler beim Geocoding: $e");
     }
   }
 
-  void secondMarker() async{
+  void secondMarker() async {
     try {
       GeoCoder geoCoder = GeoCoder();
       List<LookupAddress> suggestions =
       await geoCoder.getAddressSuggestions(address: widget.Zieleingabe);
       if (suggestions.isNotEmpty) {
-        print("hello");
         LookupAddress suggestion = suggestions.first;
-        print(suggestion.displayName);
         setState(() {
           _destinationMarker = LatLng(
             double.parse(suggestion.latitude),
@@ -76,33 +108,42 @@ class _FindRideState extends State<FindRide> {
           );
           _zielLabel = suggestion.displayName;
         });
+        _updateMapCenter(); // Mitte berechnen
       }
     } catch (e) {
       print("Fehler beim Geocoding: $e");
     }
     _fetchRoute();
   }
+
   @override
   Widget build(BuildContext context) {
-    final LatLng center = _startMarker ?? _destinationMarker ?? _initialCenter;
+    //final LatLng center = _startMarker ?? _destinationMarker ?? _initialCenter;
+    Sizes.initialize(context);
 
     return SafeArea(
       child: Scaffold(
         backgroundColor: background_grey,
         appBar: AppBar(
           backgroundColor: background_grey,
-          title: Text("Fahrt suchen",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900)),
+          title: Text(
+            "Fahrt suchen",
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
+          ),
+          centerTitle: true,
         ),
         body: Column(
           children: [
             _buildStartButton(context),
             _buildZielButton(context),
-            _buildMap(context, center),
+            _buildMap(context),
             _buildDriverList(context),
           ],
         ),
-        bottomNavigationBar: _buildBottomNavigationBar(),
+        bottomNavigationBar: CustomBottomNavigationBar(
+          currentIndex: _currentIndex,
+          onTap: _onTabTapped,
+        ),
       ),
     );
   }
@@ -226,7 +267,7 @@ class _FindRideState extends State<FindRide> {
 
   Widget _buildButton(String label, String type, IconData icon, Color color) {
     return Padding(
-      padding: EdgeInsets.only(top: 10),
+      padding: EdgeInsets.only(top: Sizes.paddingSmall),
       child: Stack(
         alignment: Alignment.center,
         children: [
@@ -244,36 +285,32 @@ class _FindRideState extends State<FindRide> {
     );
   }
 
-  Widget _buildMap(BuildContext context, LatLng center) {
+  Widget _buildMap(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(top: 10),
+      padding: EdgeInsets.only(top: Sizes.paddingSmall),
       child: Container(
-        width: MediaQuery.of(context).size.width * 0.925,
+        width: Sizes.ContentWidth,
         height: 250,
         child: ClipRRect(
           borderRadius: BorderRadius.circular(10),
           child: FlutterMap(
-            options: MapOptions(center: center, zoom: 12),
+            mapController: _mapController,
+            options: MapOptions(center: _mapCenter, zoom: 12),
             children: [
-              // Karten-Hintergrund
               TileLayer(
                 urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
                 subdomains: ['a', 'b', 'c'],
               ),
-
-              // Route (hinter den Markern)
               PolylineLayer(
                 polylines: [
                   if (_routePoints.isNotEmpty)
                     Polyline(
                       points: _routePoints,
                       strokeWidth: 4.0,
-                      color: Colors.black, // Farbe der Route
+                      color: Colors.black,
                     ),
                 ],
               ),
-
-              // Marker (im Vordergrund)
               MarkerLayer(
                 markers: [
                   if (_startMarker != null)
@@ -281,7 +318,7 @@ class _FindRideState extends State<FindRide> {
                       point: _startMarker!,
                       builder: (ctx) => Icon(
                         Icons.circle,
-                        color: Colors.black, // Farbe des Startmarkers
+                        color: Colors.black,
                         size: 15,
                       ),
                     ),
@@ -290,7 +327,7 @@ class _FindRideState extends State<FindRide> {
                       point: _destinationMarker!,
                       builder: (ctx) => Icon(
                         Icons.flag,
-                        color: Colors.red, // Farbe des Zielmarkers
+                        color: Colors.red,
                         size: 40,
                       ),
                     ),
@@ -302,7 +339,6 @@ class _FindRideState extends State<FindRide> {
       ),
     );
   }
-
 
   Widget _buildDriverList(BuildContext context) {
     return Expanded(
@@ -316,11 +352,131 @@ class _FindRideState extends State<FindRide> {
   }
 
   Widget _buildDriverCard(String name, double rating, String time, String seats) {
-    return Card(
-      child: ListTile(
-        leading: CircleAvatar(child: Icon(Icons.person)),
-        title: Text(name),
-        subtitle: Text("$time Uhr - $seats"),
+    // Aktuelle Zeit
+    DateTime now = DateTime.now();
+
+    // Die übergebene Startzeit als DateTime parsen
+    DateTime startTime = DateFormat("HH:mm").parse(time);
+
+    // Startzeit an das heutige Datum anpassen
+    startTime = DateTime(now.year, now.month, now.day, startTime.hour, startTime.minute);
+
+    // Differenz in Minuten berechnen
+    int minutesDiff = startTime.difference(now).inMinutes;
+
+    // Dynamischer Text basierend auf der Zeitdifferenz
+    String timeText;
+    if (minutesDiff == 0) {
+      timeText = "jetzt";
+    } else if (minutesDiff < 0) {
+      timeText = "vor ${minutesDiff.abs()} min.";
+    } else {
+      timeText = "in $minutesDiff min.";
+    }
+
+    return Padding(
+      padding: EdgeInsets.only(top: Sizes.paddingSmall, left: Sizes.paddingSmall * 1.4, right: Sizes.paddingSmall * 1.4),
+      child: Container(
+        width: Sizes.ContentWidth,
+        child: Card(
+          color: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(Sizes.borderRadius),
+          ),
+          child: Padding(
+            padding: EdgeInsets.all(Sizes.paddingRegular),
+            child: Column(
+              children: [
+                // Oberer Bereich mit Name, Profilbild, Bewertung & Buchen-Button
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 20,
+                          backgroundColor: Colors.grey[300],
+                          child: Icon(Icons.person, color: Colors.black),
+                        ),
+                        SizedBox(width: 10),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              name,
+                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                            ),
+                            Row(
+                              children: [
+                                Icon(Icons.star, color: Colors.black, size: 16),
+                                SizedBox(width: 4),
+                                Text(
+                                  rating.toStringAsFixed(1),
+                                  style: TextStyle(fontSize: 14),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        Icon(Icons.directions_car, size: 24, color: Colors.black),
+                        Text("Buchen", style: TextStyle(fontSize: 14, color: Colors.grey)),
+                      ],
+                    ),
+                  ],
+                ),
+
+                // Trennlinie
+                Divider(color: Colors.black, thickness: 1),
+
+                // Unterer Bereich mit Startzeit & freien Plätzen
+                Padding(
+                  padding: EdgeInsets.only(top: 8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Start",
+                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                          ),
+                          Row(
+                            children: [
+                              Text(
+                                time,
+                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(width: 8),
+                              Text(
+                                timeText, // Dynamischer Text basierend auf der Startzeit
+                                style: TextStyle(fontSize: 14, color: Colors.orange),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Icon(Icons.hourglass_empty, size: 18, color: Colors.orange),
+                          SizedBox(width: 4),
+                          Text(
+                            seats,
+                            style: TextStyle(fontSize: 14, color: Colors.orange, fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
