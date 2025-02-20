@@ -157,105 +157,126 @@ class _HomePageState extends State<HomePage> {
             ),*/ //alter bild plus überschrift
 
             SizedBox(height: Sizes.paddingBig), // platz unter überschrift
-            TextField(
-              controller: Startinputcontroller,
-              decoration: InputDecoration(
-                labelText: "Start",
-                prefixIcon: Icon(Icons.gps_fixed),
-                border: OutlineInputBorder(),
+            DecoratedBox(
+              decoration: BoxDecoration(
+                color: background_box_white,
+                borderRadius: BorderRadius.circular(Sizes.borderRadius)
               ),
-            ),
-            SizedBox(height: Sizes.paddingSmall), // platz zwischen den boxen
-            TextField(
-              controller: Zielinputcontroller,
-              decoration: InputDecoration(
-                labelText: "Ziel",
-                prefixIcon: Icon(Icons.location_on),
-                border: OutlineInputBorder(),
-              ),
-            ),
-            SizedBox(height: Sizes.paddingSmall), // platz zwischen den boxen
-            TextField(
-              controller: _dateTimeController,
-              readOnly: true,
-              decoration: InputDecoration(
-                labelText: "Zeitpunkt",
-                prefixIcon: Icon(Icons.calendar_today),
-                border: OutlineInputBorder(),
-              ),
-              onTap: () => _selectDateTime(context),
-            ),
-            SizedBox(height: Sizes.paddingSmall), // platz zwischen den Zeitpunkt und anbieten und suchen
-            Row(
+              child: Column(
               children: [
-                Expanded(
-                  child: RadioListTile(
-                    title: Text("Anbieten",
-                      style: TextStyle(fontSize: Sizes.textTitle, fontWeight: FontWeight.bold),
+                SizedBox(height: Sizes.paddingRegular),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: Sizes.paddingSmall),
+                  child: TextField(
+                    controller: Startinputcontroller,
+                    decoration: InputDecoration(
+                      labelText: "Start",
+                      prefixIcon: Icon(Icons.gps_fixed),
+                      border: OutlineInputBorder(),
                     ),
-                    value: "Anbieten",
-                    groupValue: _selectedOption,
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedOption = value.toString();
-                      });
-                    },
                   ),
                 ),
-                Expanded(
-                  child: RadioListTile(
-                    title: Text("Suchen",
-                      style: TextStyle(fontSize: Sizes.textTitle, fontWeight: FontWeight.bold),
+                SizedBox(height: Sizes.paddingSmall), // platz zwischen den boxen
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: Sizes.paddingSmall),
+                  child: TextField(
+                    controller: Zielinputcontroller,
+                    decoration: InputDecoration(
+                      labelText: "Ziel",
+                      prefixIcon: Icon(Icons.location_on),
+                      border: OutlineInputBorder(),
                     ),
-                    value: "Suchen",
-                    groupValue: _selectedOption,
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedOption = value.toString();
-                      });
+                  ),
+                ),
+                SizedBox(height: Sizes.paddingSmall), // platz zwischen den boxen
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: Sizes.paddingSmall),
+                  child: TextField(
+                    controller: _dateTimeController,
+                    readOnly: true,
+                    decoration: InputDecoration(
+                      labelText: "Zeitpunkt",
+                      prefixIcon: Icon(Icons.calendar_today),
+                      border: OutlineInputBorder(),
+                    ),
+                    onTap: () => _selectDateTime(context),
+                  ),
+                ),
+
+                SizedBox(height: Sizes.paddingSmall), // platz zwischen den Zeitpunkt und anbieten und suchen
+                Row(
+                  children: [
+                    Expanded(
+                      child: RadioListTile(
+                        title: Text("Anbieten",
+                          style: TextStyle(fontSize: Sizes.textTitle, fontWeight: FontWeight.bold),
+                        ),
+                        value: "Anbieten",
+                        groupValue: _selectedOption,
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedOption = value.toString();
+                          });
+                        },
+                      ),
+                    ),
+                    Expanded(
+                      child: RadioListTile(
+                        title: Text("Suchen",
+                          style: TextStyle(fontSize: Sizes.textTitle, fontWeight: FontWeight.bold),
+                        ),
+                        value: "Suchen",
+                        groupValue: _selectedOption,
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedOption = value.toString();
+                          });
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: Sizes.paddingSmall),
+                Center(
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      if (_selectedOption == "Suchen") {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => FindRide(Starteingabe: Startinputcontroller.text, Zieleingabe: Zielinputcontroller.text,)),
+                        );
+                      } else if (_selectedOption == "Anbieten") {
+                        Navigator.pushNamed(context, '/Anbieten');
+                      }
                     },
+                    icon: SvgPicture.asset(
+                      'assets/icons/route.svg',
+                      height: 24,
+                      colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                    ), // Verwende SVG-Icon
+                    label: Text(
+                      "Start",
+                      style: TextStyle(
+                        fontSize: Sizes.textSubheading,  // Schriftgröße anpassen
+                        //fontWeight: FontWeight.bold, // Schriftstärke anpassen
+                        color: Colors.white, // Textfarbe anpassen
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: button_blue,
+                      padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                      minimumSize: Size(double.infinity, 60), // Button länger machen
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(Sizes.borderRadius), // Nur untere Ecken abrunden
+                          bottomRight: Radius.circular(Sizes.borderRadius),
+                        ), // Abgerundete Ecken
+                      ),
+                    ),
                   ),
                 ),
               ],
             ),
-            SizedBox(height: Sizes.paddingSmall),
-            Center(
-              child: ElevatedButton.icon(
-                onPressed: () {
-                  if (_selectedOption == "Suchen") {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => FindRide(Starteingabe: Startinputcontroller.text, Zieleingabe: Zielinputcontroller.text,)),
-                    );
-                  } else if (_selectedOption == "Anbieten") {
-                    Navigator.pushNamed(context, '/Anbieten');
-                  }
-                },
-                icon: SvgPicture.asset(
-                  'assets/icons/route.svg',
-                  height: 24,
-                  colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcIn),
-                ), // Verwende SVG-Icon
-                label: Text(
-                  "Start",
-                  style: TextStyle(
-                    fontSize: Sizes.textSubheading,  // Schriftgröße anpassen
-                    //fontWeight: FontWeight.bold, // Schriftstärke anpassen
-                    color: Colors.white, // Textfarbe anpassen
-                  ),
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: button_blue,
-                  padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                  minimumSize: Size(double.infinity, 60), // Button länger machen
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(30), // Nur untere Ecken abrunden
-                      bottomRight: Radius.circular(30),
-                    ), // Abgerundete Ecken
-                  ),
-                ),
-              ),
             ),
           ],
         ),
