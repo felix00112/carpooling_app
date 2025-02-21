@@ -39,13 +39,13 @@ class _GebuchteFahrtenListeState extends State<GebuchteFahrtenListe> with Single
 
   //hier sind fahrten: die titel bzw dann auch datum und die fahrten in den tagen
   Map<String, List<String>> fahrten = {
-    'Heute': ['Fahrt 1', 'Fahrt 2', 'Fahrt 30000', 'Fahrt 4', 'Fahrt 5'],
+    'Heute': ['Fahrt 1', 'Fahrt 2', 'Fahrt 3', 'Fahrt 4', 'Fahrt 5'],
     'Morgen': ['Fahrt 1', 'Fahrt 2', 'Fahrt 3'],
     'Übermorgen': ['Fahrt 1', 'Fahrt 2'],
     'Nächste Woche': ['Fahrt 1', 'Fahrt 2', 'Fahrt 3', 'Fahrt 4'],
   };
 
-  void addFahrt(String tag, String fahrt) {
+  /*void addFahrt(String tag, String fahrt) {
     setState(() {
       if (fahrten.containsKey(tag)) {
         fahrten[tag]?.add(fahrt);
@@ -64,7 +64,7 @@ class _GebuchteFahrtenListeState extends State<GebuchteFahrtenListe> with Single
         }
       }
     });
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -74,18 +74,20 @@ class _GebuchteFahrtenListeState extends State<GebuchteFahrtenListe> with Single
         currentIndex: _currentIndex,
         onTap: _onTabTapped,
       ),
+
+
       body: Padding(
-        padding: EdgeInsets.all(Sizes.paddingSmall), //allgemeiner Rand zwischen Inhalt und handyrand
+        padding: EdgeInsets.all(Sizes.paddingRegular), //allgemeiner Rand zwischen Inhalt und handyrand
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
+            SizedBox(
               height: Sizes.topBarHeight,
               child: Center(
                 child: SvgPicture.asset(
                   'assets/images/undraw_order_ride.svg',
-                  width: 700,
-                  height: 700,
+                  width: Sizes.deviceWidth,
+                  //height: 700,
                   fit: BoxFit.contain,
                 ),
               ),
@@ -101,32 +103,35 @@ class _GebuchteFahrtenListeState extends State<GebuchteFahrtenListe> with Single
             ),
 
             SizedBox(height: Sizes.paddingBig), // platz unter überschrift
-            Container(
-            decoration: BoxDecoration(
+            Container(//Box: Alle, Mitfahrer*in, Fahrer*in
+              decoration: BoxDecoration(
                 color: background_box_white, // Hintergrundfarbe des Containers
-                borderRadius: BorderRadius.circular(8), // Abrundung der Ecken
+                borderRadius: BorderRadius.circular(Sizes.borderRadius), // Abrundung der Ecken
                 boxShadow: [
-                    BoxShadow(
-                        color: Colors.black26,
-                        blurRadius: 4.0,
-                        spreadRadius: 1.0,
-                        offset: Offset(0.0, 2.0),
-                    ),
+                  BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 4.0,
+                    spreadRadius: 1.0,
+                    offset: Offset(0.0, 2.0),
+                  ),
                 ],
+              ),
+
+              child: TabBar(
+                controller: _tabController,
+                tabs: [
+                  Tab(text: 'Alle'),
+                  Tab(text: 'Mitfahrer*in'),
+                  Tab(text: 'Fahrer*in'),
+                ],
+                indicatorColor: button_blue,
+                labelStyle: TextStyle(fontSize: Sizes.textSubheading), // Text fett formatieren
+                labelColor: button_blue, // Farbe des ausgewählten Tabs
+                unselectedLabelColor: text_sekundr, // Farbe der nicht ausgewählten Tabs
+              ),
             ),
-                child: TabBar(
-                    controller: _tabController,
-                        tabs: [
-                        Tab(text: 'Alle'),
-                        Tab(text: 'Mitfahrer*in'),
-                        Tab(text: 'Fahrer*in'),
-                        ],
-                    indicatorColor: button_blue,
-                    labelStyle: TextStyle(fontWeight: FontWeight.bold), // Text fett formatieren
-                    labelColor: button_blue, // Farbe des ausgewählten Tabs
-                    unselectedLabelColor: text_sekundr, // Farbe der nicht ausgewählten Tabs
-                ),
-            ),
+
+            SizedBox(height: Sizes.paddingRegular), // platz über den einzelnen Fahrten
             SizedBox( //TODO: entfernen bevor finaler version, Hilfsmittel von Judith
               height: 16, //Um zu sehen wo padding ist auf der seite
               child: Container(
@@ -134,62 +139,70 @@ class _GebuchteFahrtenListeState extends State<GebuchteFahrtenListe> with Single
               ),
             ),
             Expanded(
-                child: TabBarView(
-                    controller: _tabController,
-                    children: [
-                        // Inhalt für den Tab 'Alle'
-                          ListView(
-                              children: fahrten.entries.map((entry) {
-                          return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                              ListTile(
-                              title: Text(entry.key, style: TextStyle(fontWeight: FontWeight.bold)),
-                              ),
-                              ListView.builder(
-                              shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              itemCount: entry.value.length,
-                              itemBuilder: (context, index) {
-                                  return Card(
-                                    margin: EdgeInsets.symmetric(vertical: 8),
-                                    color: background_box_white,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(Sizes.borderRadiusButton), // Auch die ListTile abrunden
-                                    ),
-                                    //tileColor: background_box_white, // Hier wird die Hintergrundfarbe auf Rot gesetzt
+              child: TabBarView(
+                controller: _tabController,
+                children: [
+                  // Inhalt für den Tab 'Alle'
+                  ListView(
+                    children: fahrten.entries.map((entry) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ListTile(
+                            title: Text(entry.key, style: TextStyle(fontSize: Sizes.textNormal ,fontWeight: FontWeight.bold)),
+                          ),
+                          ListView.builder(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemCount: entry.value.length,
+                            itemBuilder: (context, index) {
+                              return Card(
+                                margin: EdgeInsets.symmetric(vertical: Sizes.paddingSmall),
+                                color: background_box_white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(Sizes.borderRadius), // Auch die ListTile abrunden
+                                ),
+                                //tileColor: background_box_white, // Hier wird die Hintergrundfarbe auf Rot gesetzt
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(vertical: Sizes.paddingSmall),
                                   child: ListTile(
-                                    leading: Icon(Icons.directions_car, color: button_blue),
-                                      title: Text(entry.value[index]),
-                                      subtitle: Text('Details zur ${entry.value[index]}'),
-                                      trailing: Icon(Icons.arrow_forward_ios),
-                                      onTap: () {
-                                      // Aktion bei Klick auf eine Fahrt
-                                      },
+                                      leading: Icon(Icons.directions_car, color: button_blue),
+                                  title: Text(entry.value[index], style: TextStyle(color: dark_blue,fontSize: Sizes.textNormal),),
+                                  subtitle: Text('Details zur ${entry.value[index]}', style: TextStyle(color: dark_blue,fontSize: Sizes.textSubText),),
+                                  trailing: Icon(Icons.arrow_forward_ios),
+                                  onTap: () {
+                                    // Aktion bei Klick auf eine Fahrt
+                                  },
                                   ),
-                                  );
-                              },
                               ),
-                          ],
-                          );
-                          }).toList(),
-                        ),
-                        // Inhalt für den Tab 'Mitfahrer'
-                        Center(
-                            child: ElevatedButton(
-                                onPressed: () {  },
-                                child: Text('filtern die fahrten wo man gefahren wird.'),
-                            ),
-                        ),
-                        // Inhalt für den Tab 'Fahrer'
-                        Center(
-                            child: ElevatedButton(
-                                onPressed: () {  },
-                                child: Text('filtern die fahrten wo man fährt.'),
-                            ),
-                        ),
-                    ],
-                ),
+                              );
+                            },
+                          ),
+                        ],
+                      );
+                    }).toList(),
+                  ),
+
+
+                  // Inhalt für den Tab 'Mitfahrer'
+                  Center(
+                    child: ElevatedButton(
+                      onPressed: () {  },
+                      child: Text('filtern die fahrten wo man gefahren wird.', style: TextStyle(color: dark_blue, fontSize: Sizes.textNormal),),
+                    ),
+                  ),
+
+
+
+                  // Inhalt für den Tab 'Fahrer'
+                  Center(
+                    child: ElevatedButton(
+                      onPressed: () {  },
+                      child: Text('filtern die fahrten wo man fährt.', style: TextStyle(color: dark_blue, fontSize: Sizes.textNormal),),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -197,5 +210,3 @@ class _GebuchteFahrtenListeState extends State<GebuchteFahrtenListe> with Single
     );
   }
 }
-
-           
