@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:carpooling_app/constants/colors.dart';
+import '../auth/auth_service.dart';
 import '../constants/navigationBar.dart'; // Import der NavigationBar
 
 class ProfilePage extends StatefulWidget {
@@ -19,6 +20,13 @@ class _ProfilePageState extends State<ProfilePage> {
     // Navigation zu den entsprechenden Seiten basierend auf dem Index ist nicht mehr notwendig
   }
 /////////////////////////////////////////////////////////
+
+
+  final authService = AuthService();
+
+  void logout() async {
+    await authService.signOut();
+  }
 
 
 
@@ -44,6 +52,10 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+
+    final userEmail = authService.getCurrentUserEmail();
+
+
     return Scaffold(
       bottomNavigationBar: CustomBottomNavigationBar(
         currentIndex: _currentIndex,
@@ -56,22 +68,34 @@ class _ProfilePageState extends State<ProfilePage> {
             children: [
               SizedBox(height: 40),
               Row(
-                mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   IconButton(
-                    icon: Icon(FontAwesomeIcons.circleInfo, size: 24),
+                    icon: Icon(FontAwesomeIcons.rightFromBracket, size: 24),
                     onPressed: () {
-                      // Info-Button Logik
+                      logout();
+                      Navigator.pop(context);
                     },
                   ),
-                  IconButton(
-                    icon: Icon(FontAwesomeIcons.gear, size: 24),
-                    onPressed: () {
-                      // Einstellungen-Button Logik
-                    },
+                  Row(
+                    children: [
+                      IconButton(
+                        icon: Icon(FontAwesomeIcons.circleInfo, size: 24),
+                        onPressed: () {
+                          // Info-Button Logik
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(FontAwesomeIcons.gear, size: 24),
+                        onPressed: () {
+                          // Einstellungen-Button Logik
+                        },
+                      ),
+                    ],
                   ),
                 ],
               ),
+
               Stack(
                 alignment: Alignment.center,
                 children: [
@@ -86,6 +110,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
               SizedBox(height: 20),
               Text(userData['name'], style: TextStyle(fontSize: 24, fontWeight: FontWeight.normal)),
+              SizedBox(height: 5),
+              Text(userEmail.toString()),
               SizedBox(height: 10),
               Chip(
                 label: Text('Mitglied seit ${userData['memberSince']}'),

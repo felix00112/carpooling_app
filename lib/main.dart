@@ -9,11 +9,16 @@ import 'package:carpooling_app/pages/fahrtFahrerin.dart';
 import 'package:carpooling_app/pages/fahrtMitfahrerin.dart';
 import 'package:carpooling_app/pages/Einstellungen.dart';
 import 'package:carpooling_app/pages/fahrtBeendet.dart';
+import 'package:carpooling_app/pages/signup_page.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter/material.dart';
 
+import 'auth/auth_gate.dart';
+
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   // supabase setup
   await Supabase.initialize(
     anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhybWRwZGJ2bGxxanRjYm11ampjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDAwMDE5MDIsImV4cCI6MjA1NTU3NzkwMn0.rXGUkK0LUYOnyvkHIYRG0NFVPkMfjXlEF7QmYFSpgH4",
@@ -37,28 +42,35 @@ void main() async {
   }
 
 
-  runApp(MaterialApp(
-    initialRoute: '/',
-    routes: {
-      //hier die drei routen für die bottom navigation bar
+  runApp(MyApp());
+}
 
-      '/': (context) => HomePage(),
-      '/fahrten': (context) => GebuchteFahrtenListe(),
-      '/profil': (context) => ProfilePage(),
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context){
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Carpooling App',
+      home: AuthGate(),
+      routes: {
+        //hier die drei routen für die bottom navigation bar
 
-      //suche starten
-      //'/Suchen': (context) => FindRide(),
-      '/Anbieten': (context) => OfferRidePage(),
-      '/RideDetails': (context) => RideDetailsPage(),
-      // weitere routen:
-      '/Settings': (context) => SettingsPage(),
-      '/goal': (context) => FahrtBeendet()
+        // '/': (context) => HomePage(),
+        '/fahrten': (context) => GebuchteFahrtenListe(),
+        '/profil': (context) => ProfilePage(),
 
+        //suche starten
+        //'/Suchen': (context) => FindRide(),
+        '/Anbieten': (context) => OfferRidePage(),
+        '/RideDetails': (context) => RideDetailsPage(),
+        // weitere routen:
+        '/Settings': (context) => SettingsPage(),
+        '/goal': (context) => FahrtBeendet(),
+        '/signup' : (context) => SignupPage(),
+      },
 
-
-      
-    },
-  ));
+    );
+  }
 }
 
 
