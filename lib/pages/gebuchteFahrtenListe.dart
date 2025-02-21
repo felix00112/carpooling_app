@@ -94,13 +94,13 @@ class _GebuchteFahrtenListeState extends State<GebuchteFahrtenListe> with Single
             Text(
               "Gebuchte Fahrten",
               style: TextStyle(
-                fontSize: 24,
+                fontSize: Sizes.textHeading,
                 fontWeight: FontWeight.w900,
                 color: dark_blue,
               ),
             ),
 
-            SizedBox(height: Sizes.paddingRegular), // platz unter überschrift
+            SizedBox(height: Sizes.paddingBig), // platz unter überschrift
             Container(
             decoration: BoxDecoration(
                 color: background_box_white, // Hintergrundfarbe des Containers
@@ -127,8 +127,8 @@ class _GebuchteFahrtenListeState extends State<GebuchteFahrtenListe> with Single
                     unselectedLabelColor: text_sekundr, // Farbe der nicht ausgewählten Tabs
                 ),
             ),
-            SizedBox(
-              height: 16,
+            SizedBox( //TODO: entfernen bevor finaler version, Hilfsmittel von Judith
+              height: 16, //Um zu sehen wo padding ist auf der seite
               child: Container(
                 color: Colors.blue, // Hier die gewünschte Farbe einfügen
               ),

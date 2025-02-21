@@ -9,7 +9,7 @@ class Sizes {
   static late double paddingBig;
 
   static late double textSubtitle;
-  static late double textTitle;
+  static late double textTitle; //normaler text
   static late double textSubheading;
   static late double textHeading;
 
