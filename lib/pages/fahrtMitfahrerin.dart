@@ -20,39 +20,29 @@ class RidePickupPage extends StatelessWidget {
         children: [
           Container(
             width: double.infinity,
-            height: Sizes.deviceWidth * 0.3,
-            decoration: BoxDecoration(
-              color: button_lightblue,
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(Sizes.borderRadius * 2),
-                bottomRight: Radius.circular(Sizes.borderRadius * 2),
-              ),
-            ),
-            padding: EdgeInsets.symmetric(vertical: Sizes.paddingBig),
-            child: Center(
-              child: Text(
-                'Du wirst abgeholt von:',
+            height: Sizes.deviceWidth * 0.1,
+            padding: EdgeInsets.symmetric(horizontal: Sizes.paddingBig),
+            child: Text(
+                'Du wirst abgeholt',
                 style: TextStyle(
                   fontSize: Sizes.textHeading,
                   fontWeight: FontWeight.bold,
-                  color: Colors.white,
+                  color: dark_blue,
                 ),
-                textAlign: TextAlign.center,
+                textAlign: TextAlign.left,
               ),
             ),
-          ),
+
           Expanded(
-            child: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  _buildDriverInfo(context),
-                  SizedBox(height: Sizes.paddingBig),
                   _buildAddressBox(),
+                  SizedBox(height: Sizes.paddingBig),
+                  _buildDriverInfo(context),
                   SizedBox(height: Sizes.paddingBig),
                   _buildNavigationButton(),
                 ],
-              ),
             ),
           ),
         ],
@@ -62,7 +52,7 @@ class RidePickupPage extends StatelessWidget {
 
   Widget _buildAddressBox() {
     return Container(
-      width: Sizes.deviceWidth * 0.8,
+      width: Sizes.ContentWidth,
       padding: EdgeInsets.all(Sizes.paddingRegular),
       decoration: BoxDecoration(
         color: button_blue,
