@@ -1,9 +1,10 @@
+import 'package:carpooling_app/pages/faq.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:carpooling_app/constants/colors.dart';
 import '../auth/auth_service.dart';
 import '../constants/navigationBar.dart'; // Import der NavigationBar
-
+import 'Einstellungen.dart';
 class ProfilePage extends StatefulWidget {
   @override
   _ProfilePageState createState() => _ProfilePageState();
@@ -82,13 +83,20 @@ class _ProfilePageState extends State<ProfilePage> {
                       IconButton(
                         icon: Icon(FontAwesomeIcons.circleInfo, size: 24),
                         onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => FaqsPage()),
+                          );
                           // Info-Button Logik
                         },
                       ),
                       IconButton(
                         icon: Icon(FontAwesomeIcons.gear, size: 24),
                         onPressed: () {
-                          // Einstellungen-Button Logik
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => SettingsPage()),
+                          );// Einstellungen-Button Logik
                         },
                       ),
                     ],
