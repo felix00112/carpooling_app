@@ -1,7 +1,7 @@
 import 'package:carpooling_app/pages/faq.dart';
 import 'package:carpooling_app/pages/gebuchteFahrtenListe.dart';
 import 'package:carpooling_app/pages/homepage.dart';
-import 'package:carpooling_app/pages/fahrt_suchen_aria.dart';
+import 'package:carpooling_app/pages/fahrt_suchen.dart';
 import 'package:carpooling_app/pages/fahrtAnbieten.dart';
 //import 'package:carpooling_app/pages/homepage_felix.dart';
 import 'package:carpooling_app/pages/profilePage.dart';
