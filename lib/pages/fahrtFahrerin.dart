@@ -151,7 +151,7 @@ class RideDetailsPage extends StatelessWidget {
               '14:00 Musteradresse $index, Stadt $index',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                fontSize: Sizes.textTitle,
+                fontSize: Sizes.textNormal,
               ),
             ),
             Divider(color: Colors.grey),
@@ -170,11 +170,11 @@ class RideDetailsPage extends StatelessWidget {
                         Text(
                           'Mitfahrer $index  ',
                           style: TextStyle(
-                            fontSize: Sizes.textSubtitle,
+                            fontSize: Sizes.textSubText,
                           ),
                         ),
-                        Icon(Icons.star, color: Colors.black38, size: Sizes.textSubtitle),
-                        Text('4,4', style: TextStyle(fontSize: Sizes.textSubtitle)),
+                        Icon(Icons.star, color: Colors.black38, size: Sizes.textSubText),
+                        Text('4,4', style: TextStyle(fontSize: Sizes.textSubText)),
                       ],
                     ),
                   ),
@@ -187,7 +187,7 @@ class RideDetailsPage extends StatelessWidget {
                         SnackBar(content: Text('Telefonanruf für Mitfahrer $index gestartet')),
                       );
                     },
-                    child: Icon(Icons.phone, color: Colors.black, size: Sizes.textSubtitle),
+                    child: Icon(Icons.phone, color: Colors.black, size: Sizes.textSubText),
                   ),
                 ),
               ],

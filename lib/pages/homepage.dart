@@ -105,6 +105,8 @@ class _HomePageState extends State<HomePage> {
         currentIndex: _currentIndex,
         onTap: _onTabTapped,
       ),
+
+
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -184,7 +186,7 @@ class _HomePageState extends State<HomePage> {
                     Expanded(
                       child: RadioListTile(
                         title: Text("Anbieten",
-                          style: TextStyle(fontSize: Sizes.textTitle, fontWeight: FontWeight.bold),
+                          style: TextStyle(fontSize: Sizes.textNormal, fontWeight: FontWeight.bold),
                         ),
                         value: "Anbieten",
                         groupValue: _selectedOption,
@@ -198,7 +200,7 @@ class _HomePageState extends State<HomePage> {
                     Expanded(
                       child: RadioListTile(
                         title: Text("Suchen",
-                          style: TextStyle(fontSize: Sizes.textTitle, fontWeight: FontWeight.bold),
+                          style: TextStyle(fontSize: Sizes.textNormal, fontWeight: FontWeight.bold),
                         ),
                         value: "Suchen",
                         groupValue: _selectedOption,

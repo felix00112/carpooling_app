@@ -71,7 +71,7 @@ class RidePickupPage extends StatelessWidget {
       child: Center(
         child: Text(
           'Musterstraße 1, 10115 Berlin',
-          style: TextStyle(color: Colors.white, fontSize: Sizes.textSubtitle * 1.2),
+          style: TextStyle(color: Colors.white, fontSize: Sizes.textSubText * 1.2),
           textAlign: TextAlign.center,
         ),
       ),
@@ -115,12 +115,12 @@ class RidePickupPage extends StatelessWidget {
                     Text(
                       'Sascha  ',
                       style: TextStyle(
-                        fontSize: Sizes.textSubtitle * 2,
+                        fontSize: Sizes.textSubText * 2,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    Icon(Icons.star, color: Colors.black38, size: Sizes.textSubtitle * 1.7),
-                    Text('4,4', style: TextStyle(fontSize: Sizes.textSubtitle * 1.7)),
+                    Icon(Icons.star, color: Colors.black38, size: Sizes.textSubText * 1.7),
+                    Text('4,4', style: TextStyle(fontSize: Sizes.textSubText * 1.7)),
                   ],
                 ),
               ),
@@ -130,7 +130,7 @@ class RidePickupPage extends StatelessWidget {
                     SnackBar(content: Text('Telefonanruf für Mitfahrer gestartet')),
                   );
                 },
-                child: Icon(Icons.phone, color: Colors.black, size: Sizes.textSubtitle * 2),
+                child: Icon(Icons.phone, color: Colors.black, size: Sizes.textSubText * 2),
               ),
             ],
           ),
@@ -147,7 +147,7 @@ class RidePickupPage extends StatelessWidget {
                   Text(
                     'Opel Corsa',
                     style: TextStyle(
-                      fontSize: Sizes.textSubtitle * 1.2,
+                      fontSize: Sizes.textSubText * 1.2,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -156,7 +156,7 @@ class RidePickupPage extends StatelessWidget {
               Text(
                 'B-BB 1312',
                 style: TextStyle(
-                  fontSize: Sizes.textSubtitle * 1.2,
+                  fontSize: Sizes.textSubText * 1.2,
                   fontWeight: FontWeight.bold,
                 ),
               ),
