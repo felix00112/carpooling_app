@@ -10,6 +10,7 @@ import 'package:carpooling_app/constants/button2.dart';
 import 'package:carpooling_app/constants/sizes.dart';
 import 'package:carpooling_app/constants/navigationBar.dart';
 import 'package:intl/intl.dart'; // Für Zeitformatierung
+import 'package:carpooling_app/pages/fahrtMitfahrerin.dart';
 
 class FindRide extends StatefulWidget {
   final String Starteingabe;
@@ -344,142 +345,107 @@ class _FindRideState extends State<FindRide> {
     return Expanded(
       child: ListView(
         children: [
-          _buildDriverCard("Sascha", 4.0, "15:30", "2 freie Plätze"),
-          _buildDriverCard("Jonas", 4.5, "16:00", "3 freie Plätze"),
+          _buildDriverCard(context, "Sascha", 4.0, "15:30", "2 freie Plätze"),
+          _buildDriverCard(context, "Jonas", 4.5, "16:00", "3 freie Plätze"),
         ],
       ),
     );
   }
 
-  Widget _buildDriverCard(String name, double rating, String time, String seats) {
-    // Aktuelle Zeit
+  Widget _buildDriverCard(BuildContext context, String name, double rating, String time, String seats) {
     DateTime now = DateTime.now();
-
-    // Die übergebene Startzeit als DateTime parsen
     DateTime startTime = DateFormat("HH:mm").parse(time);
-
-    // Startzeit an das heutige Datum anpassen
     startTime = DateTime(now.year, now.month, now.day, startTime.hour, startTime.minute);
-
-    // Differenz in Minuten berechnen
     int minutesDiff = startTime.difference(now).inMinutes;
-
-    // Dynamischer Text basierend auf der Zeitdifferenz
-    String timeText;
-    if (minutesDiff == 0) {
-      timeText = "jetzt";
-    } else if (minutesDiff < 0) {
-      timeText = "vor ${minutesDiff.abs()} min.";
-    } else {
-      timeText = "in $minutesDiff min.";
-    }
+    String timeText = minutesDiff == 0 ? "jetzt" : (minutesDiff < 0 ? "vor ${minutesDiff.abs()} min." : "in $minutesDiff min.");
 
     return Padding(
-      padding: EdgeInsets.only(top: Sizes.paddingSmall, left: Sizes.paddingSmall * 1.4, right: Sizes.paddingSmall * 1.4),
-      child: Container(
-        width: Sizes.ContentWidth,
-        child: Card(
-          color: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(Sizes.borderRadius),
-          ),
-          child: Padding(
-            padding: EdgeInsets.all(Sizes.paddingRegular),
-            child: Column(
-              children: [
-                // Oberer Bereich mit Name, Profilbild, Bewertung & Buchen-Button
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        CircleAvatar(
-                          radius: 20,
-                          backgroundColor: Colors.grey[300],
-                          child: Icon(Icons.person, color: Colors.black),
-                        ),
-                        SizedBox(width: 10),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              name,
-                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                            ),
-                            Row(
-                              children: [
-                                Icon(Icons.star, color: Colors.black, size: 16),
-                                SizedBox(width: 4),
-                                Text(
-                                  rating.toStringAsFixed(1),
-                                  style: TextStyle(fontSize: 14),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        Icon(Icons.directions_car, size: 24, color: Colors.black),
-                        Text("Buchen", style: TextStyle(fontSize: 14, color: Colors.grey)),
-                      ],
-                    ),
-                  ],
-                ),
-
-                // Trennlinie
-                Divider(color: Colors.black, thickness: 1),
-
-                // Unterer Bereich mit Startzeit & freien Plätzen
-                Padding(
-                  padding: EdgeInsets.only(top: 8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      padding: EdgeInsets.symmetric(horizontal: Sizes.paddingSmall * 1.4, vertical: Sizes.paddingSmall),
+      child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Sizes.borderRadius)),
+        child: Padding(
+          padding: EdgeInsets.all(Sizes.paddingRegular),
+          child: Column(
+            children: [
+              // Oberer Bereich mit Fahrer-Infos
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
                     children: [
+                      CircleAvatar(radius: 20, backgroundColor: Colors.grey[300], child: Icon(Icons.person, color: Colors.black)),
+                      SizedBox(width: 10),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            "Start",
-                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                          ),
+                          Text(name, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                           Row(
                             children: [
-                              Text(
-                                time,
-                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                              ),
-                              SizedBox(width: 8),
-                              Text(
-                                timeText, // Dynamischer Text basierend auf der Startzeit
-                                style: TextStyle(fontSize: 14, color: Colors.orange),
-                              ),
+                              Icon(Icons.star, color: Colors.black, size: 16),
+                              SizedBox(width: 4),
+                              Text(rating.toStringAsFixed(1), style: TextStyle(fontSize: 14)),
                             ],
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Icon(Icons.hourglass_empty, size: 18, color: Colors.orange),
-                          SizedBox(width: 4),
-                          Text(
-                            seats,
-                            style: TextStyle(fontSize: 14, color: Colors.orange, fontWeight: FontWeight.bold),
                           ),
                         ],
                       ),
                     ],
                   ),
+
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => RidePickupPage()),
+                      );
+                    },
+                    child: Column(
+                      children: [
+                        Icon(Icons.directions_car, size: 24, color: Colors.black),
+                        Text("Buchen", style: TextStyle(fontSize: 14, color: Colors.grey),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              Divider(color: Colors.black, thickness: 1),
+
+              // Startzeit und freie Plätze
+              Padding(
+                padding: EdgeInsets.only(top: 8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Start", style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                        Row(
+                          children: [
+                            Text(time, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                            SizedBox(width: 8),
+                            Text(timeText, style: TextStyle(fontSize: 14, color: Colors.orange)),
+                          ],
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Icon(Icons.hourglass_empty, size: 18, color: Colors.orange),
+                        SizedBox(width: 4),
+                        Text(seats, style: TextStyle(fontSize: 14, color: Colors.orange, fontWeight: FontWeight.bold)),
+                      ],
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
     );
   }
+
 
   Widget _buildBottomNavigationBar() {
     return BottomNavigationBar(
