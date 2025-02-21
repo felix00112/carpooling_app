@@ -28,7 +28,7 @@ void main() async {
   // Data base connection check
   try {
     final response = await Supabase.instance.client
-        .from('car') // Ersetze mit einer existierenden Tabelle
+        .from('cars') // Ersetze mit einer existierenden Tabelle
         .select()
         .limit(1);
 
