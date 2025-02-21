@@ -105,18 +105,18 @@ class _HomePageState extends State<HomePage> {
         currentIndex: _currentIndex,
         onTap: _onTabTapped,
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
+            SizedBox(
               height: Sizes.topBarHeight,
               child: Center(
                 child: SvgPicture.asset(
                   'assets/images/undraw_city_driver.svg',
-                  width: 700,
-                  height: 700,
+                  width: Sizes.deviceWidth,
+                  //height: 700,
                   fit: BoxFit.contain,
                 ),
               ),
@@ -130,31 +130,6 @@ class _HomePageState extends State<HomePage> {
                 color: dark_blue,
               ),
             ),
-
-            /*Container(
-              height: 200,
-              decoration: BoxDecoration(
-                color: Colors.pink, //background_box_white
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Center(
-                child: SvgPicture.asset(
-                  'assets/images/undraw_city_driver.svg',
-                  width: 700,
-                  height: 700,
-                  fit: BoxFit.contain,
-                ),
-              ),
-            ),
-            SizedBox(height: 16),
-            Text(
-              "Wohin möchtest du fahren?",
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.w900,
-                color: dark_blue,
-              ),
-            ),*/ //alter bild plus überschrift
 
             SizedBox(height: Sizes.paddingBig), // platz unter überschrift
             DecoratedBox(
