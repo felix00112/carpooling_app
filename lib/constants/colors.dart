@@ -11,3 +11,4 @@ const Color button_lightblue = Color.fromARGB(255,173,187,234);
 const Color dark_blue = Color.fromARGB(255,26,39,86);
 
 const Color text_sekundr = Colors.grey;
+const Color text_error = Colors.red;
