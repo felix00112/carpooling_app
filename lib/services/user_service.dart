@@ -63,6 +63,15 @@ class UserService {
         .eq('id', user.id);
   }
 
+  // Get user by id
+  Future<PostgrestList> getUserById(String userId) async {
+    final response = await _supabase
+        .from('carpoolusers')
+        .select()
+        .eq('id', userId);
+    return response;
+  }
+
   // Delete user profile
   Future<void> deleteUserProfile() async {
     final user = _supabase.auth.currentUser;
