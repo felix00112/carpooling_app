@@ -45,7 +45,7 @@ class _GebuchteFahrtenListeState extends State<GebuchteFahrtenListe> with Single
     'Nächste Woche': ['Fahrt 1', 'Fahrt 2', 'Fahrt 3', 'Fahrt 4'],
   };
 
-  /*void addFahrt(String tag, String fahrt) {
+  void addFahrt(String tag, String fahrt) {
     setState(() {
       if (fahrten.containsKey(tag)) {
         fahrten[tag]?.add(fahrt);
@@ -64,7 +64,7 @@ class _GebuchteFahrtenListeState extends State<GebuchteFahrtenListe> with Single
         }
       }
     });
-  }*/
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,6 +76,115 @@ class _GebuchteFahrtenListeState extends State<GebuchteFahrtenListe> with Single
       ),
 
 
+      body: Padding(
+        padding: EdgeInsets.all(Sizes.paddingRegular), //allgemeiner Rand zwischen Inhalt und handyrand),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            //Header
+            SizedBox( //bild
+              //height: Sizes.topBarHeight,
+              child: Center(
+                child: SvgPicture.asset(
+                  'assets/images/undraw_order_ride.svg',
+                  width: Sizes.deviceWidth,
+                  fit: BoxFit.contain,
+                ),
+              ),
+            ),
+            SizedBox(height: Sizes.paddingRegular), // platz über überschrift
+            Text( //Überschrift
+              "Gebuchte Fahrten",
+              style: TextStyle(
+                fontSize: Sizes.textHeading,
+                fontWeight: FontWeight.w900,
+                color: dark_blue,
+              ),
+            ),
+            SizedBox(height: Sizes.paddingBig), // platz unter überschrift
+            Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(Sizes.borderRadius), // Abgerundete Ecken
+              ),
+              elevation: 4, // Schatten für optische Tiefe
+              child: Container(
+                decoration: BoxDecoration( //Box aussehen
+                  color: background_box_white,
+                  borderRadius: BorderRadius.circular(Sizes.borderRadius),
+                ),
+                child: TabBar(
+                  controller: _tabController,
+                  tabs: [
+                    Tab(text: 'Alle'),
+                    Tab(text: 'Mitfahrer*in'),
+                    Tab(text: 'Fahrer*in'),
+                  ],
+                  indicatorColor: button_blue,
+                  labelStyle: TextStyle(fontSize: Sizes.textSubheading),
+                  labelColor: button_blue, // Farbe des ausgewählten Tabs
+                  unselectedLabelColor: text_sekundr, // Farbe der nicht ausgewählten Tabs
+                ),
+              ),
+            ),
+            SizedBox(height: Sizes.paddingRegular), // platz über den einzelnen Fahrten
+
+            //Body
+            Expanded(
+              child: ListView.builder(
+                physics: BouncingScrollPhysics(), // Optional für ein sanftes Scrollen
+                itemCount: fahrten.entries.length,
+                itemBuilder: (context, index) {
+                  var entry = fahrten.entries.elementAt(index);
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Überschrift für den Tag (Heute, Morgen, ...)
+                      Padding(
+                        padding: EdgeInsets.only(bottom: Sizes.paddingRegular),
+                        child: Text(
+                          entry.key,
+                          style: TextStyle(fontSize: Sizes.textNormal, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+
+                      // Liste der Fahrten für diesen Tag
+                      ...entry.value.asMap().entries.map((fahrt) {
+                        return Padding(
+                          padding: EdgeInsets.only(bottom: Sizes.paddingSmall),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: background_box_white,
+                              borderRadius: BorderRadius.circular(Sizes.borderRadius),
+                            ),
+                            child: ListTile(
+                              leading: Icon(Icons.directions_car, color: button_blue),
+                              title: Text(
+                                fahrt.value,
+                                style: TextStyle(color: dark_blue, fontSize: Sizes.textNormal),
+                              ),
+                              subtitle: Text(
+                                'Details zur ${fahrt.value}',
+                                style: TextStyle(color: dark_blue, fontSize: Sizes.textSubText),
+                              ),
+                              trailing: Icon(Icons.arrow_forward_ios),
+                              onTap: () {
+                                // Aktion bei Klick auf eine Fahrt
+                              },
+                            ),
+                          ),
+                        );
+                      }),
+                    ],
+                  );
+                },
+              ),
+            ),
+
+          ],
+        ),
+
+      ),
+/*
       body: Padding(
         padding: EdgeInsets.all(Sizes.paddingRegular), //allgemeiner Rand zwischen Inhalt und handyrand
         child: Column(
@@ -132,12 +241,6 @@ class _GebuchteFahrtenListeState extends State<GebuchteFahrtenListe> with Single
             ),
 
             SizedBox(height: Sizes.paddingRegular), // platz über den einzelnen Fahrten
-            SizedBox( //TODO: entfernen bevor finaler version, Hilfsmittel von Judith
-              height: 16, //Um zu sehen wo padding ist auf der seite
-              child: Container(
-                color: Colors.blue, // Hier die gewünschte Farbe einfügen
-              ),
-            ),
             Expanded(
               child: TabBarView(
                 controller: _tabController,
@@ -207,6 +310,6 @@ class _GebuchteFahrtenListeState extends State<GebuchteFahrtenListe> with Single
           ],
         ),
       ),
-    );
+*/    );
   }
 }
