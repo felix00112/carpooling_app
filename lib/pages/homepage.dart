@@ -1,3 +1,4 @@
+import 'package:carpooling_app/pages/fahrtAnbieten.dart';
 import 'package:carpooling_app/pages/fahrt_suchen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -98,7 +99,15 @@ class _HomePageState extends State<HomePage> {
           ),
         );
       } else if (_selectedOption == "Anbieten") {
-        Navigator.pushNamed(context, '/Anbieten');
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => OfferRidePage(
+              Starteingabe: Startinputcontroller.text,
+              Zieleingabe: Zielinputcontroller.text,
+            ),
+          ),
+        );
       }
     }
   }
