@@ -9,6 +9,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../pages/homepage.dart';
 import '../pages/login_page.dart';
+import '../pages/profile_completion_page.dart';
+import '../services/user_service.dart';
 
 
 class AuthGate extends StatelessWidget{
@@ -30,10 +32,29 @@ class AuthGate extends StatelessWidget{
 
         //   check if there is a valid session
           final session = snapshot.hasData ? snapshot.data!.session : null;
+          final userService = UserService();
 
-          if(session != null){
-            return const HomePage();
+          if (session != null) {
+            print('user is authenticated');
+            return FutureBuilder<bool>(
+              future: userService.hasUserProfile(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Scaffold(
+                    body: Center(child: CircularProgressIndicator()),
+                  );
+                }
+
+                if (snapshot.data == false) {
+                  print('user has no profile');
+                  return const ProfileCompletionPage();
+                }
+                print('user has profile');
+                return const HomePage();
+              },
+            );
           } else {
+            print('user is not authenticated');
             return const LoginPage();
           }
         }
