@@ -8,8 +8,8 @@ class Sizes {
   static late double paddingRegular;
   static late double paddingBig;
 
-  static late double textSubtitle;
-  static late double textTitle; //normaler text
+  static late double textSubText;
+  static late double textNormal; //normaler text
   static late double textSubheading;
   static late double textHeading;
 
@@ -38,9 +38,9 @@ class Sizes {
     ContentWidth = deviceWidth * 0.925;
     ButtonHeight = deviceHeight * 0.12;
 
-    textSubtitle = deviceWidth * 0.031;
-    textTitle = deviceWidth * 0.041;
-    textSubheading = deviceWidth * 0.051;
+    textSubText = deviceWidth * 0.025;
+    textNormal = deviceWidth * 0.03;
+    textSubheading = deviceWidth * 0.035;
     textHeading = deviceWidth * 0.062;
 
     borderRadius = deviceWidth * 0.025;
