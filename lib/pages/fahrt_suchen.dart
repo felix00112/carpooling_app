@@ -55,7 +55,6 @@ class _FindRideState extends State<FindRide> {
 
   @override
   void initState() {
-
     super.initState();
     //_startLabel = widget.Starteingabe;
     //_zielLabel = widget.Zieleingabe;
@@ -65,8 +64,10 @@ class _FindRideState extends State<FindRide> {
 
   void _updateMapCenter() {
     if (_startMarker != null && _destinationMarker != null) {
-      double midLat = (_startMarker!.latitude + _destinationMarker!.latitude) / 2;
-      double midLng = (_startMarker!.longitude + _destinationMarker!.longitude) / 2;
+      double midLat = (_startMarker!.latitude + _destinationMarker!.latitude) /
+          2;
+      double midLng = (_startMarker!.longitude +
+          _destinationMarker!.longitude) / 2;
       setState(() {
         _mapCenter = LatLng(midLat, midLng);
       });
@@ -129,7 +130,11 @@ class _FindRideState extends State<FindRide> {
           backgroundColor: background_grey,
           title: Text(
             "Fahrt suchen",
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
+            style: TextStyle(
+                fontSize: Sizes.textHeading,
+                fontWeight: FontWeight.bold,
+                color: dark_blue,
+            ),
           ),
           centerTitle: true,
         ),
@@ -153,7 +158,10 @@ class _FindRideState extends State<FindRide> {
     if (_startMarker == null || _destinationMarker == null) return;
 
     final String url =
-        "https://router.project-osrm.org/route/v1/driving/${_startMarker!.longitude},${_startMarker!.latitude};${_destinationMarker!.longitude},${_destinationMarker!.latitude}?overview=full&geometries=geojson";
+        "https://router.project-osrm.org/route/v1/driving/${_startMarker!
+        .longitude},${_startMarker!.latitude};${_destinationMarker!
+        .longitude},${_destinationMarker!
+        .latitude}?overview=full&geometries=geojson";
 
     final response = await http.get(Uri.parse(url));
 
@@ -171,25 +179,26 @@ class _FindRideState extends State<FindRide> {
     }
   }
 
-  void _showLocationInputDialog(String type) async{
+  void _showLocationInputDialog(String type) async {
     final TextEditingController _controller = TextEditingController();
     String label = await showDialog(
       context: context,
       builder: (context) {
-      String response = "";
+        String response = "";
         return AlertDialog(
           title: Text("Gib die $type-Adresse ein"),
           content: TextField(
             controller: _controller,
-            decoration: InputDecoration(hintText: "z.B. Alexanderplatz, Berlin"),
+            decoration: InputDecoration(
+                hintText: "z.B. Alexanderplatz, Berlin"),
             keyboardType: TextInputType.text,
           ),
           actions: [
             TextButton(
               onPressed: () {
-                if(type == "Start"){
+                if (type == "Start") {
                   Navigator.of(context).pop(_startLabel);
-                }else{
+                } else {
                   Navigator.of(context).pop(_zielLabel);
                 }
               },
@@ -200,13 +209,12 @@ class _FindRideState extends State<FindRide> {
               onPressed: () async {
                 final input = _controller.text;
                 if (input.isEmpty) {
-                  if(type == "Start"){
+                  if (type == "Start") {
                     Navigator.of(context).pop(_startLabel);
                     return;
-                  }else{
+                  } else {
                     Navigator.of(context).pop(_zielLabel);
                     return;
-
                   }
                 }
                 try {
@@ -249,9 +257,9 @@ class _FindRideState extends State<FindRide> {
       },
     );
     setState(() {
-      if(type == "Start"){
+      if (type == "Start") {
         _startLabel = label;
-      }else{
+      } else {
         _zielLabel = label;
       }
     });
@@ -277,8 +285,14 @@ class _FindRideState extends State<FindRide> {
             onPressed: () => _showLocationInputDialog(type),
             color: color,
             textColor: Colors.white,
-            width: MediaQuery.of(context).size.width * 0.925,
-            height: MediaQuery.of(context).size.width * 0.12,
+            width: MediaQuery
+                .of(context)
+                .size
+                .width * 0.925,
+            height: MediaQuery
+                .of(context)
+                .size
+                .width * 0.12,
           ),
           Positioned(left: 16, child: Icon(icon, color: Colors.white)),
         ],
@@ -317,20 +331,22 @@ class _FindRideState extends State<FindRide> {
                   if (_startMarker != null)
                     Marker(
                       point: _startMarker!,
-                      builder: (ctx) => Icon(
-                        Icons.circle,
-                        color: Colors.black,
-                        size: 15,
-                      ),
+                      builder: (ctx) =>
+                          Icon(
+                            Icons.circle,
+                            color: Colors.black,
+                            size: 15,
+                          ),
                     ),
                   if (_destinationMarker != null)
                     Marker(
                       point: _destinationMarker!,
-                      builder: (ctx) => Icon(
-                        Icons.flag,
-                        color: Colors.red,
-                        size: 40,
-                      ),
+                      builder: (ctx) =>
+                          Icon(
+                            Icons.flag,
+                            color: Colors.red,
+                            size: 40,
+                          ),
                     ),
                 ],
               ),
@@ -352,108 +368,123 @@ class _FindRideState extends State<FindRide> {
     );
   }
 
-  Widget _buildDriverCard(BuildContext context, String name, double rating, String time, String seats) {
+  Widget _buildDriverCard(BuildContext context, String name, double rating,
+      String time, String seats) {
     DateTime now = DateTime.now();
     DateTime startTime = DateFormat("HH:mm").parse(time);
-    startTime = DateTime(now.year, now.month, now.day, startTime.hour, startTime.minute);
-    int minutesDiff = startTime.difference(now).inMinutes;
-    String timeText = minutesDiff == 0 ? "jetzt" : (minutesDiff < 0 ? "vor ${minutesDiff.abs()} min." : "in $minutesDiff min.");
+    startTime = DateTime(
+        now.year, now.month, now.day, startTime.hour, startTime.minute);
+    int minutesDiff = startTime
+        .difference(now)
+        .inMinutes;
+    String timeText = minutesDiff == 0 ? "jetzt" : (minutesDiff < 0
+        ? "vor ${minutesDiff.abs()} min."
+        : "in $minutesDiff min.");
 
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: Sizes.paddingSmall * 1.4, vertical: Sizes.paddingSmall),
-      child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Sizes.borderRadius)),
-        child: Padding(
-          padding: EdgeInsets.all(Sizes.paddingRegular),
-          child: Column(
-            children: [
-              // Oberer Bereich mit Fahrer-Infos
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      CircleAvatar(radius: 20, backgroundColor: Colors.grey[300], child: Icon(Icons.person, color: Colors.black)),
-                      SizedBox(width: 10),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(name, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                          Row(
-                            children: [
-                              Icon(Icons.star, color: Colors.black, size: 16),
-                              SizedBox(width: 4),
-                              Text(rating.toStringAsFixed(1), style: TextStyle(fontSize: 14)),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => RidePickupPage()),
-                      );
-                    },
-                    child: Column(
-                      children: [
-                        Icon(Icons.directions_car, size: 24, color: Colors.black),
-                        Text("Buchen", style: TextStyle(fontSize: 14, color: Colors.grey),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              Divider(color: Colors.black, thickness: 1),
-
-              // Startzeit und freie Plätze
-              Padding(
-                padding: EdgeInsets.only(top: 8),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      padding: EdgeInsets.symmetric(vertical: Sizes.paddingSmall),
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: Sizes.paddingRegular),
+        padding: EdgeInsets.all(Sizes.paddingRegular),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(Sizes.borderRadius),
+        ),
+        child: Column(
+          children: [
+            // Oberer Bereich mit Fahrer-Infos
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
                   children: [
+                    CircleAvatar(radius: Sizes.textSubtitle * 1.5,
+                        backgroundColor: Colors.grey[400],
+                        child: Icon(Icons.person, color: Colors.black)),
+                    SizedBox(width: Sizes.paddingSmall),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("Start", style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                        Text(name, style: TextStyle(fontSize: Sizes.textSubtitle,
+                            fontWeight: FontWeight.bold)),
                         Row(
                           children: [
-                            Text(time, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                            SizedBox(width: 8),
-                            Text(timeText, style: TextStyle(fontSize: 14, color: Colors.orange)),
+                            Icon(Icons.star, color: Colors.black,
+                                size: Sizes.textSubtitle),
+                            SizedBox(width: 4),
+                            Text(rating.toStringAsFixed(1),
+                                style: TextStyle(fontSize: Sizes.textSubtitle)),
                           ],
                         ),
                       ],
                     ),
+                  ],
+                ),
+
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) =>
+                          RidePickupPage(starteingabe: widget.Starteingabe,
+                              zieleingabe: widget.Zieleingabe)),
+                    );
+                  },
+                  child: Column(
+                    children: [
+                      Icon(Icons.directions_car, size: Sizes.textSubtitle * 1.5,
+                          color: Colors.black),
+                      Text("Buchen", style: TextStyle(
+                          fontSize: Sizes.textSubtitle, color: Colors.grey),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: Sizes.paddingSmall),
+            Divider(color: Colors.grey),
+            SizedBox(height: Sizes.paddingSmall),
+            // Startzeit und freie Plätze
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("Start", style: TextStyle(
+                        fontSize: Sizes.textSubtitle * 1.2,
+                        fontWeight: FontWeight.bold)),
                     Row(
                       children: [
-                        Icon(Icons.hourglass_empty, size: 18, color: Colors.orange),
-                        SizedBox(width: 4),
-                        Text(seats, style: TextStyle(fontSize: 14, color: Colors.orange, fontWeight: FontWeight.bold)),
+                        Text(time, style: TextStyle(fontSize: Sizes.textSubtitle,
+                            fontWeight: FontWeight.bold)),
+                        SizedBox(width: 8),
+                        Text(timeText, style: TextStyle(
+                            fontSize: Sizes.textSubtitle * 0.9,
+                            color: Colors.orange)),
                       ],
                     ),
                   ],
                 ),
-              ),
-            ],
-          ),
+                Row(
+                  children: [
+                    Icon(Icons.hourglass_empty, size: Sizes.textSubtitle,
+                        color: Colors.orange),
+                    SizedBox(width: 4),
+                    Text(seats, style: TextStyle(fontSize: Sizes.textSubtitle,
+                        color: Colors.orange,
+                        fontWeight: FontWeight.bold)),
+                  ],
+                ),
+              ],
+            ),
+
+          ],
         ),
       ),
     );
   }
 
-
-  Widget _buildBottomNavigationBar() {
-    return BottomNavigationBar(
-      items: [
-        BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-        BottomNavigationBarItem(icon: Icon(Icons.menu), label: "Menu"),
-        BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
-      ],
-    );
-  }
 }
+
