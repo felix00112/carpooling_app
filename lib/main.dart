@@ -9,6 +9,7 @@ import 'package:carpooling_app/pages/fahrtFahrerin.dart';
 import 'package:carpooling_app/pages/fahrtMitfahrerin.dart';
 import 'package:carpooling_app/pages/Einstellungen.dart';
 import 'package:carpooling_app/pages/fahrtBeendet.dart';
+import 'package:carpooling_app/pages/profile_completion_page.dart';
 import 'package:carpooling_app/pages/signup_page.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +29,7 @@ void main() async {
   // Data base connection check
   try {
     final response = await Supabase.instance.client
-        .from('car') // Ersetze mit einer existierenden Tabelle
+        .from('cars') // Ersetze mit einer existierenden Tabelle
         .select()
         .limit(1);
 
@@ -67,6 +68,7 @@ class MyApp extends StatelessWidget {
         '/Settings': (context) => SettingsPage(),
         '/goal': (context) => FahrtBeendet(),
         '/signup' : (context) => SignupPage(),
+        '/complete-profile': (context) => ProfileCompletionPage(),
       },
 
     );
