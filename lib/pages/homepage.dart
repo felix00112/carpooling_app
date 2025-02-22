@@ -215,7 +215,7 @@ class _HomePageState extends State<HomePage> {
                           title: Text(
                             "Anbieten",
                             style: TextStyle(
-                              fontSize: Sizes.textTitle,
+                              fontSize: Sizes.textNormal,
                               fontWeight: FontWeight.bold,
                               color: dark_blue,
                             ),
@@ -234,7 +234,7 @@ class _HomePageState extends State<HomePage> {
                           title: Text(
                             "Suchen",
                             style: TextStyle(
-                              fontSize: Sizes.textTitle,
+                              fontSize: Sizes.textNormal,
                               fontWeight: FontWeight.bold,
                               color: dark_blue,
                             ),

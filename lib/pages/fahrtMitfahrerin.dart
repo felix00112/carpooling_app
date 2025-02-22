@@ -379,7 +379,7 @@ class _RidePickupPageState extends State<RidePickupPage> {
                 children: [
                   CircleAvatar(
                     backgroundColor: Colors.grey[400],
-                    radius: Sizes.textSubtitle * 1.5,
+                    radius: Sizes.textSubText * 1.5,
                   ),
                   SizedBox(width: Sizes.paddingSmall),
                   Column(
@@ -388,14 +388,14 @@ class _RidePickupPageState extends State<RidePickupPage> {
                       Text(
                         'Sascha',
                         style: TextStyle(
-                          fontSize: Sizes.textSubtitle,
+                          fontSize: Sizes.textSubText,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       Row(
                         children: [
-                          Icon(Icons.star, color: Colors.black38, size: Sizes.textSubtitle),
-                          Text('4,0', style: TextStyle(fontSize: Sizes.textSubtitle)),
+                          Icon(Icons.star, color: Colors.black38, size: Sizes.textSubText),
+                          Text('4,0', style: TextStyle(fontSize: Sizes.textSubText)),
                         ],
                       ),
                     ],
@@ -404,9 +404,9 @@ class _RidePickupPageState extends State<RidePickupPage> {
               ),
               Row(
                 children: [
-                  Icon(Icons.message, color: Colors.black, size: Sizes.textSubtitle * 1.5),
+                  Icon(Icons.message, color: Colors.black, size: Sizes.textSubText * 1.5),
                   SizedBox(width: Sizes.paddingSmall),
-                  Icon(Icons.phone, color: Colors.black, size: Sizes.textSubtitle * 1.5),
+                  Icon(Icons.phone, color: Colors.black, size: Sizes.textSubText * 1.5),
                 ],
               ),
             ],
@@ -424,7 +424,7 @@ class _RidePickupPageState extends State<RidePickupPage> {
                   Text(
                     'Opel Corsa',
                     style: TextStyle(
-                      fontSize: Sizes.textSubtitle,
+                      fontSize: Sizes.textSubText,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -433,7 +433,7 @@ class _RidePickupPageState extends State<RidePickupPage> {
               Text(
                 'B-BB 1312',
                 style: TextStyle(
-                  fontSize: Sizes.textSubtitle,
+                  fontSize: Sizes.textSubText,
                   fontWeight: FontWeight.bold,
                 ),
               ),

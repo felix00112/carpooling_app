@@ -398,22 +398,22 @@ class _FindRideState extends State<FindRide> {
               children: [
                 Row(
                   children: [
-                    CircleAvatar(radius: Sizes.textSubtitle * 1.5,
+                    CircleAvatar(radius: Sizes.textSubText * 1.5,
                         backgroundColor: Colors.grey[400],
                         child: Icon(Icons.person, color: Colors.black)),
                     SizedBox(width: Sizes.paddingSmall),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(name, style: TextStyle(fontSize: Sizes.textSubtitle,
+                        Text(name, style: TextStyle(fontSize: Sizes.textSubText,
                             fontWeight: FontWeight.bold)),
                         Row(
                           children: [
                             Icon(Icons.star, color: Colors.black,
-                                size: Sizes.textSubtitle),
+                                size: Sizes.textSubText),
                             SizedBox(width: 4),
                             Text(rating.toStringAsFixed(1),
-                                style: TextStyle(fontSize: Sizes.textSubtitle)),
+                                style: TextStyle(fontSize: Sizes.textSubText)),
                           ],
                         ),
                       ],
@@ -432,10 +432,10 @@ class _FindRideState extends State<FindRide> {
                   },
                   child: Column(
                     children: [
-                      Icon(Icons.directions_car, size: Sizes.textSubtitle * 1.5,
+                      Icon(Icons.directions_car, size: Sizes.textSubText * 1.5,
                           color: Colors.black),
                       Text("Buchen", style: TextStyle(
-                          fontSize: Sizes.textSubtitle, color: Colors.grey),
+                          fontSize: Sizes.textSubText, color: Colors.grey),
                       ),
                     ],
                   ),
@@ -453,15 +453,15 @@ class _FindRideState extends State<FindRide> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text("Start", style: TextStyle(
-                        fontSize: Sizes.textSubtitle * 1.2,
+                        fontSize: Sizes.textSubText * 1.2,
                         fontWeight: FontWeight.bold)),
                     Row(
                       children: [
-                        Text(time, style: TextStyle(fontSize: Sizes.textSubtitle,
+                        Text(time, style: TextStyle(fontSize: Sizes.textSubText,
                             fontWeight: FontWeight.bold)),
                         SizedBox(width: 8),
                         Text(timeText, style: TextStyle(
-                            fontSize: Sizes.textSubtitle * 0.9,
+                            fontSize: Sizes.textSubText * 0.9,
                             color: Colors.orange)),
                       ],
                     ),
@@ -469,10 +469,10 @@ class _FindRideState extends State<FindRide> {
                 ),
                 Row(
                   children: [
-                    Icon(Icons.hourglass_empty, size: Sizes.textSubtitle,
+                    Icon(Icons.hourglass_empty, size: Sizes.textSubText,
                         color: Colors.orange),
                     SizedBox(width: 4),
-                    Text(seats, style: TextStyle(fontSize: Sizes.textSubtitle,
+                    Text(seats, style: TextStyle(fontSize: Sizes.textSubText,
                         color: Colors.orange,
                         fontWeight: FontWeight.bold)),
                   ],

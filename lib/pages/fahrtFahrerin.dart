@@ -124,7 +124,7 @@ class _RideDetailsPageState extends State<RideDetailsPage> {
                 child: Text(
                   'Start',
                   style: TextStyle(
-                    fontSize: Sizes.textSubtitle,
+                    fontSize: Sizes.textSubText,
                     fontWeight: FontWeight.bold,
                     color: dark_blue,
                   ),
@@ -141,7 +141,7 @@ class _RideDetailsPageState extends State<RideDetailsPage> {
                 child: Text(
                   'Ziel',
                   style: TextStyle(
-                    fontSize: Sizes.textSubtitle,
+                    fontSize: Sizes.textSubText,
                     fontWeight: FontWeight.bold,
                     color: dark_blue,
                   ),
@@ -225,7 +225,7 @@ class _RideDetailsPageState extends State<RideDetailsPage> {
           child: Text(
             "Zustieg $passengerIndex",
             style: TextStyle(
-              fontSize: Sizes.textSubtitle * 0.9,
+              fontSize: Sizes.textSubText * 0.9,
               fontWeight: FontWeight.bold,
               color: Colors.black,
             ),
@@ -248,7 +248,7 @@ class _RideDetailsPageState extends State<RideDetailsPage> {
                     children: [
                       CircleAvatar(
                         backgroundColor: Colors.grey[400],
-                        radius: Sizes.textSubtitle * 1.5,
+                        radius: Sizes.textSubText * 1.5,
                       ),
                       SizedBox(width: Sizes.paddingSmall),
                       Column(
@@ -257,16 +257,16 @@ class _RideDetailsPageState extends State<RideDetailsPage> {
                           Text(
                             name,
                             style: TextStyle(
-                              fontSize: Sizes.textSubtitle,
+                              fontSize: Sizes.textSubText,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           Row(
                             children: [
                               Icon(Icons.star, color: Colors.black38,
-                                  size: Sizes.textSubtitle),
+                                  size: Sizes.textSubText),
                               Text(rating.toStringAsFixed(1),
-                                  style: TextStyle(fontSize: Sizes.textSubtitle)),
+                                  style: TextStyle(fontSize: Sizes.textSubText)),
                             ],
                           ),
                         ],
@@ -276,10 +276,10 @@ class _RideDetailsPageState extends State<RideDetailsPage> {
                   Row(
                     children: [
                       Icon(Icons.message, color: Colors.black,
-                          size: Sizes.textSubtitle * 1.5),
+                          size: Sizes.textSubText * 1.5),
                       SizedBox(width: Sizes.paddingSmall),
                       Icon(Icons.phone, color: Colors.black,
-                          size: Sizes.textSubtitle * 1.5),
+                          size: Sizes.textSubText * 1.5),
                     ],
                   ),
                 ],
@@ -297,7 +297,7 @@ class _RideDetailsPageState extends State<RideDetailsPage> {
                       Text(
                         address,
                         style: TextStyle(
-                          fontSize: Sizes.textSubtitle,
+                          fontSize: Sizes.textSubText,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
