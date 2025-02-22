@@ -3,9 +3,93 @@ import 'package:carpooling_app/constants/colors.dart';
 import 'package:carpooling_app/constants/button.dart';
 import 'package:carpooling_app/constants/navigationBar.dart';
 import 'package:carpooling_app/constants/sizes.dart';
+import 'package:carpooling_app/constants/button2.dart';
+import 'package:url_launcher/url_launcher.dart'; // Zum Öffnen der URL
+import 'package:geocoding_resolver/geocoding_resolver.dart';
+import 'package:latlong2/latlong.dart';
 
-class RideDetailsPage extends StatelessWidget {
-  const RideDetailsPage({super.key});
+
+
+class RideDetailsPage extends StatefulWidget {
+  final String Starteingabe;
+  final String Zieleingabe;
+  const RideDetailsPage({super.key, required this.Starteingabe, required this.Zieleingabe});
+
+  @override
+  _RideDetailsPageState createState() => _RideDetailsPageState();
+}
+class _RideDetailsPageState extends State<RideDetailsPage> {
+  String _startLabel = "Start";
+  String _zielLabel = "Ziel";
+  LatLng? _startMarker;
+  LatLng? _destinationMarker;
+
+  int _currentIndex = 1;
+  int passengerIndex = 1;
+
+
+  void _onTabTapped(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+
+    switch (index) {
+      case 0:
+        Navigator.pushNamed(context, '/home');
+        break;
+      case 1:
+        Navigator.pushNamed(context, '/fahrten');
+        break;
+      case 2:
+        Navigator.pushNamed(context, '/profil');
+        break;
+    }
+  }
+
+  void initState() {
+    super.initState();
+    _getDestAddress(widget.Starteingabe);
+    _getStartAddress(widget.Zieleingabe);
+  }
+
+  void _getDestAddress(String address) async {
+    try {
+      GeoCoder geoCoder = GeoCoder();
+      List<LookupAddress> suggestions =
+      await geoCoder.getAddressSuggestions(address: address);
+      if (suggestions.isNotEmpty) {
+        LookupAddress suggestion = suggestions.first;
+        setState(() {
+          _startMarker = LatLng(
+            double.parse(suggestion.latitude),
+            double.parse(suggestion.longitude),
+          );
+          _startLabel = suggestion.displayName;
+        });
+      }
+    } catch (e) {
+      print("Fehler beim Geocoding: $e");
+    }
+  }
+  void _getStartAddress(String address) async {
+    try {
+      GeoCoder geoCoder = GeoCoder();
+      List<LookupAddress> suggestions =
+      await geoCoder.getAddressSuggestions(address: address);
+      if (suggestions.isNotEmpty) {
+        LookupAddress suggestion = suggestions.first;
+        setState(() {
+          _destinationMarker = LatLng(
+            double.parse(suggestion.latitude),
+            double.parse(suggestion.longitude),
+          );
+          _zielLabel = suggestion.displayName;
+        });
+      }
+    } catch (e) {
+      print("Fehler beim Geocoding: $e");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,185 +100,255 @@ class RideDetailsPage extends StatelessWidget {
         currentIndex: 1,
         onTap: (index) {},
       ),
-      body: Column(
-        children: [
-          Container(
-            color: background_grey,
-            padding: EdgeInsets.only(bottom: Sizes.paddingSmall),
-            child: Container(
-              width: double.infinity,
-              height:Sizes.deviceHeight*0.15,
-              padding: EdgeInsets.symmetric(
-                vertical: Sizes.paddingRegular,
-                horizontal: Sizes.paddingBig,
-              ),
-
-              decoration: BoxDecoration(
-                color: button_lightblue,
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(Sizes.borderRadius * 2),
-                  bottomRight: Radius.circular(Sizes.borderRadius * 2),
-                ),
-              ),
-              child: Center(
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Padding(
+              padding: EdgeInsets.all(Sizes.paddingRegular),
+              child: Align(
+                alignment: Alignment.centerLeft,
                 child: Text(
                   'Deine Fahrt',
                   style: TextStyle(
                     fontSize: Sizes.textHeading,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                    color: dark_blue,
                   ),
-                  textAlign: TextAlign.center,
                 ),
               ),
             ),
+            Padding(
+              padding: EdgeInsets.only(left: Sizes.paddingRegular, top: Sizes.paddingSmall),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Start',
+                  style: TextStyle(
+                    fontSize: Sizes.textSubtitle,
+                    fontWeight: FontWeight.bold,
+                    color: dark_blue,
+                  ),
+                ),
+              ),
+            ),
+            _buildAddressBox(),
+            SizedBox(height: Sizes.paddingSmall),
+            _buildDriverList(context),
+            Padding(
+              padding: EdgeInsets.only(left: Sizes.paddingRegular),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Ziel',
+                  style: TextStyle(
+                    fontSize: Sizes.textSubtitle,
+                    fontWeight: FontWeight.bold,
+                    color: dark_blue,
+                  ),
+                ),
+              ),
+            ),
+            _buildDestinationButton(),
+            SizedBox(height: Sizes.paddingSmall),
+          ]
+        ),
+      ),
+    );
+  }
+
+
+  Widget _buildAddressBox() {
+    return Padding(
+      padding: EdgeInsets.only(top: Sizes.paddingSmall),
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          CustomButton2(
+            label: _startLabel,
+            onPressed: () => _openGoogleMaps(_startLabel),
+            color: button_blue,
+            textColor: Colors.white,
+            width: MediaQuery
+                .of(context)
+                .size
+                .width * 0.925,
+            height: MediaQuery
+                .of(context)
+                .size
+                .width * 0.12,
           ),
-          SizedBox(height: Sizes.paddingSmall),
-          Expanded(
-            child: Stack(
-              children: [
-                ListView.builder(
-                  padding: EdgeInsets.only(
-                    top: Sizes.deviceHeight * 0.2,
-                    bottom: Sizes.deviceHeight * 0.15,
-                  ),
-                  itemCount: 5,
-                  itemBuilder: (context, index) {
-                    return _buildPassengerTile(index + 1, context);
-                  },
-                ),
-                Align(
-                  alignment: Alignment.topCenter,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        color: background_grey,
-                        padding: EdgeInsets.only(bottom: Sizes.paddingSmall),
-                        child: SizedBox(
-                          width: Sizes.deviceWidth * 0.9,
-                          child: CustomButton(
-                            label: '  Musteradresse 1, 10115 Berlin',
-                            onPressed: () {},
-                            color: button_blue,
-                            textColor: Colors.white,
-                            width: double.infinity,
-                            height: Sizes.deviceHeight * 0.06,
-                            icon: Icons.gps_fixed,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        color: background_grey,
-                        padding: EdgeInsets.only(top: Sizes.paddingSmall),
-                        child: SizedBox(
-                          width: Sizes.deviceWidth * 0.9,
-                          child: CustomButton(
-                            label: '  Zieladresse 4, 10115 Berlin',
-                            onPressed: () {},
-                            color: button_blue,
-                            textColor: Colors.white,
-                            width: double.infinity,
-                            height: Sizes.deviceHeight * 0.06,
-                            icon: Icons.location_on,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        color: background_grey,
-                        padding: EdgeInsets.only(top: Sizes.paddingSmall, bottom: Sizes.paddingSmall),
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: Sizes.paddingRegular),
-                          child: CustomButton(
-                            label: 'Routenführung in externer App starten',
-                            onPressed: () {},
-                            color: button_orange,
-                            textColor: Colors.white,
-                            width: Sizes.deviceWidth * 0.8,
-                            height: Sizes.deviceHeight * 0.06,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+          Positioned(
+              left: 16, child: Icon(Icons.location_on, color: Colors.white)),
+        ],
+      ),
+    );
+  }
+  void _incrementCounter() {
+    setState(() {
+      passengerIndex++; // Erhöht den Zähler um 1
+    });
+  }
+
+  Widget _buildDriverList(BuildContext context) {
+    List<Map<String, dynamic>> passengers = [
+      {"name": "Sascha", "rating": 4.0, "time": "15:30", "address": "Musterstraße 1"},
+      {"name": "Jonas", "rating": 4.5, "time": "16:00", "address": "Musterstraße 2"},
+    ];
+
+    return Column(
+      children: List.generate(passengers.length, (index) {
+        return Column(
+          children: [
+            _buildPassengerInfo(
+              context,
+              passengers[index]["name"],
+              passengers[index]["rating"],
+              passengers[index]["time"],
+              passengers[index]["address"],
+              index + 1, // Passenger Nummerierung
+            ),
+            SizedBox(height: Sizes.paddingRegular), // Abstand zwischen den Cards
+          ],
+        );
+      }),
+    );
+  }
+
+
+
+  Widget _buildPassengerInfo(BuildContext context, String name, double rating, String time, String address, int passengerIndex) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start, // Überschrift linksbündig
+      children: [
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: Sizes.paddingRegular),
+          child: Text(
+            "Zustieg $passengerIndex",
+            style: TextStyle(
+              fontSize: Sizes.textSubtitle * 0.9,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
             ),
           ),
+        ),
+        SizedBox(height: Sizes.paddingSmall), // Abstand zwischen Titel und Card
+        Container(
+          margin: EdgeInsets.symmetric(horizontal: Sizes.paddingRegular),
+          padding: EdgeInsets.all(Sizes.paddingRegular),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(Sizes.borderRadius),
+          ),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      CircleAvatar(
+                        backgroundColor: Colors.grey[400],
+                        radius: Sizes.textSubtitle * 1.5,
+                      ),
+                      SizedBox(width: Sizes.paddingSmall),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            name,
+                            style: TextStyle(
+                              fontSize: Sizes.textSubtitle,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Row(
+                            children: [
+                              Icon(Icons.star, color: Colors.black38,
+                                  size: Sizes.textSubtitle),
+                              Text(rating.toStringAsFixed(1),
+                                  style: TextStyle(fontSize: Sizes.textSubtitle)),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Icon(Icons.message, color: Colors.black,
+                          size: Sizes.textSubtitle * 1.5),
+                      SizedBox(width: Sizes.paddingSmall),
+                      Icon(Icons.phone, color: Colors.black,
+                          size: Sizes.textSubtitle * 1.5),
+                    ],
+                  ),
+                ],
+              ),
+              SizedBox(height: Sizes.paddingSmall),
+              Divider(color: Colors.grey),
+              SizedBox(height: Sizes.paddingSmall),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Text(time),
+                      SizedBox(width: Sizes.paddingSmall),
+                      Text(
+                        address,
+                        style: TextStyle(
+                          fontSize: Sizes.textSubtitle,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+
+
+  Widget _buildDestinationButton() {
+    return Padding(
+      padding: EdgeInsets.only(top: Sizes.paddingSmall),
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          CustomButton2(
+            label: _zielLabel,
+            onPressed: () => _openGoogleMaps(_zielLabel),
+            color: dark_blue,
+            textColor: Colors.white,
+            width: MediaQuery
+                .of(context)
+                .size
+                .width * 0.925,
+            height: MediaQuery
+                .of(context)
+                .size
+                .width * 0.12,
+          ),
+          Positioned(left: 16, child: Icon(Icons.flag, color: Colors.white)),
         ],
       ),
     );
   }
 
-  Widget _buildPassengerTile(int index, BuildContext context) {
-    return Center(
-      child: Container(
-        width: Sizes.deviceWidth * 0.85,
-        margin: EdgeInsets.symmetric(vertical: Sizes.paddingSmall),
-        padding: EdgeInsets.all(Sizes.paddingRegular),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(Sizes.borderRadius),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              '14:00 Musteradresse $index, Stadt $index',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: Sizes.textTitle,
-              ),
-            ),
-            Divider(color: Colors.grey),
-            Row(
-              children: [
-                Expanded(
-                  flex: 3,
-                  child: InkWell(
-                    onTap: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Mitfahrer $index Profil geöffnet')),
-                      );
-                    },
-                    child: Row(
-                      children: [
-                        Text(
-                          'Mitfahrer $index  ',
-                          style: TextStyle(
-                            fontSize: Sizes.textSubtitle,
-                          ),
-                        ),
-                        Icon(Icons.star, color: Colors.black38, size: Sizes.textSubtitle),
-                        Text('4,4', style: TextStyle(fontSize: Sizes.textSubtitle)),
-                      ],
-                    ),
-                  ),
-                ),
-                Expanded(
-                  flex: 1,
-                  child: InkWell(
-                    onTap: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Telefonanruf für Mitfahrer $index gestartet')),
-                      );
-                    },
-                    child: Icon(Icons.phone, color: Colors.black, size: Sizes.textSubtitle),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
+  void _openGoogleMaps(String address) async {
+    final String googleMapsUrl = 'https://www.google.com/maps/search/?q=${Uri
+        .encodeComponent(address)}';
+
+    // Prüfen, ob die URL geöffnet werden kann
+    if (await canLaunch(googleMapsUrl)) {
+      await launch(googleMapsUrl); // Öffne den Google Maps Link
+    } else {
+      throw 'Konnte Google Maps nicht öffnen';
+    }
   }
 }
