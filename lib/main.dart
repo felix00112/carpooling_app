@@ -62,8 +62,8 @@ class MyApp extends StatelessWidget {
 
         //suche starten
         //'/Suchen': (context) => FindRide(),
-        '/Anbieten': (context) => OfferRidePage(),
-        '/RideDetails': (context) => RideDetailsPage(),
+        //'/Anbieten': (context) => OfferRidePage(),
+        //'/RideDetails': (context) => RideDetailsPage(),
         // weitere routen:
         '/Settings': (context) => SettingsPage(),
         '/goal': (context) => FahrtBeendet(),

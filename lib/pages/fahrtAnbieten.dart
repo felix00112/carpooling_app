@@ -1,10 +1,13 @@
+import 'package:carpooling_app/pages/fahrtFahrerin.dart';
 import 'package:flutter/material.dart';
 import 'package:carpooling_app/constants/colors.dart';
 import 'package:carpooling_app/constants/textField.dart';
 import 'package:carpooling_app/constants/navigationBar.dart';
 
 class OfferRidePage extends StatefulWidget {
-  const OfferRidePage({super.key});
+  final String Starteingabe;
+  final String Zieleingabe;
+  const OfferRidePage({super.key, required this.Starteingabe, required this.Zieleingabe});
 
   @override
   _OfferRidePageState createState() => _OfferRidePageState();
@@ -211,7 +214,12 @@ class _OfferRidePageState extends State<OfferRidePage> {
               width: double.infinity,
             child: ElevatedButton(
               onPressed: () {
-                Navigator.pushNamed(context, '/RideDetails');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) =>
+                      RideDetailsPage(Starteingabe: widget.Starteingabe,
+                          Zieleingabe: widget.Zieleingabe)),
+                );
               },
               style: ElevatedButton.styleFrom(
 
