@@ -95,6 +95,7 @@ class _HomePageState extends State<HomePage> {
             builder: (context) => FindRide(
               Starteingabe: Startinputcontroller.text,
               Zieleingabe: Zielinputcontroller.text,
+              Zeitpunkt: _dateTimeController.text,
             ),
           ),
         );
@@ -105,6 +106,7 @@ class _HomePageState extends State<HomePage> {
             builder: (context) => OfferRidePage(
               Starteingabe: Startinputcontroller.text,
               Zieleingabe: Zielinputcontroller.text,
+              Zeitpunkt: _dateTimeController.text,
             ),
           ),
         );
