@@ -32,7 +32,7 @@ class RideService{
 
     final response = await _supabase
         .from('rides')
-        .select('id, driver_id, start_location, end_location, date, driver:carpoolusers(first_name)') // Fahrer-Name direkt laden
+        .select('id, driver_id, start_location, end_location, date, seats_available, driver:carpoolusers(first_name)') // Fahrer-Name direkt laden
         .gte('date', date)
         .lt('date', date7Days)
         .eq('start_location', start)
