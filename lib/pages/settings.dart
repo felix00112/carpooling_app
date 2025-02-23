@@ -12,7 +12,7 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   // Navigation bar index
-  int _currentIndex = 1;
+  int _currentIndex = 2;
 
   void _onTabTapped(int index) {
     setState(() {
