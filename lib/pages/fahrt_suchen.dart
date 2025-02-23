@@ -24,8 +24,6 @@ class FindRide extends StatefulWidget {
 class _FindRideState extends State<FindRide> {
   LatLng? _startMarker;
   LatLng? _destinationMarker;
-  String? _startAddress;
-  String? _destinationAddress;
   LatLng _mapCenter = LatLng(52.5200, 13.4050);
   List<LatLng> _routePoints = [];
 
@@ -56,8 +54,6 @@ class _FindRideState extends State<FindRide> {
   @override
   void initState() {
     super.initState();
-    //_startLabel = widget.Starteingabe;
-    //_zielLabel = widget.Zieleingabe;
     firstMarker();
     secondMarker();
   }
