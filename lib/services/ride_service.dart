@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class RideService{
@@ -23,16 +24,28 @@ class RideService{
     });
   }
 
-  Future<List<Map<String, dynamic>>> getRides(DateTime date, String start, String stop) async {
+  Future<List<Map<String, dynamic>>> getRides(String date, String start, String stop) async {
+    print("GET RIDES");
+    print(date);
+    String date7Days = addDaysToDateString(date, 7);
+    print(date7Days);
+
     final response = await _supabase
         .from('rides')
-        .select('id, driver_id, start_location, end_location, date, driver:carpoolusers(first_name)') // Fahrer-Name direkt laden
-        .gte('date', date.toIso8601String())
-        .lt('date', date.add(Duration(days: 7)).toIso8601String())
+        .select('id, driver_id, start_location, end_location, date, seats_available, driver:carpoolusers(first_name)') // Fahrer-Name direkt laden
+        .gte('date', date)
+        .lt('date', date7Days)
         .eq('start_location', start)
         .eq('end_location', stop)
         .order('date', ascending: true);
 
+    return response ?? [];
+  }
+
+  Future<List<Map<String, dynamic>>> getAllRides() async {
+    final response = await _supabase
+        .from('rides')
+        .select();
     return response ?? [];
   }
 
@@ -57,8 +70,8 @@ class RideService{
     }
     final response = await _supabase
         .from('rides')
-        .select('*, bookings:bookings(*)') // Holt alle Fahrten + die dazugehörigen Buchungen
-        .eq('driver_id', user.id); // Filtert nur Fahrten des angegebenen Fahrers
+        .select('*, bookings:bookings(*)') // Gets all rides + corresponding bookings
+        .eq('driver_id', user.id); // only rides for given user
 
     return response ?? [];
   }
@@ -72,7 +85,13 @@ class RideService{
     return response;
   }
 
+  String addDaysToDateString(String dateString, int days) {
+    DateTime parsedDate = DateTime.parse(dateString);
+    DateTime newDate = parsedDate.add(Duration(days: days));
 
+    // format to SupaBase date format
+    return DateFormat("yyyy-MM-dd HH:mm:ss+00").format(newDate);
+  }
 
 //   Todo: Delete and update ride
 

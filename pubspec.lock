@@ -180,10 +180,10 @@ packages:
     dependency: "direct main"
     description:
       name: geocoding_resolver
-      sha256: "075e4842803b8d12595c56bc28817e42ac15f40c1b21664d2892cbf4cc3a9fa6"
+      sha256: "0fc4285ccc94eaa8c4a62ec20724be9728235297d1aa74004f3c5ec628757598"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.3"
+    version: "0.0.3+2"
   gotrue:
     dependency: transitive
     description:
@@ -622,7 +622,7 @@ packages:
     source: hosted
     version: "0.3.1"
   url_launcher:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: url_launcher
       sha256: "9d06212b1362abc2f0f0d78e6f09f726608c74e3b9462e8368bb03314aa8d603"

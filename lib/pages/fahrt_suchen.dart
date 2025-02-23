@@ -12,10 +12,13 @@ import 'package:carpooling_app/constants/navigationBar.dart';
 import 'package:intl/intl.dart'; // Für Zeitformatierung
 import 'package:carpooling_app/pages/fahrtMitfahrerin.dart';
 
+import '../services/ride_service.dart';
+
 class FindRide extends StatefulWidget {
   final String Starteingabe;
   final String Zieleingabe;
-  FindRide({super.key, required this.Starteingabe, required this.Zieleingabe});
+  final String Zeitpunkt;
+  FindRide({super.key, required this.Starteingabe, required this.Zieleingabe, required this.Zeitpunkt});
   @override
   _FindRideState createState() => _FindRideState();
 
@@ -28,6 +31,9 @@ class _FindRideState extends State<FindRide> {
   String? _destinationAddress;
   LatLng _mapCenter = LatLng(52.5200, 13.4050);
   List<LatLng> _routePoints = [];
+
+  List<Map<String, dynamic>> _rides = []; // list for real data
+  final RideService _rideService = RideService(); // ride service instance
 
   String _startLabel = "Start";
   String _zielLabel = "Ziel";
@@ -56,11 +62,52 @@ class _FindRideState extends State<FindRide> {
   @override
   void initState() {
     super.initState();
-    //_startLabel = widget.Starteingabe;
-    //_zielLabel = widget.Zieleingabe;
     firstMarker();
     secondMarker();
   }
+
+  String convertToSupabaseFormat(String inputDate) {
+    // Input format (2025-02-23 – 12:48)
+    DateFormat inputFormat = DateFormat("yyyy-MM-dd – HH:mm");
+
+    // Parse Date Object
+    DateTime parsedDate = inputFormat.parse(inputDate);
+
+    // Transform in desired format (2025-02-22 20:00:00+00)
+    DateFormat outputFormat = DateFormat("yyyy-MM-dd HH:mm:ss'+00'");
+
+    return outputFormat.format(parsedDate);
+  }
+
+
+  Future<void> _fetchRides(String startAddress, String endAddress) async {
+    String date = convertToSupabaseFormat(widget.Zeitpunkt);
+    print("Date:$date");
+    print("Start:$startAddress");
+    print("End:$endAddress");
+    try {
+      final List<Map<String, dynamic>> rides = await _rideService.getRides(date,startAddress, endAddress);
+
+      print('Geladene Fahrten: $rides');
+
+      setState(() {
+        _rides = rides.map((ride) {
+          return {
+            "id": ride["id"],
+            "driver_id": ride["driver_id"],
+            "start_location": ride["start_location"],
+            "end_location": ride["end_location"],
+            "date": ride["date"],
+            "driver": ride["driver"] ?? {"first_name": "Unbekannter Fahrer"} // If `driver` is null
+          };
+        }).toList();
+      });
+    } catch (e) {
+      print("Error fetching rides: $e");
+    }
+  }
+
+
 
   void _updateMapCenter() {
     if (_startMarker != null && _destinationMarker != null) {
@@ -78,8 +125,8 @@ class _FindRideState extends State<FindRide> {
   void firstMarker() async {
     try {
       GeoCoder geoCoder = GeoCoder();
-      List<LookupAddress> suggestions =
-      await geoCoder.getAddressSuggestions(address: widget.Starteingabe);
+      List<LookupAddress> suggestions = await geoCoder.getAddressSuggestions(address: widget.Starteingabe);
+
       if (suggestions.isNotEmpty) {
         LookupAddress suggestion = suggestions.first;
         setState(() {
@@ -87,9 +134,12 @@ class _FindRideState extends State<FindRide> {
             double.parse(suggestion.latitude),
             double.parse(suggestion.longitude),
           );
-          _startLabel = suggestion.displayName;
+          _startLabel = suggestion.displayName; // Setze die Adresse für DB-Suche
         });
-        _updateMapCenter(); // Mitte berechnen
+
+        print("Start: $_startLabel");
+        _updateMapCenter();
+        checkAndFetchRides(); // Prüfe, ob beide Marker gesetzt sind
       }
     } catch (e) {
       print("Fehler beim Geocoding: $e");
@@ -99,24 +149,39 @@ class _FindRideState extends State<FindRide> {
   void secondMarker() async {
     try {
       GeoCoder geoCoder = GeoCoder();
-      List<LookupAddress> suggestions =
-      await geoCoder.getAddressSuggestions(address: widget.Zieleingabe);
+      List<LookupAddress> suggestions = await geoCoder.getAddressSuggestions(address: widget.Zieleingabe);
+
       if (suggestions.isNotEmpty) {
         LookupAddress suggestion = suggestions.first;
+        print("Suggestion: $suggestion");
         setState(() {
           _destinationMarker = LatLng(
             double.parse(suggestion.latitude),
             double.parse(suggestion.longitude),
           );
-          _zielLabel = suggestion.displayName;
+
+          _zielLabel = suggestion.displayName; // Setze die Adresse für DB-Suche
         });
-        _updateMapCenter(); // Mitte berechnen
+
+
+        print("Ziel: $_zielLabel");
+        _updateMapCenter();
+        checkAndFetchRides(); // Prüfe, ob beide Marker gesetzt sind
       }
     } catch (e) {
       print("Fehler beim Geocoding: $e");
     }
     _fetchRoute();
   }
+
+  void checkAndFetchRides() {
+    if (_startMarker != null && _destinationMarker != null) {
+      print("Fetching rides with addresses:$_startLabel;$_zielLabel");
+      _fetchRides(_startLabel.toString(), _zielLabel.toString()); // Use converted addresses
+    }
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -358,16 +423,35 @@ class _FindRideState extends State<FindRide> {
   }
 
   Widget _buildDriverList(BuildContext context) {
+
     return Expanded(
-      child: ListView(
-        children: [
-          _buildDriverCard(context, "Sascha", 4.0, "15:30", "2"),
-          _buildDriverCard(context, "Jonas", 4.5, "16:00", "3"),
-          _buildDriverCard(context, "Jonas", 4.5, "11:35", "1"),
-        ],
+      child: _rides.isEmpty
+          ? Center(child: Text("Keine Fahrten gefunden", style: TextStyle(fontSize: Sizes.textSubText, color: Colors.grey)))
+          : ListView.builder(
+        itemCount: _rides.length,
+        itemBuilder: (context, index) {
+          var ride = _rides[index];
+          // Make sure that `driver` is not null before accessing its properties
+          String driverName = (ride['driver'] != null && ride['driver']['first_name'] != null)
+              ? ride['driver']['first_name']
+              : "Unbekannter Fahrer";
+
+
+          return _buildDriverCard(
+            context,
+            driverName,
+            4.5, // Example Mock Rating
+            // Todo: right time format. should be dd.MM.yyyy. HH:mm
+            DateFormat("HH:mm").format(DateTime.parse(ride['date'])),
+            // Todo: fix seats available
+            // ride['seats_available'],
+            "2", // Falls du Platzanzahl hast, ersetzen
+          );
+        },
       ),
     );
   }
+
 
   Widget _buildDriverCard(BuildContext context, String name, double rating,
       String time, String seats) {
