@@ -9,7 +9,8 @@ import '../constants/sizes.dart';
 class OfferRidePage extends StatefulWidget {
   final String Starteingabe;
   final String Zieleingabe;
-  const OfferRidePage({super.key, required this.Starteingabe, required this.Zieleingabe});
+  final String Zeitpunkt;
+  const OfferRidePage({super.key, required this.Starteingabe, required this.Zieleingabe, required this.Zeitpunkt});
 
   @override
   _OfferRidePageState createState() => _OfferRidePageState();
