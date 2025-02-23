@@ -31,11 +31,20 @@ class RatingService{
     return List<Map<String, dynamic>>.from(response);
   }
 
+  Future<int> getRatingCount(String user) async {
+    final response = await _supabase
+        .from('ratings')
+        .select('count')
+        .eq('to_user', user)
+        .single(); // single() sorgt dafür, dass nur ein Ergebnis zurückkommt
+
+    return response['count'] as int? ?? 0;
+  }
+
   Future<void> deleteRating(String ratingId) async {
     await _supabase
         .from('ratings')
         .delete()
         .eq('id', ratingId);
   }
-
 }
