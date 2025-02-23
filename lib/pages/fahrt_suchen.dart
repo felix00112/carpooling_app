@@ -361,8 +361,9 @@ class _FindRideState extends State<FindRide> {
     return Expanded(
       child: ListView(
         children: [
-          _buildDriverCard(context, "Sascha", 4.0, "15:30", "2 freie Plätze"),
-          _buildDriverCard(context, "Jonas", 4.5, "16:00", "3 freie Plätze"),
+          _buildDriverCard(context, "Sascha", 4.0, "15:30", "2"),
+          _buildDriverCard(context, "Jonas", 4.5, "16:00", "3"),
+          _buildDriverCard(context, "Jonas", 4.5, "11:35", "1"),
         ],
       ),
     );
@@ -374,12 +375,45 @@ class _FindRideState extends State<FindRide> {
     DateTime startTime = DateFormat("HH:mm").parse(time);
     startTime = DateTime(
         now.year, now.month, now.day, startTime.hour, startTime.minute);
-    int minutesDiff = startTime
-        .difference(now)
-        .inMinutes;
-    String timeText = minutesDiff == 0 ? "jetzt" : (minutesDiff < 0
-        ? "vor ${minutesDiff.abs()} min."
-        : "in $minutesDiff min.");
+    int minutesDiff = startTime.difference(now).inMinutes;
+
+    String timeText;
+    Color timeColor;
+
+    if (minutesDiff <= 10) {
+      timeText = "jetzt";
+      timeColor = Colors.red;
+    } else if (minutesDiff < 60) {
+      timeText = "in $minutesDiff min.";
+      timeColor = Colors.orange;
+    } else if (minutesDiff < 1440) {
+      int hours = minutesDiff ~/ 60;
+      int minutes = minutesDiff % 60;
+      timeText = minutes > 0 ? "in ${hours}h ${minutes}min." : "in ${hours}h";
+      timeColor = Colors.green;
+    } else {
+      int days = minutesDiff ~/ 1440;
+      int remainingMinutes = minutesDiff % 1440;
+      int hours = remainingMinutes ~/ 60;
+      timeText = hours > 0 ? "in ${days} Tagen ${hours}h" : "in ${days} Tagen";
+      timeColor = Colors.green;
+    }
+
+    // Farbe für die Anzahl der freien Plätze
+    Color seatsColor;
+    String pluralOrSingular;
+    int seatsInt = int.tryParse(seats) ?? 0;
+
+    if (seatsInt == 1) {
+      seatsColor = Colors.red;
+      pluralOrSingular = ' freier Platz';
+    } else if (seatsInt == 2) {
+      seatsColor = Colors.orange;
+      pluralOrSingular = ' freie Plätze';
+    } else {
+      seatsColor = Colors.green;
+      pluralOrSingular = ' freie Plätze';
+    }
 
     return Padding(
       padding: EdgeInsets.symmetric(vertical: Sizes.paddingSmall),
@@ -398,44 +432,50 @@ class _FindRideState extends State<FindRide> {
               children: [
                 Row(
                   children: [
-                    CircleAvatar(radius: Sizes.textSubText * 1.5,
+                    CircleAvatar(
+                        radius: Sizes.textSubText * 1.5,
                         backgroundColor: Colors.grey[400],
                         child: Icon(Icons.person, color: Colors.black)),
                     SizedBox(width: Sizes.paddingSmall),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(name, style: TextStyle(fontSize: Sizes.textSubText,
-                            fontWeight: FontWeight.bold)),
+                        Text(name,
+                            style: TextStyle(
+                                fontSize: Sizes.textSubText,
+                                fontWeight: FontWeight.bold)),
                         Row(
                           children: [
-                            Icon(Icons.star, color: Colors.black,
-                                size: Sizes.textSubText),
+                            Icon(Icons.star,
+                                color: Colors.black, size: Sizes.textSubText),
                             SizedBox(width: 4),
                             Text(rating.toStringAsFixed(1),
-                                style: TextStyle(fontSize: Sizes.textSubText)),
+                                style:
+                                TextStyle(fontSize: Sizes.textSubText)),
                           ],
                         ),
                       ],
                     ),
                   ],
                 ),
-
                 GestureDetector(
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) =>
-                          RidePickupPage(starteingabe: widget.Starteingabe,
+                      MaterialPageRoute(
+                          builder: (context) => RidePickupPage(
+                              starteingabe: widget.Starteingabe,
                               zieleingabe: widget.Zieleingabe)),
                     );
                   },
                   child: Column(
                     children: [
-                      Icon(Icons.directions_car, size: Sizes.textSubText * 1.5,
-                          color: Colors.black),
-                      Text("Buchen", style: TextStyle(
-                          fontSize: Sizes.textSubText, color: Colors.grey),
+                      Icon(Icons.directions_car,
+                          size: Sizes.textSubText * 1.5, color: Colors.black),
+                      Text(
+                        "Buchen",
+                        style: TextStyle(
+                            fontSize: Sizes.textSubText, color: Colors.grey),
                       ),
                     ],
                   ),
@@ -452,34 +492,39 @@ class _FindRideState extends State<FindRide> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Start", style: TextStyle(
-                        fontSize: Sizes.textSubText * 1.2,
-                        fontWeight: FontWeight.bold)),
+                    Text("Start",
+                        style: TextStyle(
+                            fontSize: Sizes.textSubText * 1.2,
+                            fontWeight: FontWeight.bold)),
                     Row(
                       children: [
-                        Text(time, style: TextStyle(fontSize: Sizes.textSubText,
-                            fontWeight: FontWeight.bold)),
+                        Text(time,
+                            style: TextStyle(
+                                fontSize: Sizes.textSubText,
+                                fontWeight: FontWeight.bold)),
                         SizedBox(width: 8),
-                        Text(timeText, style: TextStyle(
-                            fontSize: Sizes.textSubText * 0.9,
-                            color: Colors.orange)),
+                        Icon(Icons.hourglass_empty,
+                            size: Sizes.textSubText, color: timeColor),
+                        SizedBox(width: 4),
+                        Text(timeText,
+                            style: TextStyle(
+                                fontSize: Sizes.textSubText * 0.9,
+                                color: timeColor)),
                       ],
                     ),
                   ],
                 ),
                 Row(
                   children: [
-                    Icon(Icons.hourglass_empty, size: Sizes.textSubText,
-                        color: Colors.orange),
-                    SizedBox(width: 4),
-                    Text(seats, style: TextStyle(fontSize: Sizes.textSubText,
-                        color: Colors.orange,
-                        fontWeight: FontWeight.bold)),
+                    Text(seats+pluralOrSingular,
+                        style: TextStyle(
+                            fontSize: Sizes.textSubText,
+                            color: seatsColor,
+                            fontWeight: FontWeight.bold)),
                   ],
                 ),
               ],
             ),
-
           ],
         ),
       ),
