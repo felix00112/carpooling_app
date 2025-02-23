@@ -93,6 +93,16 @@ class RideService{
     return DateFormat("yyyy-MM-dd HH:mm:ss+00").format(newDate);
   }
 
+  Future<int> getRideCount(String user) async {
+    final response = await _supabase
+        .from('rides')
+        .select('count')
+        .eq('driver_id', user)
+        .single(); // single() sorgt dafür, dass nur ein Ergebnis zurückkommt
+
+    return response['count'] as int? ?? 0;
+  }
+
 //   Todo: Delete and update ride
 
 }
