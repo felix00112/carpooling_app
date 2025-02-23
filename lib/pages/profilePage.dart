@@ -27,6 +27,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   void logout() async {
     await authService.signOut();
+    _currentIndex = 0;
   }
 
 
