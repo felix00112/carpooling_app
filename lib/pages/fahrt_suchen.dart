@@ -426,7 +426,7 @@ class _FindRideState extends State<FindRide> {
 
     return Expanded(
       child: _rides.isEmpty
-          ? Center(child: Text("Keine Fahrten gefunden", style: TextStyle(fontSize: Sizes.textSubtitle, color: Colors.grey)))
+          ? Center(child: Text("Keine Fahrten gefunden", style: TextStyle(fontSize: Sizes.textSubText, color: Colors.grey)))
           : ListView.builder(
         itemCount: _rides.length,
         itemBuilder: (context, index) {
@@ -436,13 +436,16 @@ class _FindRideState extends State<FindRide> {
               ? ride['driver']['first_name']
               : "Unbekannter Fahrer";
 
+
           return _buildDriverCard(
             context,
             driverName,
             4.5, // Example Mock Rating
             // Todo: right time format. should be dd.MM.yyyy. HH:mm
             DateFormat("HH:mm").format(DateTime.parse(ride['date'])),
-            "2 freie Plätze", // Falls du Platzanzahl hast, ersetzen
+            // Todo: fix seats available
+            // ride['seats_available'],
+            "2", // Falls du Platzanzahl hast, ersetzen
           );
         },
       ),
