@@ -9,6 +9,8 @@ class BookingService{
       throw new Exception("User not logged in");
     }
 
+    // todo: seats in ride should be checked, if seats are available -> create booking -> update seats in ride
+
     await _supabase.from('bookings').insert({
       'ride_id': rideId,
       'passenger_id': user.id,
