@@ -37,6 +37,20 @@ class UserService {
     return response != null;
   }
 
+  Future<bool> hasUserCar() async {
+    final user = _supabase.auth.currentUser;
+    if (user == null) return false;
+
+    final response = await _supabase
+        .from('cars')
+        .select('id')
+        .eq('owner', user.id)
+        .maybeSingle();
+
+    return response != null;
+  }
+
+
 
   // Get user profile
   Future<Map<String, dynamic>?> getUserProfile() async {
