@@ -86,6 +86,27 @@ class UserService {
     return response;
   }
 
+  Future<String?> getPhoneNumber(String userId) async {
+    try {
+      // Rufe das Benutzerprofil anhand der userId ab
+      final response = await _supabase
+          .from('carpoolusers')
+          .select('phone_number')
+          .eq('id', userId)
+          .maybeSingle();
+
+      // Wenn das Profil gefunden wurde und eine Telefonnummer vorhanden ist, gib sie zurück
+      if (response != null && response['phone_number'] != null) {
+        return response['phone_number'] as String;
+      }
+
+      // Falls keine Telefonnummer gefunden wurde, gib null zurück
+      return null;
+    } catch (e) {
+      print("Fehler beim Abrufen der Telefonnummer: $e");
+      return null;
+    }
+  }
   // Delete user profile
   Future<void> deleteUserProfile() async {
     final user = _supabase.auth.currentUser;
