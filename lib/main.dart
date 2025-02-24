@@ -1,3 +1,4 @@
+import 'package:carpooling_app/pages/car_details.dart';
 import 'package:carpooling_app/constants/colors.dart';
 import 'package:carpooling_app/pages/faq.dart';
 import 'package:carpooling_app/pages/gebuchteFahrtenListe.dart';
@@ -79,6 +80,7 @@ class MyApp extends StatelessWidget {
         //'/goal': (context) => FahrtBeendet(),
         '/signup' : (context) => SignupPage(),
         '/complete-profile': (context) => ProfileCompletionPage(),
+        '/car_details': (context) => CarDetailsPage()
 
         //einstellungsseiten
         '/profileBearbeiten' : (context) => ProfileSettingsPage()
