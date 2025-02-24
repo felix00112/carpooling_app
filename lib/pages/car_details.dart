@@ -86,6 +86,7 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
+    Sizes.initialize(context);
     return Scaffold(
       bottomNavigationBar: CustomBottomNavigationBar(
         currentIndex: _currentIndex,
@@ -119,13 +120,13 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
               height: 200,
               decoration: BoxDecoration( //box around picture
                 //color: background_box_white,
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(Sizes.borderRadius10),
               ),
               child: Center(
                 child: SvgPicture.asset(
                   'assets/images/undraw_city_driver.svg',
-                  width: 150, // Passe Breite an
-                  height: 150, // Passe Höhe an
+                  width: Sizes.width, // Passe Breite an
+                  height: Sizes.height, // Passe Höhe an
                   fit: BoxFit.contain,
                 ),
               ),
@@ -136,7 +137,7 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
               child: Text(
                 "Mein Auto",
                 style: TextStyle(
-                  fontSize: 24,
+                  fontSize: Sizes.textSizeRegular,
                   fontWeight: FontWeight.w900,
                   color: dark_blue,
                 ),
@@ -144,9 +145,9 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
             ),
             // Hier implementieren
             Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: EdgeInsets.all(Sizes.paddingRegular),
               child: Container(
-                padding: const EdgeInsets.all(16.0),
+                padding: EdgeInsets.all(Sizes.paddingRegular),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(10),
@@ -165,7 +166,7 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
                       ),
                       cursorColor: dark_blue,
                     ),
-                    SizedBox(height: 16),
+                    SizedBox(height: Sizes.paddingRegular),
                     TextField(
                       controller: _modelController,
                       decoration: InputDecoration(
@@ -177,13 +178,13 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
                       ),
                       cursorColor: dark_blue,
                     ),
-                    SizedBox(height: 16),
+                    SizedBox(height: Sizes.paddingRegular),
                     Row(
                       children: [
                         ElevatedButton(
                           onPressed: _pickColor,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: dark_blue, // Hintergrundfarbe des Buttons
+                            backgroundColor: button_lightblue, // Hintergrundfarbe des Buttons
                             foregroundColor: Colors.white, // Textfarbe des Buttons
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10), // Abrundung des Buttons
@@ -191,7 +192,7 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
                           ),
                           child: Text('Farbe auswählen'),
                         ),
-                        SizedBox(width: 16),
+                        SizedBox(width: Sizes.paddingRegular), // Abstand zwischen Button und Container
                         Container(
                           height: 50,
                           width: 50,
@@ -199,13 +200,13 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 16),
+                    SizedBox(height: Sizes.paddingRegular),
                     Row(
                       children: [
                         ElevatedButton(
                           onPressed: _pickImage,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: dark_blue, // Hintergrundfarbe des Buttons
+                            backgroundColor: button_lightblue, // Hintergrundfarbe des Buttons
                             foregroundColor: Colors.white, // Textfarbe des Buttons
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10), // Abrundung des Buttons
@@ -213,7 +214,7 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
                           ),
                           child: Text('Foto hochladen'),
                         ),
-                        SizedBox(width: 16),
+                        SizedBox(width: Sizes.paddingRegular), // Abstand zwischen Button und Bild
                         if (_imageFile != null)
                           kIsWeb
                               ? Image.network(
