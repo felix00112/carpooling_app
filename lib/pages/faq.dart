@@ -38,7 +38,7 @@ class FaqsPage extends StatefulWidget {
 
 class _FaqsPageState extends State<FaqsPage> {
   // Navigation bar index
-  int _currentIndex = 1;
+  int _currentIndex = 2;
 
   void _onTabTapped(int index) {
 

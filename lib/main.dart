@@ -55,6 +55,10 @@ class MyApp extends StatelessWidget {
       title: 'Carpooling App',
       theme: ThemeData( //default Hintergrund
         scaffoldBackgroundColor: background_default,
+        appBarTheme: AppBarTheme(
+          backgroundColor: background_default,
+          titleTextStyle: TextStyle(color: dark_blue, fontWeight: FontWeight.bold), //fontSize: Sizes.textHeading,
+        ),
       ),
       home: AuthGate(),
       routes: {
@@ -63,6 +67,7 @@ class MyApp extends StatelessWidget {
         // '/': (context) => HomePage(),
         '/fahrten': (context) => GebuchteFahrtenListe(),
         '/profil': (context) => ProfilePage(),
+        '/home': (context) => HomePage(),
 
         //suche starten
         //'/Suchen': (context) => FindRide(),
