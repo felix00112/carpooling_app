@@ -2,6 +2,9 @@ import 'package:carpooling_app/constants/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:carpooling_app/constants/navigationBar.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io'; // Import für File
+import 'package:flutter/foundation.dart' show kIsWeb; // Import für kIsWeb
 
 import '../constants/constants.dart';
 
@@ -13,6 +16,15 @@ class CarDetailsPage extends StatefulWidget {
 class _CarDetailsPageState extends State<CarDetailsPage> {
   // Navigation bar index
   int _currentIndex = 2;
+
+  // Input field controllers
+  final TextEditingController _licensePlateController = TextEditingController();
+  final TextEditingController _modelController = TextEditingController();
+  final TextEditingController _colorController = TextEditingController();
+
+  // Image picker
+  final ImagePicker _picker = ImagePicker();
+  XFile? _imageFile;
 
   void _onTabTapped(int index) {
     setState(() {
@@ -31,6 +43,13 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
         Navigator.pushNamed(context, '/profil');
         break;
     }
+  }
+
+  Future<void> _pickImage() async {
+    final XFile? pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    setState(() {
+      _imageFile = pickedFile;
+    });
   }
 
   @override
@@ -59,100 +78,90 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
         ),
         centerTitle: true,
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          // Header image and illustration
-          Container(
-            height: 200,
-            decoration: BoxDecoration( //box around picture
-              //color: background_box_white,
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Center(
-              child: SvgPicture.asset(
-                'assets/images/undraw_city_driver.svg',
-                width: 150, // Passe Breite an
-                height: 150, // Passe Höhe an
-                fit: BoxFit.contain,
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Header image and illustration
+            Container(
+              height: 200,
+              decoration: BoxDecoration( //box around picture
+                //color: background_box_white,
+                borderRadius: BorderRadius.circular(16),
               ),
-            ),
-          ),
-
-          // Settings options
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: Sizes.paddingMediumLarge), //Seitenabstand
-              child: Align( // Damit der Block nicht die ganze Breite einnimmt
-                alignment: Alignment.topCenter, // Oben bündig, horizontal zentriert
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: background_box_white,
-                    borderRadius: BorderRadius.circular(Sizes.borderRadius10), // Abgerundete Ecken
-                  ),
-                  padding: EdgeInsets.symmetric(vertical: Sizes.paddingMediumLarge), // Innenabstand für die Liste
-                  child: ListView(
-                    shrinkWrap: true, // Damit ListView nur so groß wie nötig ist
-                    children: [
-                      SettingsTile(
-                        title: 'Persönliche & Zahlungsdaten',
-                        onTap: () {
-                          Navigator.pushNamed(context, '/personal');
-                        },
-                      ),
-                      Divider(), // Trennlinie
-                      SettingsTile(
-                        title: 'Angaben zum eigenen Auto',
-                        onTap: () {
-                          Navigator.pushNamed(context, '/car_details');
-                        },
-                      ),
-                      Divider(),
-                      SettingsTile(
-                        title: 'Konto',
-                        onTap: () {
-                          Navigator.pushNamed(context, '/account');
-                        },
-                      ),
-                      Divider(),
-                      SettingsTile(
-                        title: 'Sucheinstellungen',
-                        onTap: () {
-                          Navigator.pushNamed(context, '/search_settings');
-                        },
-                      ),
-                    ],
-                  ),
+              child: Center(
+                child: SvgPicture.asset(
+                  'assets/images/undraw_city_driver.svg',
+                  width: 150, // Passe Breite an
+                  height: 150, // Passe Höhe an
+                  fit: BoxFit.contain,
                 ),
               ),
             ),
-          ),
-
-        ],
-      ),
-    );
-  }
-}
-
-class SettingsTile extends StatelessWidget {
-  final String title;
-  final VoidCallback onTap;
-
-  const SettingsTile({
-    required this.title,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        ListTile(
-          title: Text(title, style: TextStyle(fontSize: Sizes.textSizeRegular)),
-          //trailing: Icon(Icons.arrow_forward_ios, size: Sizes.textSizeRegular,),
-          onTap: onTap,
+            // Hier implementieren
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Container(
+                padding: const EdgeInsets.all(16.0),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TextField(
+                      controller: _licensePlateController,
+                      decoration: InputDecoration(
+                        labelText: 'Kennzeichen',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    SizedBox(height: 16),
+                    TextField(
+                      controller: _modelController,
+                      decoration: InputDecoration(
+                        labelText: 'Modell',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    SizedBox(height: 16),
+                    TextField(
+                      controller: _colorController,
+                      decoration: InputDecoration(
+                        labelText: 'Farbe',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: _pickImage,
+                      child: Text('Foto hochladen'),
+                    ),
+                    SizedBox(height: 16),
+                    if (_imageFile != null)
+                      Center(
+                        child: kIsWeb
+                            ? Image.network(
+                                _imageFile!.path,
+                                width: 150,
+                                height: 150,
+                                fit: BoxFit.contain,
+                              )
+                            : Image.file(
+                                File(_imageFile!.path),
+                                width: 150,
+                                height: 150,
+                                fit: BoxFit.contain,
+                              ),
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }
