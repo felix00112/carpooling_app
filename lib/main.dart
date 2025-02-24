@@ -1,3 +1,4 @@
+import 'package:carpooling_app/constants/colors.dart';
 import 'package:carpooling_app/pages/faq.dart';
 import 'package:carpooling_app/pages/gebuchteFahrtenListe.dart';
 import 'package:carpooling_app/pages/homepage.dart';
@@ -52,6 +53,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Carpooling App',
+      theme: ThemeData( //default Hintergrund
+        scaffoldBackgroundColor: background_default,
+      ),
       home: AuthGate(),
       routes: {
         //hier die drei routen für die bottom navigation bar
