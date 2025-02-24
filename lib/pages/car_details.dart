@@ -150,7 +150,7 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
                 padding: EdgeInsets.all(Sizes.paddingRegular),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(Sizes.borderRadius10),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -159,24 +159,28 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
                       controller: _licensePlateController,
                       decoration: InputDecoration(
                         labelText: 'Kennzeichen',
+                        labelStyle: TextStyle(color: Colors.grey), // Standardfarbe des Labels
+                        floatingLabelStyle: TextStyle(color: button_blue), // Farbe des Labels, wenn fokussiert
                         border: OutlineInputBorder(),
                         focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: dark_blue),
+                          borderSide: BorderSide(color: button_blue),
                         ),
                       ),
-                      cursorColor: dark_blue,
+                      cursorColor: button_blue,
                     ),
                     SizedBox(height: Sizes.paddingRegular),
                     TextField(
                       controller: _modelController,
                       decoration: InputDecoration(
                         labelText: 'Modell',
+                        labelStyle: TextStyle(color: Colors.grey), // Standardfarbe des Labels
+                        floatingLabelStyle: TextStyle(color: button_blue), // Farbe des Labels, wenn fokussiert
                         border: OutlineInputBorder(),
                         focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: dark_blue),
+                          borderSide: BorderSide(color: button_blue),
                         ),
                       ),
-                      cursorColor: dark_blue,
+                      cursorColor: button_blue,
                     ),
                     SizedBox(height: Sizes.paddingRegular),
                     Row(
@@ -187,7 +191,7 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
                             backgroundColor: button_lightblue, // Hintergrundfarbe des Buttons
                             foregroundColor: Colors.white, // Textfarbe des Buttons
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10), // Abrundung des Buttons
+                              borderRadius: BorderRadius.circular(Sizes.borderRadius10), // Abrundung des Buttons
                             ),
                           ),
                           child: Text('Farbe auswählen'),
@@ -209,7 +213,7 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
                             backgroundColor: button_lightblue, // Hintergrundfarbe des Buttons
                             foregroundColor: Colors.white, // Textfarbe des Buttons
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10), // Abrundung des Buttons
+                              borderRadius: BorderRadius.circular(Sizes.borderRadius10), // Abrundung des Buttons
                             ),
                           ),
                           child: Text('Foto hochladen'),
