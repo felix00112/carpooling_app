@@ -5,6 +5,7 @@ import 'package:carpooling_app/constants/navigationBar.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io'; // Import für File
 import 'package:flutter/foundation.dart' show kIsWeb; // Import für kIsWeb
+import 'package:flutter_colorpicker/flutter_colorpicker.dart'; // Import für Color Picker
 
 import '../constants/constants.dart';
 
@@ -20,7 +21,9 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
   // Input field controllers
   final TextEditingController _licensePlateController = TextEditingController();
   final TextEditingController _modelController = TextEditingController();
-  final TextEditingController _colorController = TextEditingController();
+
+  // Color picker
+  Color _selectedColor = Colors.blue;
 
   // Image picker
   final ImagePicker _picker = ImagePicker();
@@ -50,6 +53,35 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
     setState(() {
       _imageFile = pickedFile;
     });
+  }
+
+  void _pickColor() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Farbe auswählen'),
+          content: SingleChildScrollView(
+            child: BlockPicker(
+              pickerColor: _selectedColor,
+              onColorChanged: (Color color) {
+                setState(() {
+                  _selectedColor = color;
+                });
+              },
+            ),
+          ),
+          actions: <Widget>[
+            ElevatedButton(
+              child: Text('Fertig'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -146,44 +178,58 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
                       cursorColor: dark_blue,
                     ),
                     SizedBox(height: 16),
-                    TextField(
-                      controller: _colorController,
-                      decoration: InputDecoration(
-                        labelText: 'Farbe',
-                        border: OutlineInputBorder(),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: dark_blue),
-                        ),
-                      ),
-                      cursorColor: dark_blue,
-                    ),
-                    SizedBox(height: 16),
-                    ElevatedButton(
-                      onPressed: _pickImage,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: dark_blue, // Hintergrundfarbe des Buttons
-                        foregroundColor: Colors.white, // Textfarbe des Buttons
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10), // Abrundung des Buttons
-                        ),
-                      ),
-                      child: Text('Foto hochladen'),
-                    ),
-                    SizedBox(height: 16),
-                    if (_imageFile != null)
-                      kIsWeb
-                          ? Image.network(
-                              _imageFile!.path,
-                              width: 150,
-                              height: 150,
-                              fit: BoxFit.contain,
-                            )
-                          : Image.file(
-                              File(_imageFile!.path),
-                              width: 150,
-                              height: 150,
-                              fit: BoxFit.contain,
+                    Row(
+                      children: [
+                        ElevatedButton(
+                          onPressed: _pickColor,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: dark_blue, // Hintergrundfarbe des Buttons
+                            foregroundColor: Colors.white, // Textfarbe des Buttons
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10), // Abrundung des Buttons
                             ),
+                          ),
+                          child: Text('Farbe auswählen'),
+                        ),
+                        SizedBox(width: 16),
+                        Container(
+                          height: 50,
+                          width: 50,
+                          color: _selectedColor,
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 16),
+                    Row(
+                      children: [
+                        ElevatedButton(
+                          onPressed: _pickImage,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: dark_blue, // Hintergrundfarbe des Buttons
+                            foregroundColor: Colors.white, // Textfarbe des Buttons
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10), // Abrundung des Buttons
+                            ),
+                          ),
+                          child: Text('Foto hochladen'),
+                        ),
+                        SizedBox(width: 16),
+                        if (_imageFile != null)
+                          kIsWeb
+                              ? Image.network(
+                                  _imageFile!.path,
+                                  width: 150,
+                                  height: 150,
+                                  fit: BoxFit.contain,
+                                )
+                              : Image.file(
+                                  File(_imageFile!.path),
+                                  width: 150,
+                                  height: 150,
+                                  fit: BoxFit.contain,
+                                ),
+                      ],
+                    ),
                   ],
                 ),
               ),
