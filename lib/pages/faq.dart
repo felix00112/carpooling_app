@@ -1,8 +1,8 @@
 import 'package:carpooling_app/constants/colors.dart';
-import 'package:carpooling_app/constants/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:carpooling_app/constants/navigationBar.dart';
+import 'package:carpooling_app/constants/sizes.dart';
 
 import 'faq_detail.dart';
 
@@ -68,56 +68,81 @@ class _FaqsPageState extends State<FaqsPage> {
         currentIndex: _currentIndex,
         onTap: _onTabTapped,
       ),
+
+
       appBar: AppBar( //header
-        backgroundColor: background_grey,
-        elevation: 0,
         leading: IconButton(
-          icon: SvgPicture.asset(
-            'assets/icons/arrowLeft.svg',
-            height: 24,
-            colorFilter: ColorFilter.mode(dark_blue, BlendMode.srcIn),
-          ),
+          icon: Icon(Icons.arrow_back_ios),
           onPressed: () {
             Navigator.pop(context); // Zurück-Navigation
           },
         ),
         title: Text(
           'FAQ',
-          style: TextStyle(color: dark_blue, fontSize: Sizes.textSizeMedium),
+          style: TextStyle(color: dark_blue, fontSize: Sizes.textHeading, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          // Header image and illustration
-          Container(
-            height: 200,
-            decoration: BoxDecoration( //box around picture
-              borderRadius: BorderRadius.circular(Sizes.borderRadius10),
-            ),
-            child: Center(
-              child: SvgPicture.asset(
-                'assets/images/undraw_faq.svg',
-                width: 150, // Passe Breite an
-                height: 150, // Passe Höhe an
-                fit: BoxFit.contain,
+
+
+      body: SingleChildScrollView(
+        padding: EdgeInsets.symmetric(horizontal: Sizes.paddingRegular),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            SizedBox(
+              child: Center(
+                child: SvgPicture.asset(
+                  'assets/images/undraw_faq.svg',
+                  width: Sizes.deviceWidth,
+                  fit: BoxFit.contain,
+                ),
               ),
             ),
-          ),
 
-          // Faqs options
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: Sizes.paddingMediumLarge), //Seitenabstand
-              child: Align( // Damit der Block nicht die ganze Breite einnimmt
+            SizedBox(height: Sizes.paddingRegular),
+            ...faq_inhalt.map((entry) {
+              return Padding(
+                padding: EdgeInsets.only(bottom: Sizes.paddingSmall),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: background_box_white,
+                    borderRadius: BorderRadius.circular(Sizes.borderRadius),
+                  ),
+                  child: ListTile(
+                    title: Text(entry["question"],style: TextStyle(fontSize: Sizes.textNormal),),
+                    trailing: Icon(Icons.arrow_forward_ios),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => FaqDetailPage(
+                            question: entry["question"],
+                            answer: entry["answer"],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              );
+            }),
+          ],
+        ),
+      ),
+
+    );
+  }
+}
+/*
+              child: Align(
                 alignment: Alignment.topCenter, // Oben bündig, horizontal zentriert
                 child: Container(
                   decoration: BoxDecoration(
                     color: background_box_white,
-                    borderRadius: BorderRadius.circular(Sizes.borderRadius10),
+                    borderRadius: BorderRadius.circular(Sizes.borderRadius),
                   ),
-                  padding: EdgeInsets.symmetric(vertical: Sizes.paddingMediumLarge), // Innenabstand für die Liste
+                  padding: EdgeInsets.symmetric(vertical: Sizes.paddingRegular), // Innenabstand für die Liste
                   child: ListView.separated(
                     shrinkWrap: true,
                     itemCount: faq_inhalt.length,
@@ -142,9 +167,9 @@ class _FaqsPageState extends State<FaqsPage> {
                 ),
                 ),
               ),
-            ),
 
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -164,15 +189,15 @@ class FaqsTile extends StatelessWidget {
     return Column(
       children: [
         ListTile(
-          title: Text(title, style: TextStyle(fontSize: Sizes.textSizeRegular)),
-          trailing: Icon(Icons.arrow_forward_ios, size: Sizes.textSizeRegular,),
+          title: Text(title, style: TextStyle(fontSize: Sizes.textSubheading)),
+          trailing: Icon(Icons.arrow_forward_ios, size: Sizes.textSubheading,),
           onTap: onTap,
         ),
       ],
     );
   }
 }
-
+*/
 /*
 void main() => runApp(MaterialApp(
   debugShowCheckedModeBanner: false,
@@ -186,5 +211,4 @@ void main() => runApp(MaterialApp(
     '/account': (context) => AccountScreen(),
     '/search_faqs': (context) => SearchFaqsScreen(),
   },
-));
-*/
+)); */

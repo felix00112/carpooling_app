@@ -144,7 +144,7 @@ class _HomePageState extends State<HomePage> {
               "Wohin möchtest du fahren?",
               style: TextStyle(
                 fontSize: Sizes.textHeading,
-                fontWeight: FontWeight.w900,
+                fontWeight: FontWeight.bold,
                 color: dark_blue,
               ),
             ),
