@@ -60,7 +60,7 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Farbe auswählen'),
+          title: Text('Welche Farbe hat dein Fahrzeug'),
           content: SingleChildScrollView(
             child: BlockPicker(
               pickerColor: _selectedColor,
@@ -132,9 +132,7 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
               ),
             ),
             SizedBox(height: Sizes.paddingRegular), // Platz über Überschrift
-            Padding(
-              padding: EdgeInsets.all(Sizes.paddingBig),
-              child: Text(
+              Text(
                 "Mein Auto",
                 style: TextStyle(
                   fontSize: Sizes.textSizeRegular,
@@ -142,10 +140,9 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
                   color: dark_blue,
                 ),
               ),
-            ),
-            // Hier implementieren
+
             Padding(
-              padding: EdgeInsets.all(Sizes.paddingRegular),
+              padding: EdgeInsets.symmetric(vertical: Sizes.paddingMediumLarge),
               child: Container(
                 padding: EdgeInsets.all(Sizes.paddingRegular),
                 decoration: BoxDecoration(
