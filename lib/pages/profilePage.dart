@@ -68,6 +68,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     icon: Icon(FontAwesomeIcons.gear, size: 24),
                     onPressed: () {
                       // Einstellungen-Button Logik
+                       Navigator.pushNamed(context, '/Settings');
                     },
                   ),
                 ],

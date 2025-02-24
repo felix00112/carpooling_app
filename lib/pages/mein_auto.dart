@@ -5,12 +5,12 @@ import 'package:carpooling_app/constants/navigationBar.dart';
 
 import '../constants/constants.dart';
 
-class SettingsPage extends StatefulWidget {
+class CarDetailsPage extends StatefulWidget {
   @override
-  _SettingsPageState createState() => _SettingsPageState();
+  _CarDetailsPageState createState() => _CarDetailsPageState();
 }
 
-class _SettingsPageState extends State<SettingsPage> {
+class _CarDetailsPageState extends State<CarDetailsPage> {
   // Navigation bar index
   int _currentIndex = 2;
 
@@ -71,7 +71,7 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
             child: Center(
               child: SvgPicture.asset(
-                'assets/images/undraw_settings.svg',
+                'assets/images/undraw_city_driver.svg',
                 width: 150, // Passe Breite an
                 height: 150, // Passe Höhe an
                 fit: BoxFit.contain,
