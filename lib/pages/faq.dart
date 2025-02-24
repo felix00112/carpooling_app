@@ -1,5 +1,4 @@
 import 'package:carpooling_app/constants/colors.dart';
-//import 'package:carpooling_app/constants/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:carpooling_app/constants/navigationBar.dart';
@@ -111,7 +110,7 @@ class _FaqsPageState extends State<FaqsPage> {
                     borderRadius: BorderRadius.circular(Sizes.borderRadius),
                   ),
                   child: ListTile(
-                    title: Text(entry["question"]),
+                    title: Text(entry["question"],style: TextStyle(fontSize: Sizes.textNormal),),
                     trailing: Icon(Icons.arrow_forward_ios),
                     onTap: () {
                       Navigator.push(

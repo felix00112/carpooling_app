@@ -1,5 +1,5 @@
 import 'package:carpooling_app/constants/colors.dart';
-import 'package:carpooling_app/constants/constants.dart';
+import 'package:carpooling_app/constants/sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import '../constants/navigationBar.dart'; // Custom Bottom Navigation Bar importieren
@@ -47,32 +47,67 @@ class _FaqDetailPageState extends State<FaqDetailPage> {
         currentIndex: _currentIndex,
         onTap: _onTabTapped,
       ),
-      appBar: AppBar(
-        backgroundColor: background_grey,
-        elevation: 0,
+
+
+      appBar: AppBar( //header
         leading: IconButton(
-          icon: SvgPicture.asset(
-            'assets/icons/arrowLeft.svg',
-            height: 24,
-            colorFilter: ColorFilter.mode(dark_blue, BlendMode.srcIn),
-          ),
+          icon: Icon(Icons.arrow_back_ios),
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.pop(context); // Zurück-Navigation
           },
         ),
         title: Text(
           widget.question,
-          style: TextStyle(color: dark_blue),
+          style: TextStyle(color: dark_blue, fontSize: Sizes.textHeading, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
       ),
+
+      body: SingleChildScrollView(
+        padding: EdgeInsets.symmetric(horizontal: Sizes.paddingRegular),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            SizedBox(
+              child: Center(
+                child: SvgPicture.asset(
+                  'assets/images/undraw_faq.svg',
+                  width: Sizes.deviceWidth,
+                  fit: BoxFit.contain,
+                ),
+              ),
+            ),
+
+            SizedBox(height: Sizes.paddingRegular),
+            Text(
+              widget.question,
+              style: TextStyle(color: dark_blue, fontSize: Sizes.textHeading, fontWeight: FontWeight.bold),),
+            SizedBox(height: Sizes.paddingRegular),
+            Container(
+              padding: EdgeInsets.symmetric(vertical: Sizes.paddingRegular, horizontal: Sizes.paddingSmall),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(Sizes.borderRadius),
+                color: background_box_white,
+              ),
+              child: Text(widget.answer,style: TextStyle(fontSize: Sizes.textNormal),),
+            ),
+          ],
+        ),
+      ),
+    
+    );
+  }
+}
+
+//alter Code, vorm anpassen
+/*
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Container(
             height: 200,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(Sizes.borderRadius10),
+              borderRadius: BorderRadius.circular(Sizes.borderRadius),
             ),
             child: Center(
               child: SvgPicture.asset(
@@ -93,17 +128,17 @@ class _FaqDetailPageState extends State<FaqDetailPage> {
                     widget.question,
                     style: TextStyle(
                       color: dark_blue,
-                      fontSize: Sizes.textSizeMedium,
+                      fontSize: Sizes.textNormal,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   SizedBox(height: Sizes.paddingSmall), // Abstand zur Antwort-Box
                   Container( //Antwort
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(Sizes.borderRadius10),
+                      borderRadius: BorderRadius.circular(Sizes.borderRadius),
                       color: background_box_white,
                     ),
-                    padding: const EdgeInsets.all(Sizes.paddingMediumLarge), // Innenabstand für bessere Lesbarkeit
+                    padding: EdgeInsets.all(Sizes.paddingRegular), // Innenabstand für bessere Lesbarkeit
                     child: ListView(
                       shrinkWrap: true,
                       children: [
@@ -119,11 +154,8 @@ class _FaqDetailPageState extends State<FaqDetailPage> {
           ),
 
         ],
-      ),
-    );
-  }
-}
-
+      ),*/
+/*
 class FaqDetailTile extends StatelessWidget {
   //final String quest;
   final String answ;
@@ -139,9 +171,10 @@ class FaqDetailTile extends StatelessWidget {
       children: [
         ListTile(
           //title: Text(quest, style: TextStyle(fontSize: Sizes.textSizeMedium)),
-          title: Text(answ, style: TextStyle(color: dark_blue,fontSize: Sizes.textSizeRegular)),
+          title: Text(answ, style: TextStyle(color: dark_blue,fontSize: Sizes.textNormal)),
         ),
       ],
     );
   }
 }
+*/
