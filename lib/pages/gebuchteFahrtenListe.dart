@@ -77,7 +77,7 @@ class _GebuchteFahrtenListeState extends State<GebuchteFahrtenListe> with Single
 
 
       body: Padding(
-        padding: EdgeInsets.all(Sizes.paddingRegular), //allgemeiner Rand zwischen Inhalt und handyrand),
+        padding: EdgeInsets.symmetric(horizontal: Sizes.paddingRegular), //allgemeiner Rand zwischen Inhalt und handyrand),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -97,7 +97,7 @@ class _GebuchteFahrtenListeState extends State<GebuchteFahrtenListe> with Single
               "Gebuchte Fahrten",
               style: TextStyle(
                 fontSize: Sizes.textHeading,
-                fontWeight: FontWeight.w900,
+                fontWeight: FontWeight.bold,
                 color: dark_blue,
               ),
             ),
@@ -179,11 +179,12 @@ class _GebuchteFahrtenListeState extends State<GebuchteFahrtenListe> with Single
                 },
               ),
             ),
-
           ],
         ),
-
       ),
+    );
+  }
+}
 /*
       body: Padding(
         padding: EdgeInsets.all(Sizes.paddingRegular), //allgemeiner Rand zwischen Inhalt und handyrand
@@ -310,6 +311,4 @@ class _GebuchteFahrtenListeState extends State<GebuchteFahrtenListe> with Single
           ],
         ),
       ),
-*/    );
-  }
-}
+*/
