@@ -4,7 +4,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class RideService{
   final SupabaseClient _supabase = Supabase.instance.client;
 
-  Future<void> createRide(String start, String stop, DateTime date, int seats, bool flintaOnly, bool petsAllowed, bool luggageAllowed, int maxStops, List<String> paymentMethod) async{
+  Future<void> createRide(String start, String stop, String date, int seats, bool flintaOnly, bool petsAllowed, bool luggageAllowed, int maxStops, List<String> paymentMethod) async {
     final user = _supabase.auth.currentUser;
     if (user == null) {
       throw new Exception("User not logged in");
@@ -13,8 +13,8 @@ class RideService{
     await _supabase.from('rides').insert({
       'driver_id': user.id,
       'start_location': start,
-      'stop_location': stop,
-      'date': date,
+      'end_location': stop,
+      'date': date, // Hier wird der String verwendet
       'seats_available': seats,
       'flinta_only': flintaOnly,
       'pets_allowed': petsAllowed,
@@ -22,6 +22,19 @@ class RideService{
       'max_stopovers': maxStops,
       'payment_method': paymentMethod
     });
+
+  }
+
+  Future<void> updateSeatsAvailable(String rideId) async {
+    try {
+      await _supabase
+          .from('rides')
+          .update({'seats_available': 'seats'}) // Aktualisiere die Sitze
+          .eq('id', rideId); // Filtere nach der Fahrt-ID
+    } catch (e) {
+      print("Fehler beim Aktualisieren der Sitze: $e");
+      throw Exception("Fehler beim Aktualisieren der Sitze");
+    }
   }
 
   Future<List<Map<String, dynamic>>> getRides(String date, String start, String stop) async {
@@ -38,7 +51,7 @@ class RideService{
         .eq('start_location', start)
         .eq('end_location', stop)
         .order('date', ascending: true);
-
+    print(response);
     return response ?? [];
   }
 
