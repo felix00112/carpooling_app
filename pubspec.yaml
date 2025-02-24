@@ -43,6 +43,10 @@ dependencies:
   http: ^0.13.5
   supabase_flutter: ^2.8.3
   url_launcher: ^6.0.10
+  flutter_typeahead: ^4.0.0
+  geocoding: ^2.0.0  # oder eine passende Version je nach Bedarf
+
+
 
 dev_dependencies:
   flutter_test:
