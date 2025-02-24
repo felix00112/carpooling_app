@@ -98,6 +98,18 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
                 ),
               ),
             ),
+            SizedBox(height: Sizes.paddingRegular), // Platz über Überschrift
+            Padding(
+              padding: EdgeInsets.all(Sizes.paddingBig),
+              child: Text(
+                "Mein Auto",
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w900,
+                  color: dark_blue,
+                ),
+              ),
+            ),
             // Hier implementieren
             Padding(
               padding: const EdgeInsets.all(16.0),
@@ -115,7 +127,11 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
                       decoration: InputDecoration(
                         labelText: 'Kennzeichen',
                         border: OutlineInputBorder(),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: dark_blue),
+                        ),
                       ),
+                      cursorColor: dark_blue,
                     ),
                     SizedBox(height: 16),
                     TextField(
@@ -123,7 +139,11 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
                       decoration: InputDecoration(
                         labelText: 'Modell',
                         border: OutlineInputBorder(),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: dark_blue),
+                        ),
                       ),
+                      cursorColor: dark_blue,
                     ),
                     SizedBox(height: 16),
                     TextField(
@@ -131,30 +151,39 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
                       decoration: InputDecoration(
                         labelText: 'Farbe',
                         border: OutlineInputBorder(),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: dark_blue),
+                        ),
                       ),
+                      cursorColor: dark_blue,
                     ),
                     SizedBox(height: 16),
                     ElevatedButton(
                       onPressed: _pickImage,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: dark_blue, // Hintergrundfarbe des Buttons
+                        foregroundColor: Colors.white, // Textfarbe des Buttons
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10), // Abrundung des Buttons
+                        ),
+                      ),
                       child: Text('Foto hochladen'),
                     ),
                     SizedBox(height: 16),
                     if (_imageFile != null)
-                      Center(
-                        child: kIsWeb
-                            ? Image.network(
-                                _imageFile!.path,
-                                width: 150,
-                                height: 150,
-                                fit: BoxFit.contain,
-                              )
-                            : Image.file(
-                                File(_imageFile!.path),
-                                width: 150,
-                                height: 150,
-                                fit: BoxFit.contain,
-                              ),
-                      ),
+                      kIsWeb
+                          ? Image.network(
+                              _imageFile!.path,
+                              width: 150,
+                              height: 150,
+                              fit: BoxFit.contain,
+                            )
+                          : Image.file(
+                              File(_imageFile!.path),
+                              width: 150,
+                              height: 150,
+                              fit: BoxFit.contain,
+                            ),
                   ],
                 ),
               ),
