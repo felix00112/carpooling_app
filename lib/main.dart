@@ -16,6 +16,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter/material.dart';
 
 import 'auth/auth_gate.dart';
+import 'pages/profile_settings.dart';
 
 
 void main() async {
@@ -78,6 +79,9 @@ class MyApp extends StatelessWidget {
         //'/goal': (context) => FahrtBeendet(),
         '/signup' : (context) => SignupPage(),
         '/complete-profile': (context) => ProfileCompletionPage(),
+
+        //einstellungsseiten
+        '/profileBearbeiten' : (context) => ProfileSettingsPage()
       },
 
     );
