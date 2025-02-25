@@ -183,15 +183,23 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
                     CircleAvatar(
                       radius: Sizes.deviceWidth/3*2,
                       backgroundColor: Colors.grey.shade300,
-                      child: Icon(FontAwesomeIcons.user, size: 80, color: Colors.black),
+                      backgroundImage: avatarUrl != null
+                          ? NetworkImage(avatarUrl!)
+                          : null,
+                      child: avatarUrl == null
+                          ? Icon(FontAwesomeIcons.user, size: 50, color: Colors.black)
+                          : null,
                     ),
                     Positioned(
-                        bottom: Sizes.deviceWidth/18,
-                        right: Sizes.deviceWidth/18,
+                      bottom: Sizes.deviceWidth / 18,
+                      right: Sizes.deviceWidth / 18,
+                      child: GestureDetector(
+                        onTap: _pickAndUploadImage, // Bildauswahl öffnen
                         child: CircleAvatar(
                           backgroundColor: text_sekundr,
                           child: Icon(FontAwesomeIcons.pencil, color: Colors.black),
                         ),
+                      ),
                     ),
                   ],
                 ),
