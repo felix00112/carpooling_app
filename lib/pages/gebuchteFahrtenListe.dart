@@ -127,7 +127,13 @@ class _GebuchteFahrtenListeState extends State<GebuchteFahrtenListe> with Single
     };
 
     for (var ride in rides) {
-      DateTime rideDate = DateTime.parse(ride['ride']['date']);
+      var rideData = ride['ride'] ?? ride; // Verwende ride['ride'], falls vorhanden, sonst ride direkt
+      if (rideData['date'] == null) {
+        print("Fehler: Datum fehlt in der Fahrt: $rideData");
+        continue; // Überspringe diese Fahrt, da das Datum fehlt
+      }
+
+      DateTime rideDate = DateTime.parse(rideData['date']);
       String groupKey = _getRideGroup(rideDate);
 
       if (_isPast(rideDate)) {
@@ -157,7 +163,10 @@ class _GebuchteFahrtenListeState extends State<GebuchteFahrtenListe> with Single
   Future<void> _loadRides() async {
     try {
       List<Map<String, dynamic>> booked = await RideService().getUserBookedRides();
+
       List<Map<String, dynamic>> offered = await RideService().getUserOfferedRides();
+      print("offered date: ");
+      print(offered);
       setState(() {
         bookedRides = booked;
         offeredRides = offered;
