@@ -117,6 +117,19 @@ class _OfferRidePageState extends State<OfferRidePage> {
     }
   }
 
+  String convertToSupabaseFormat(String inputDate) {
+    // Input format (2025-02-23 – 12:48)
+    DateFormat inputFormat = DateFormat("yyyy-MM-dd – HH:mm");
+
+    // Parse Date Object
+    DateTime parsedDate = inputFormat.parse(inputDate);
+
+    // Transform in desired format (2025-02-22 20:00:00+00)
+    DateFormat outputFormat = DateFormat("yyyy-MM-dd HH:mm:ss'+00'");
+
+    return outputFormat.format(parsedDate);
+  }
+
   void _onOfferRide() async {
     // Hole alle Werte, die du für createRide benötigst
     String start = _startLabel;
@@ -126,13 +139,15 @@ class _OfferRidePageState extends State<OfferRidePage> {
     print("ziel: ");
     print(_zielLabel);
     // Hier sicherstellen, dass das Datum korrekt formatiert ist
-    String date = widget.Zeitpunkt;  // Beispiel: "2025-02-22T20:00:00"
+    String date = convertToSupabaseFormat(widget.Zeitpunkt);  // Beispiel: "2025-02-22T20:00:00"
     int seats = _freeSeats;
     bool flintaOnly = false; // Beispielwert
     bool petsAllowed = _isPetAllowed;
     bool luggageAllowed = _isLuggageAllowed;
     int maxStops = _stops;
     List<String> paymentMethods = _selectedPaymentMethods.toList();
+    print("paymentMEthods: ");
+    print(paymentMethods);
 
     try {
       // Rufe die Methode auf, um die Fahrt zu erstellen
@@ -353,9 +368,9 @@ class _OfferRidePageState extends State<OfferRidePage> {
                       Wrap(
                         spacing: Sizes.paddingSmall,
                         children: [
-                          _buildSelectableButton('Bar'),
-                          _buildSelectableButton('PayPal'),
-                          _buildSelectableButton('Kreditkarte'),
+                          _buildSelectableButton('cash'),
+                          _buildSelectableButton('paypal'),
+                          _buildSelectableButton('card'),
                         ],
                       ),
                     ],
