@@ -4,6 +4,25 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:carpooling_app/constants/navigationBar.dart';
 import 'package:carpooling_app/constants/sizes.dart';
 
+List<Map<String,dynamic>> settings_inhalt = [
+  {
+    "title":"Persönliche & Zahlungsdaten",
+    "routing":"'/personal'"
+  },
+  {
+    "title":"Angaben zum eigenen Auto",
+    "routing":"'/car_details'"
+  },
+  {
+    "title":"Konto",
+    "routing":"'/account'"
+  },
+  {
+    "title":"Sucheinstellungen",
+    "routing":"'/search_settings'"
+  }
+];
+
 class SettingsPage extends StatefulWidget {
   @override
   _SettingsPageState createState() => _SettingsPageState();
@@ -11,7 +30,7 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   // Navigation bar index
-  int _currentIndex = 1;
+  int _currentIndex = 2;
 
   void _onTabTapped(int index) {
     setState(() {
@@ -40,7 +59,91 @@ class _SettingsPageState extends State<SettingsPage> {
         currentIndex: _currentIndex,
         onTap: _onTabTapped,
       ),
+
+
       appBar: AppBar( //header
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios),
+          onPressed: () {
+            Navigator.pop(context); // Zurück-Navigation
+          },
+        ),
+        title: Text(
+          'Einstellungen',
+          style: TextStyle(fontSize: Sizes.textHeading),
+        ),
+        centerTitle: true,
+      ),
+
+
+      body: SingleChildScrollView(
+        padding: EdgeInsets.symmetric(horizontal: Sizes.paddingRegular, vertical: Sizes.paddingSmall),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            SizedBox( //Bild
+              child: Center(
+                child: SvgPicture.asset(
+                  'assets/images/undraw_settings.svg',
+                  width: Sizes.deviceWidth,
+                  fit: BoxFit.contain,
+                ),
+              ),
+            ),
+
+            //Inhalt
+            SizedBox(height: Sizes.paddingRegular),
+            ...settings_inhalt.map((entry){
+              return Padding(
+                padding: EdgeInsets.only(bottom: Sizes.paddingSmall),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: background_box_white,
+                    borderRadius: BorderRadius.circular(Sizes.borderRadius),
+                  ),
+                  child: ListTile(
+                    title: Text(entry["title"],style: TextStyle(fontSize: Sizes.textNormal),),
+                    trailing: Icon(Icons.arrow_forward_ios),
+                    onTap: () {
+                      Navigator.pushNamed(context, entry["routing"]);
+                    },
+                  ),
+                ),
+              );
+            }),
+          ],
+        )
+      )
+    );
+  }
+}
+
+/*class SettingsTile extends StatelessWidget {
+  final String title;
+  final VoidCallback onTap;
+
+  const SettingsTile({
+    required this.title,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        ListTile(
+          title: Text(title, style: TextStyle(fontSize: Sizes.textSubheading)),
+          //trailing: Icon(Icons.arrow_forward_ios, size: Sizes.textSizeRegular,),
+          onTap: onTap,
+        ),
+      ],
+    );
+  }
+}
+*/
+//alter Code
+/*
+appBar: AppBar( //header
         backgroundColor: background_grey,
         elevation: 0,
         leading: IconButton(
@@ -59,7 +162,8 @@ class _SettingsPageState extends State<SettingsPage> {
         ),
         centerTitle: true,
       ),
-      body: Column(
+
+body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           // Header image and illustration
@@ -96,7 +200,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     children: [
                       SettingsTile(
                         title: 'Persönliche & Zahlungsdaten',
-                        onTap: () {
+                        onTap: () { //Navigation zu den entsprechenden Seiten basierend auf dem Index
                           Navigator.pushNamed(context, '/personal');
                         },
                       ),
@@ -130,45 +234,4 @@ class _SettingsPageState extends State<SettingsPage> {
 
         ],
       ),
-    );
-  }
-}
-
-class SettingsTile extends StatelessWidget {
-  final String title;
-  final VoidCallback onTap;
-
-  const SettingsTile({
-    required this.title,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        ListTile(
-          title: Text(title, style: TextStyle(fontSize: Sizes.textSubheading)),
-          //trailing: Icon(Icons.arrow_forward_ios, size: Sizes.textSizeRegular,),
-          onTap: onTap,
-        ),
-      ],
-    );
-  }
-}
-
-/*
-void main() => runApp(MaterialApp(
-  debugShowCheckedModeBanner: false,
-  home: SettingsPage(),
-  routes: {
-    '/home': (context) => HomeScreen(), // Definiere deine Seiten hier
-    '/fahrten': (context) => FahrtenScreen(),
-    '/profil': (context) => ProfilScreen(),
-    '/personal': (context) => PersonalScreen(),
-    '/car_details': (context) => CarDetailsScreen(),
-    '/account': (context) => AccountScreen(),
-    '/search_settings': (context) => SearchSettingsScreen(),
-  },
-));
-*/
+ */

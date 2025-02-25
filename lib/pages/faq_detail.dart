@@ -19,7 +19,7 @@ class FaqDetailPage extends StatefulWidget {
 }
 
 class _FaqDetailPageState extends State<FaqDetailPage> {
-  int _currentIndex = 1;
+  int _currentIndex = 2;
 
   void _onTabTapped(int index) {
     setState(() {
