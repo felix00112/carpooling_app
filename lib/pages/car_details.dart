@@ -5,7 +5,6 @@ import 'package:carpooling_app/constants/navigationBar.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io'; // Import für File
 import 'package:flutter/foundation.dart' show kIsWeb; // Import für kIsWeb
-import 'package:flutter_colorpicker/flutter_colorpicker.dart'; // Import für Color Picker
 
 import '../constants/constants.dart';
 
@@ -21,9 +20,7 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
   // Input field controllers
   final TextEditingController _licensePlateController = TextEditingController();
   final TextEditingController _modelController = TextEditingController();
-
-  // Color picker
-  Color _selectedColor = Colors.blue;
+  final TextEditingController _colorController = TextEditingController(); // Controller für Farbe
 
   // Image picker
   final ImagePicker _picker = ImagePicker();
@@ -55,33 +52,12 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
     });
   }
 
-  void _pickColor() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Welche Farbe hat dein Fahrzeug'),
-          content: SingleChildScrollView(
-            child: BlockPicker(
-              pickerColor: _selectedColor,
-              onColorChanged: (Color color) {
-                setState(() {
-                  _selectedColor = color;
-                });
-              },
-            ),
-          ),
-          actions: <Widget>[
-            ElevatedButton(
-              child: Text('Fertig'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
+  @override
+  void dispose() {
+    _licensePlateController.dispose();
+    _modelController.dispose();
+    _colorController.dispose(); // Dispose color controller
+    super.dispose();
   }
 
   @override
@@ -180,26 +156,18 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
                       cursorColor: button_blue,
                     ),
                     SizedBox(height: Sizes.paddingRegular),
-                    Row(
-                      children: [
-                        ElevatedButton(
-                          onPressed: _pickColor,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: button_lightblue, // Hintergrundfarbe des Buttons
-                            foregroundColor: Colors.white, // Textfarbe des Buttons
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(Sizes.borderRadius10), // Abrundung des Buttons
-                            ),
-                          ),
-                          child: Text('Farbe auswählen'),
+                    TextField(
+                      controller: _colorController,
+                      decoration: InputDecoration(
+                        labelText: 'Farbe',
+                        labelStyle: TextStyle(color: Colors.grey), // Standardfarbe des Labels
+                        floatingLabelStyle: TextStyle(color: button_blue), // Farbe des Labels, wenn fokussiert
+                        border: OutlineInputBorder(),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: button_blue),
                         ),
-                        SizedBox(width: Sizes.paddingRegular), // Abstand zwischen Button und Container
-                        Container(
-                          height: 50,
-                          width: 50,
-                          color: _selectedColor,
-                        ),
-                      ],
+                      ),
+                      cursorColor: button_blue,
                     ),
                     SizedBox(height: Sizes.paddingRegular),
                     Row(
