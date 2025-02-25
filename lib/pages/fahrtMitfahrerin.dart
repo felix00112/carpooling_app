@@ -15,6 +15,7 @@ import '../services/car_service.dart';
 import '../services/user_service.dart';
 import '../services/rating_service.dart';
 import '../services/booking_service.dart';
+import 'fahrtBeendet.dart';
 
 class RidePickupPage extends StatefulWidget {
   final String starteingabe;
@@ -186,6 +187,8 @@ class _RidePickupPageState extends State<RidePickupPage> {
       setState(() {
         _userCars = cars; // Autos im State speichern
       });
+      print("cars: ");
+      print(cars);
     } catch (e) {
       print("Fehler beim Abrufen der Autos: $e");
     }
@@ -342,8 +345,51 @@ class _RidePickupPageState extends State<RidePickupPage> {
             SizedBox(height: Sizes.paddingSmall),
             _buildMap(context),
             SizedBox(height: Sizes.paddingSmall),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: Sizes.paddingRegular),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Abfahrt: ${widget.rideDetails['date']}', // Formatiere das Datum
+                  style: TextStyle(
+                    fontSize: Sizes.textSubText,
+                    fontWeight: FontWeight.bold,
+                    color: dark_blue,
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: Sizes.paddingSmall), // Abstand zwischen dem Text und der Fahrerinfo
             _buildDriverInfo(context), // Zeige die Fahrerdaten an
-            SizedBox(height: Sizes.paddingSmall),
+            SizedBox(height: Sizes.paddingSmall), // Abstand zwischen Fahrerinfo und Button
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: Sizes.paddingRegular),
+              child: ElevatedButton(
+                onPressed: () {
+                  // Navigiere zur FahrtBeendet-Seite und übergib die notwendigen Daten
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => FahrtBeendet(
+                          rideDetails: widget.rideDetails
+                      ),
+                      // TODO: Start- und Zielmarker hier übergeben, falls benötigt
+                    ),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: dark_blue, // Hintergrundfarbe
+                  foregroundColor: Colors.white, // Textfarbe
+                  padding: EdgeInsets.symmetric(vertical: Sizes.paddingRegular), // Innenabstand
+                  textStyle: TextStyle(
+                    fontSize: Sizes.textSubText,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  minimumSize: Size(double.infinity, 50), // Volle Breite und Höhe
+                ),
+                child: Text('Fahrt abschließen'),
+              ),
+            ),
           ],
         ),
       ),
