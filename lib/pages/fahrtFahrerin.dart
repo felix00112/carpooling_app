@@ -7,26 +7,32 @@ import 'package:carpooling_app/constants/button2.dart';
 import 'package:url_launcher/url_launcher.dart'; // Zum Öffnen der URL
 import 'package:geocoding_resolver/geocoding_resolver.dart';
 import 'package:latlong2/latlong.dart';
-
-
+import '../services/booking_service.dart';
+import '../services/user_service.dart';
+import '../services/ride_service.dart'; // Stelle sicher, dass du einen RideService hast
 
 class RideDetailsPage extends StatefulWidget {
   final String Starteingabe;
   final String Zieleingabe;
-  const RideDetailsPage({super.key, required this.Starteingabe, required this.Zieleingabe});
+  final int rideId;
+  const RideDetailsPage({super.key, required this.Starteingabe, required this.Zieleingabe, required this.rideId});
 
   @override
   _RideDetailsPageState createState() => _RideDetailsPageState();
 }
+
 class _RideDetailsPageState extends State<RideDetailsPage> {
   String _startLabel = "Start";
   String _zielLabel = "Ziel";
   LatLng? _startMarker;
   LatLng? _destinationMarker;
+  final BookingService _bookingService = BookingService();
+  final UserService _userService = UserService();
+  final RideService _rideService = RideService(); // RideService hinzufügen
+  List<Map<String, dynamic>> bookings = [];
+  bool isLoading = true;
 
   int _currentIndex = 1;
-  int passengerIndex = 1;
-
 
   void _onTabTapped(int index) {
     setState(() {
@@ -46,17 +52,53 @@ class _RideDetailsPageState extends State<RideDetailsPage> {
     }
   }
 
+  @override
   void initState() {
     super.initState();
     _getDestAddress(widget.Starteingabe);
     _getStartAddress(widget.Zieleingabe);
+    _loadBookings();
+  }
+
+  Future<void> _loadBookings() async {
+    try {
+      final bookings = await _bookingService.getBookingsForRide(widget.rideId);
+      List<Map<String, dynamic>> bookingDetails = [];
+      for (var booking in bookings) {
+        final userResponse = await _userService.getUserById(booking['passenger_id']);
+        if (userResponse.isNotEmpty) {
+          final user = userResponse[0];
+          bookingDetails.add({
+            ...booking,
+            'user_name': user['first_name'] ?? 'Unbekannt',
+            'phone_number': user['phone_number'] ?? 'Keine Nummer verfügbar',
+          });
+        } else {
+          bookingDetails.add({
+            ...booking,
+            'user_name': 'Unbekannt',
+            'phone_number': 'Keine Nummer verfügbar',
+          });
+        }
+      }
+      setState(() {
+        this.bookings = bookingDetails;
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Fehler beim Laden der Buchungen: $e')),
+      );
+    }
   }
 
   void _getDestAddress(String address) async {
     try {
       GeoCoder geoCoder = GeoCoder();
-      List<LookupAddress> suggestions =
-      await geoCoder.getAddressSuggestions(address: address);
+      List<LookupAddress> suggestions = await geoCoder.getAddressSuggestions(address: address);
       if (suggestions.isNotEmpty) {
         LookupAddress suggestion = suggestions.first;
         setState(() {
@@ -71,11 +113,11 @@ class _RideDetailsPageState extends State<RideDetailsPage> {
       print("Fehler beim Geocoding: $e");
     }
   }
+
   void _getStartAddress(String address) async {
     try {
       GeoCoder geoCoder = GeoCoder();
-      List<LookupAddress> suggestions =
-      await geoCoder.getAddressSuggestions(address: address);
+      List<LookupAddress> suggestions = await geoCoder.getAddressSuggestions(address: address);
       if (suggestions.isNotEmpty) {
         LookupAddress suggestion = suggestions.first;
         setState(() {
@@ -91,6 +133,47 @@ class _RideDetailsPageState extends State<RideDetailsPage> {
     }
   }
 
+  Future<void> _deleteRide() async {
+    try {
+      await _rideService.deleteRide(widget.rideId);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Fahrt erfolgreich gelöscht')),
+      );
+      Navigator.pop(context); // Zurück zur vorherigen Seite navigieren
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Fehler beim Löschen der Fahrt: $e')),
+      );
+    }
+  }
+
+  void _confirmDelete() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Fahrt löschen'),
+          content: Text('Möchtest du diese Fahrt wirklich löschen?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Dialog schließen
+              },
+              child: Text('Abbrechen'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Dialog schließen
+                _deleteRide(); // Fahrt löschen
+              },
+              child: Text('Löschen'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     Sizes.initialize(context);
@@ -103,18 +186,25 @@ class _RideDetailsPageState extends State<RideDetailsPage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
+            // Zeile mit "Deine Fahrt" und dem Mülltonnen-Button
             Padding(
               padding: EdgeInsets.all(Sizes.paddingRegular),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Deine Fahrt',
-                  style: TextStyle(
-                    fontSize: Sizes.textHeading,
-                    fontWeight: FontWeight.bold,
-                    color: dark_blue,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Deine Fahrt',
+                    style: TextStyle(
+                      fontSize: Sizes.textHeading,
+                      fontWeight: FontWeight.bold,
+                      color: dark_blue,
+                    ),
                   ),
-                ),
+                  IconButton(
+                    icon: Icon(Icons.delete, color: dark_blue), // Mülltonnen-Symbol
+                    onPressed: _confirmDelete, // Bestätigungsdialog anzeigen
+                  ),
+                ],
               ),
             ),
             Padding(
@@ -133,7 +223,10 @@ class _RideDetailsPageState extends State<RideDetailsPage> {
             ),
             _buildAddressBox(),
             SizedBox(height: Sizes.paddingSmall),
-            _buildDriverList(context),
+            isLoading
+                ? Center(child: CircularProgressIndicator())
+                : _buildBookingList(context),
+            SizedBox(height: Sizes.paddingSmall),
             Padding(
               padding: EdgeInsets.only(left: Sizes.paddingRegular),
               child: Align(
@@ -150,12 +243,11 @@ class _RideDetailsPageState extends State<RideDetailsPage> {
             ),
             _buildDestinationButton(),
             SizedBox(height: Sizes.paddingSmall),
-          ]
+          ],
         ),
       ),
     );
   }
-
 
   Widget _buildAddressBox() {
     return Padding(
@@ -168,62 +260,38 @@ class _RideDetailsPageState extends State<RideDetailsPage> {
             onPressed: () => _openGoogleMaps(_startLabel),
             color: button_blue,
             textColor: Colors.white,
-            width: MediaQuery
-                .of(context)
-                .size
-                .width * 0.925,
-            height: MediaQuery
-                .of(context)
-                .size
-                .width * 0.12,
+            width: MediaQuery.of(context).size.width * 0.925,
+            height: MediaQuery.of(context).size.width * 0.12,
           ),
-          Positioned(
-              left: 16, child: Icon(Icons.location_on, color: Colors.white)),
+          Positioned(left: 16, child: Icon(Icons.location_on, color: Colors.white)),
         ],
       ),
     );
   }
-  void _incrementCounter() {
-    setState(() {
-      passengerIndex++; // Erhöht den Zähler um 1
-    });
-  }
 
-  Widget _buildDriverList(BuildContext context) {
-    List<Map<String, dynamic>> passengers = [
-      {"name": "Sascha", "rating": 4.0, "time": "15:30", "address": "Musterstraße 1"},
-      {"name": "Jonas", "rating": 4.5, "time": "16:00", "address": "Musterstraße 2"},
-    ];
-
+  Widget _buildBookingList(BuildContext context) {
     return Column(
-      children: List.generate(passengers.length, (index) {
-        return Column(
-          children: [
-            _buildPassengerInfo(
-              context,
-              passengers[index]["name"],
-              passengers[index]["rating"],
-              passengers[index]["time"],
-              passengers[index]["address"],
-              index + 1, // Passenger Nummerierung
-            ),
-            SizedBox(height: Sizes.paddingRegular), // Abstand zwischen den Cards
-          ],
+      children: bookings.asMap().entries.map((entry) {
+        final index = entry.key;
+        final booking = entry.value;
+        return _buildBookingCard(
+          context,
+          booking['user_name'],
+          booking['phone_number'],
+          index,
         );
-      }),
+      }).toList(),
     );
   }
 
-
-
-  Widget _buildPassengerInfo(BuildContext context, String name, double rating, String time, String address, int passengerIndex) {
+  Widget _buildBookingCard(BuildContext context, String userName, String phoneNumber, int index) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start, // Überschrift linksbündig
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: EdgeInsets.symmetric(horizontal: Sizes.paddingRegular),
           child: Text(
-            "Zustieg $passengerIndex",
+            "Mitfahrer ${index + 1}",
             style: TextStyle(
               fontSize: Sizes.textSubText * 0.9,
               fontWeight: FontWeight.bold,
@@ -231,8 +299,9 @@ class _RideDetailsPageState extends State<RideDetailsPage> {
             ),
           ),
         ),
-        SizedBox(height: Sizes.paddingSmall), // Abstand zwischen Titel und Card
+        SizedBox(height: Sizes.paddingSmall),
         Container(
+          width: MediaQuery.of(context).size.width * 0.925,
           margin: EdgeInsets.symmetric(horizontal: Sizes.paddingRegular),
           padding: EdgeInsets.all(Sizes.paddingRegular),
           decoration: BoxDecoration(
@@ -255,7 +324,7 @@ class _RideDetailsPageState extends State<RideDetailsPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            name,
+                            userName,
                             style: TextStyle(
                               fontSize: Sizes.textSubText,
                               fontWeight: FontWeight.bold,
@@ -263,10 +332,11 @@ class _RideDetailsPageState extends State<RideDetailsPage> {
                           ),
                           Row(
                             children: [
-                              Icon(Icons.star, color: Colors.black38,
-                                  size: Sizes.textSubText),
-                              Text(rating.toStringAsFixed(1),
-                                  style: TextStyle(fontSize: Sizes.textSubText)),
+                              Icon(Icons.star, color: Colors.black38, size: Sizes.textSubText),
+                              Text(
+                                "4.5",
+                                style: TextStyle(fontSize: Sizes.textSubText),
+                              ),
                             ],
                           ),
                         ],
@@ -275,11 +345,19 @@ class _RideDetailsPageState extends State<RideDetailsPage> {
                   ),
                   Row(
                     children: [
-                      Icon(Icons.message, color: Colors.black,
-                          size: Sizes.textSubText * 1.5),
+                      IconButton(
+                        icon: Icon(Icons.message, color: Colors.black, size: Sizes.textSubText * 1.5),
+                        onPressed: () {
+                          print('Nachricht an $userName');
+                        },
+                      ),
                       SizedBox(width: Sizes.paddingSmall),
-                      Icon(Icons.phone, color: Colors.black,
-                          size: Sizes.textSubText * 1.5),
+                      IconButton(
+                        icon: Icon(Icons.phone, color: Colors.black, size: Sizes.textSubText * 1.5),
+                        onPressed: () {
+                          print('Anruf an $userName');
+                        },
+                      ),
                     ],
                   ),
                 ],
@@ -292,10 +370,10 @@ class _RideDetailsPageState extends State<RideDetailsPage> {
                 children: [
                   Row(
                     children: [
-                      Text(time),
+                      Icon(Icons.phone, color: Colors.black54),
                       SizedBox(width: Sizes.paddingSmall),
                       Text(
-                        address,
+                        phoneNumber,
                         style: TextStyle(
                           fontSize: Sizes.textSubText,
                           fontWeight: FontWeight.bold,
@@ -312,8 +390,6 @@ class _RideDetailsPageState extends State<RideDetailsPage> {
     );
   }
 
-
-
   Widget _buildDestinationButton() {
     return Padding(
       padding: EdgeInsets.only(top: Sizes.paddingSmall),
@@ -325,14 +401,8 @@ class _RideDetailsPageState extends State<RideDetailsPage> {
             onPressed: () => _openGoogleMaps(_zielLabel),
             color: dark_blue,
             textColor: Colors.white,
-            width: MediaQuery
-                .of(context)
-                .size
-                .width * 0.925,
-            height: MediaQuery
-                .of(context)
-                .size
-                .width * 0.12,
+            width: MediaQuery.of(context).size.width * 0.925,
+            height: MediaQuery.of(context).size.width * 0.12,
           ),
           Positioned(left: 16, child: Icon(Icons.flag, color: Colors.white)),
         ],
@@ -341,12 +411,10 @@ class _RideDetailsPageState extends State<RideDetailsPage> {
   }
 
   void _openGoogleMaps(String address) async {
-    final String googleMapsUrl = 'https://www.google.com/maps/search/?q=${Uri
-        .encodeComponent(address)}';
+    final String googleMapsUrl = 'https://www.google.com/maps/search/?q=${Uri.encodeComponent(address)}';
 
-    // Prüfen, ob die URL geöffnet werden kann
     if (await canLaunch(googleMapsUrl)) {
-      await launch(googleMapsUrl); // Öffne den Google Maps Link
+      await launch(googleMapsUrl);
     } else {
       throw 'Konnte Google Maps nicht öffnen';
     }
