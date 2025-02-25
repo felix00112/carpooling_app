@@ -12,7 +12,11 @@ import 'package:carpooling_app/constants/navigationBar.dart';
 import 'package:intl/intl.dart'; // Für Zeitformatierung
 import 'package:carpooling_app/pages/fahrtMitfahrerin.dart';
 
+
 import '../services/ride_service.dart';
+import '../services/rating_service.dart';
+import '../services/booking_service.dart';
+
 
 class FindRide extends StatefulWidget {
   final String Starteingabe;
@@ -34,10 +38,14 @@ class _FindRideState extends State<FindRide> {
 
   List<Map<String, dynamic>> _rides = []; // list for real data
   final RideService _rideService = RideService(); // ride service instance
-
+  final RatingService _ratingService = RatingService();
+  final BookingService _bookingService = BookingService();
   String _startLabel = "Start";
   String _zielLabel = "Ziel";
   int _currentIndex = 1;
+  List<Map<String, dynamic>> _ratings = [];
+  double? ratingValue = 0;
+  Map<int, double> _ratingsMap = {};
 
   final MapController _mapController = MapController();
 
@@ -64,6 +72,53 @@ class _FindRideState extends State<FindRide> {
     super.initState();
     firstMarker();
     secondMarker();
+    printAllRides();
+
+  }
+
+
+  Future<void> _fetchRatings(int index) async {
+    if (_rides.isEmpty) return;
+
+    String driverId = _rides[index]['driver_id'];
+
+    try {
+      final ratings = await _ratingService.getRatings(driverId);
+      double ratingValue = _calculateAverageRating(
+          ratings); // Berechne die Durchschnittsbewertung
+
+      setState(() {
+        _ratingsMap[index] =
+            ratingValue; // Speichere die Bewertung für diesen Index
+      });
+
+      print("Rating for driver $driverId: $ratingValue");
+    } catch (e) {
+      print("Fehler beim Abrufen der Bewertungen: $e");
+    }
+  }
+
+  double _calculateAverageRating(List<Map<String, dynamic>> ratings) {
+    if (ratings.isEmpty) return 0.0; // Falls keine Bewertungen existieren
+
+    double sum = ratings.fold(
+        0, (prev, rating) => prev + (rating['rating'] as num));
+    double average = sum / ratings.length;
+
+    return double.parse(
+        average.toStringAsFixed(1)); // Auf eine Nachkommastelle runden
+  }
+
+  Future<void> printAllRides() async {
+    try {
+      final rides = await _rideService.getAllRides(); // Rufe alle Fahrten ab
+      print("Alle Fahrten:");
+      for (var ride in rides) {
+        print(ride); // Gib jede Fahrt in der Konsole aus
+      }
+    } catch (e) {
+      print("Fehler beim Abrufen der Fahrten: $e");
+    }
   }
 
   String convertToSupabaseFormat(String inputDate) {
@@ -86,7 +141,8 @@ class _FindRideState extends State<FindRide> {
     print("Start:$startAddress");
     print("End:$endAddress");
     try {
-      final List<Map<String, dynamic>> rides = await _rideService.getRides(date,startAddress, endAddress);
+      final List<Map<String, dynamic>> rides = await _rideService.getRides(
+          date, startAddress, endAddress);
 
       print('Geladene Fahrten: $rides');
 
@@ -98,7 +154,9 @@ class _FindRideState extends State<FindRide> {
             "start_location": ride["start_location"],
             "end_location": ride["end_location"],
             "date": ride["date"],
-            "driver": ride["driver"] ?? {"first_name": "Unbekannter Fahrer"} // If `driver` is null
+            "seats_available": ride["seats_available"],
+            "driver": ride["driver"] ?? {"first_name": "Unbekannter Fahrer"}
+            // If `driver` is null
           };
         }).toList();
       });
@@ -106,7 +164,6 @@ class _FindRideState extends State<FindRide> {
       print("Error fetching rides: $e");
     }
   }
-
 
 
   void _updateMapCenter() {
@@ -125,7 +182,8 @@ class _FindRideState extends State<FindRide> {
   void firstMarker() async {
     try {
       GeoCoder geoCoder = GeoCoder();
-      List<LookupAddress> suggestions = await geoCoder.getAddressSuggestions(address: widget.Starteingabe);
+      List<LookupAddress> suggestions = await geoCoder.getAddressSuggestions(
+          address: widget.Starteingabe);
 
       if (suggestions.isNotEmpty) {
         LookupAddress suggestion = suggestions.first;
@@ -134,7 +192,8 @@ class _FindRideState extends State<FindRide> {
             double.parse(suggestion.latitude),
             double.parse(suggestion.longitude),
           );
-          _startLabel = suggestion.displayName; // Setze die Adresse für DB-Suche
+          _startLabel =
+              suggestion.displayName; // Setze die Adresse für DB-Suche
         });
 
         print("Start: $_startLabel");
@@ -149,7 +208,8 @@ class _FindRideState extends State<FindRide> {
   void secondMarker() async {
     try {
       GeoCoder geoCoder = GeoCoder();
-      List<LookupAddress> suggestions = await geoCoder.getAddressSuggestions(address: widget.Zieleingabe);
+      List<LookupAddress> suggestions = await geoCoder.getAddressSuggestions(
+          address: widget.Zieleingabe);
 
       if (suggestions.isNotEmpty) {
         LookupAddress suggestion = suggestions.first;
@@ -177,10 +237,10 @@ class _FindRideState extends State<FindRide> {
   void checkAndFetchRides() {
     if (_startMarker != null && _destinationMarker != null) {
       print("Fetching rides with addresses:$_startLabel;$_zielLabel");
-      _fetchRides(_startLabel.toString(), _zielLabel.toString()); // Use converted addresses
+      _fetchRides(_startLabel.toString(),
+          _zielLabel.toString()); // Use converted addresses
     }
   }
-
 
 
   @override
@@ -196,9 +256,9 @@ class _FindRideState extends State<FindRide> {
           title: Text(
             "Fahrt suchen",
             style: TextStyle(
-                fontSize: Sizes.textHeading,
-                fontWeight: FontWeight.bold,
-                color: dark_blue,
+              fontSize: Sizes.textHeading,
+              fontWeight: FontWeight.bold,
+              color: dark_blue,
             ),
           ),
           centerTitle: true,
@@ -423,29 +483,63 @@ class _FindRideState extends State<FindRide> {
   }
 
   Widget _buildDriverList(BuildContext context) {
-
     return Expanded(
       child: _rides.isEmpty
-          ? Center(child: Text("Keine Fahrten gefunden", style: TextStyle(fontSize: Sizes.textSubText, color: Colors.grey)))
+          ? Center(child: Text("Keine Fahrten gefunden",
+          style: TextStyle(fontSize: Sizes.textSubText, color: Colors.grey)))
           : ListView.builder(
         itemCount: _rides.length,
         itemBuilder: (context, index) {
           var ride = _rides[index];
-          // Make sure that `driver` is not null before accessing its properties
-          String driverName = (ride['driver'] != null && ride['driver']['first_name'] != null)
+
+          _bookingService.updateSeatsForRide(ride['id']);
+          print("fahrt_suchen.dart  seats: ");
+          print(ride['seats_available']);
+          print("for: ");
+          print(ride);
+          // Sicherstellen, dass die Sitzplätze nicht null sind.
+          String seats = ride['seats_available'] != null
+              ? ride['seats_available'].toString()
+              : "Unbekannt";
+
+          // Wenn Bewertungen für diesen Fahrer noch nicht geladen wurden, rufe sie ab
+          if (!_ratingsMap.containsKey(index)) {
+            _fetchRatings(index);
+          }
+
+          // Verwende die Bewertung, falls sie schon vorhanden ist, oder einen Standardwert
+          double driverRating = _ratingsMap[index] ?? 0.0;
+
+          // Fahrername
+          String driverName = (ride['driver'] != null &&
+              ride['driver']['first_name'] != null)
               ? ride['driver']['first_name']
               : "Unbekannter Fahrer";
 
-
-          return _buildDriverCard(
-            context,
-            driverName,
-            4.5, // Example Mock Rating
-            // Todo: right time format. should be dd.MM.yyyy. HH:mm
-            DateFormat("HH:mm").format(DateTime.parse(ride['date'])),
-            // Todo: fix seats available
-            // ride['seats_available'],
-            "2", // Falls du Platzanzahl hast, ersetzen
+          // Den Button für die Fahrt und die weiteren Informationen erstellen
+          return Column(
+            children: [
+              _buildDriverCard(
+                context,
+                driverName,
+                driverRating, // Verwende das Rating aus der Map
+                DateFormat("HH:mm").format(DateTime.parse(ride['date'])),
+                seats, // Beispiel für Sitzplätze, ersetze mit echten Daten
+                index, // Index an den Button weitergeben
+              ),
+              // Button zum Löschen aller Buchungen
+              ElevatedButton(
+                onPressed: () async {
+                  // Den Test-Button verwenden, um alle Buchungen für diese Fahrt zu löschen
+                  int rideId = ride['id'];
+                  await BookingService().deleteAllBookingsForRide(rideId);
+                },
+                child: Text("Alle Buchungen löschen"),
+                style: ElevatedButton.styleFrom(
+                  // Button Hintergrundfarbe
+                ),
+              ),
+            ],
           );
         },
       ),
@@ -453,42 +547,59 @@ class _FindRideState extends State<FindRide> {
   }
 
 
+
   Widget _buildDriverCard(BuildContext context, String name, double rating,
-      String time, String seats) {
+      String time, String seats, int index) {
     DateTime now = DateTime.now();
     DateTime startTime = DateFormat("HH:mm").parse(time);
-    startTime = DateTime(
-        now.year, now.month, now.day, startTime.hour, startTime.minute);
+    startTime = DateTime(now.year, now.month, now.day, startTime.hour, startTime.minute);
+
+    // Berechne die Zeitdifferenz in Minuten
     int minutesDiff = startTime.difference(now).inMinutes;
 
     String timeText;
     Color timeColor;
 
-    if (minutesDiff <= 10) {
+    // Wenn die Zeit in der Vergangenheit liegt
+    if (minutesDiff < 0) {
+      timeText = "vor ${-minutesDiff} min";  // Differenz als positive Zahl anzeigen
+      timeColor = Colors.red;  // Rot für vergangene Zeiten
+    }
+    // Wenn die Zeit jetzt oder in den nächsten 10 Minuten liegt
+    else if (minutesDiff <= 10) {
       timeText = "jetzt";
-      timeColor = Colors.red;
-    } else if (minutesDiff < 60) {
-      timeText = "in $minutesDiff min.";
-      timeColor = Colors.orange;
-    } else if (minutesDiff < 1440) {
-      int hours = minutesDiff ~/ 60;
-      int minutes = minutesDiff % 60;
-      timeText = minutes > 0 ? "in ${hours}h ${minutes}min." : "in ${hours}h";
-      timeColor = Colors.green;
-    } else {
-      int days = minutesDiff ~/ 1440;
-      int remainingMinutes = minutesDiff % 1440;
-      int hours = remainingMinutes ~/ 60;
+      timeColor = Colors.red;  // Rot für "jetzt"
+    }
+    // Wenn die Zeit in weniger als einer Stunde liegt
+    else if (minutesDiff < 60) {
+      timeText = "in $minutesDiff min";
+      timeColor = Colors.orange;  // Orange für Zeiten in der nahen Zukunft
+    }
+    // Wenn die Zeit in weniger als einem Tag liegt (unter 1440 Minuten)
+    else if (minutesDiff < 1440) {
+      int hours = minutesDiff ~/ 60;  // Ganze Stunden
+      int minutes = minutesDiff % 60;  // Übrige Minuten
+      timeText = minutes > 0 ? "in ${hours}h ${minutes}min" : "in ${hours}h";
+      timeColor = Colors.green;  // Grün für Zeiten in der Zukunft
+    }
+    // Wenn die Zeit in mehr als einem Tag liegt
+    else {
+      int days = minutesDiff ~/ 1440;  // Ganze Tage
+      int remainingMinutes = minutesDiff % 1440;  // Übrige Minuten
+      int hours = remainingMinutes ~/ 60;  // Übrige Stunden
       timeText = hours > 0 ? "in ${days} Tagen ${hours}h" : "in ${days} Tagen";
-      timeColor = Colors.green;
+      timeColor = Colors.green;  // Grün für lange Zukunft
     }
 
     // Farbe für die Anzahl der freien Plätze
     Color seatsColor;
     String pluralOrSingular;
     int seatsInt = int.tryParse(seats) ?? 0;
-
-    if (seatsInt == 1) {
+    if (seatsInt == 0) {
+      seatsColor = Colors.red;
+      pluralOrSingular = ' freie Plätze';
+    }
+    else if (seatsInt == 1) {
       seatsColor = Colors.red;
       pluralOrSingular = ' freier Platz';
     } else if (seatsInt == 2) {
@@ -543,14 +654,39 @@ class _FindRideState extends State<FindRide> {
                   ],
                 ),
                 GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
+                  onTap: () async {
+                    final rideId = _rides[index]['id'];
+                    int seatsInt = int.tryParse(seats) ?? 0;
+
+                    if (seatsInt == 0) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Kein freier Platz verfügbar!')),
+                      );
+                      return; // Buchung wird nicht durchgeführt
+                    }
+
+                    try {
+                      await _bookingService.createBooking(rideId);
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Buchung erfolgreich!')),
+                      );
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
                           builder: (context) => RidePickupPage(
-                              starteingabe: widget.Starteingabe,
-                              zieleingabe: widget.Zieleingabe)),
-                    );
+                            starteingabe: widget.Starteingabe,
+                            zieleingabe: widget.Zieleingabe,
+                            rideDetails: _rides[index],
+                          ),
+                        ),
+                      );
+                    } catch (e) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Fehler bei der Buchung: $e')),
+                      );
+                    }
                   },
                   child: Column(
                     children: [
@@ -600,7 +736,7 @@ class _FindRideState extends State<FindRide> {
                 ),
                 Row(
                   children: [
-                    Text(seats+pluralOrSingular,
+                    Text(seats + pluralOrSingular,
                         style: TextStyle(
                             fontSize: Sizes.textSubText,
                             color: seatsColor,
@@ -616,4 +752,3 @@ class _FindRideState extends State<FindRide> {
   }
 
 }
-

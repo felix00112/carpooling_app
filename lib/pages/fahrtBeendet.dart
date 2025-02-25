@@ -2,20 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../constants/colors.dart';
 import 'package:carpooling_app/constants/sizes.dart';
+import '../services/rating_service.dart'; // Importiere den RatingService
 
 class FahrtBeendet extends StatefulWidget {
-  const FahrtBeendet({super.key});
-
-  //TODO Startmarker und destinationmarker müssen hier beim aufruf der seite übergeben werden. -> Implementierung einer Kleinen Karte anzeige
+  final Map<String, dynamic> rideDetails;
+  const FahrtBeendet({super.key, required this.rideDetails});
 
   @override
   _FahrtBeendetState createState() => _FahrtBeendetState();
 }
 
 class _FahrtBeendetState extends State<FahrtBeendet> with SingleTickerProviderStateMixin {
-  int _rating = 1; //Rating Wert für die Fahrt
-  String _feedback = ''; //Text Feedback für die Fahrt
+  int _rating = 1; // Rating Wert für die Fahrt
+  String _feedback = ''; // Text Feedback für die Fahrt
   final TextEditingController _feedbackController = TextEditingController(); // Controller für das Textfeld
+  final RatingService _ratingService = RatingService(); // Instanz des RatingService
 
   @override
   Widget build(BuildContext context) {
@@ -112,14 +113,33 @@ class _FahrtBeendetState extends State<FahrtBeendet> with SingleTickerProviderSt
                                   foregroundColor: dark_blue, // Textfarbe
                                 ),
                               ),
-                              TextButton( //TODO: Hier muss noch die weitergabe des Feedbacks implementiert werden.
-                                onPressed: () {
+                              TextButton(
+                                onPressed: () async {
                                   setState(() {
                                     _rating = _dialogRating; // Aktualisiert den Hauptzustand
                                     _feedback = _feedbackController.text; // Speichert das zusätzliche Feedback
                                   });
-                                  Navigator.of(context).pop();
-                                  Navigator.pushNamed(context, '/'); // Navigiert zur Homepage
+
+                                  try {
+                                    // Rufe die createRating-Methode auf
+                                    await _ratingService.createRating(
+                                      _rating.toDouble(), // Rating als double
+                                      widget.rideDetails['driver_id'], // Fahrer-ID
+                                      _feedback, // Feedback-Text
+                                    );
+
+                                    // Schließe den Dialog und navigiere zur Homepage
+                                    Navigator.of(context).pop();
+                                    Navigator.pushNamed(context, '/');
+                                  } catch (e) {
+                                    // Fehlerbehandlung
+                                    print("Fehler beim Speichern des Ratings: $e");
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text("Fehler beim Speichern des Ratings: $e"),
+                                      ),
+                                    );
+                                  }
                                 },
                                 child: Text('Absenden'),
                                 style: TextButton.styleFrom(

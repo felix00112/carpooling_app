@@ -1,3 +1,4 @@
+import 'package:carpooling_app/services/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding_resolver/geocoding_resolver.dart';
 import 'package:carpooling_app/constants/sizes.dart';
@@ -10,11 +11,18 @@ import 'package:url_launcher/url_launcher.dart'; // Zum Öffnen der URL
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import '../services/car_service.dart';
+import '../services/user_service.dart';
+import '../services/rating_service.dart';
+import '../services/booking_service.dart';
+import 'fahrtBeendet.dart';
 
 class RidePickupPage extends StatefulWidget {
   final String starteingabe;
   final String zieleingabe;
-  RidePickupPage({super.key, required this.starteingabe, required this.zieleingabe});
+  final Map<String, dynamic> rideDetails;
+  // Neue Eigenschaft für Fahrtdetails
+  RidePickupPage({super.key, required this.starteingabe, required this.zieleingabe, required this.rideDetails});
 
   @override
   _RidePickupPageState createState() => _RidePickupPageState();
@@ -30,6 +38,14 @@ class _RidePickupPageState extends State<RidePickupPage> {
   LatLng _mapCenter = LatLng(52.5200, 13.4050);
   List<LatLng> _routePoints = [];
 
+  final CarService _carService = CarService();
+  final UserService _userService = UserService();
+  final RatingService _ratingService = RatingService();
+  final BookingService _bookingService = BookingService();
+  List<Map<String, dynamic>> _userCars = [];
+  List<Map<String, dynamic>> _ratings = [];
+  String? phoneNumber = "";
+  double ratingValue = 0;
 
   int _currentIndex = 1;
 
@@ -60,14 +76,128 @@ class _RidePickupPageState extends State<RidePickupPage> {
     _getStartAddress(widget.zieleingabe);
     firstMarker();
     secondMarker();
+    _fetchUserCars();
+    _fetchDriverPhoneNumber();
+    _fetchRatings();
+    _printBookingsForRide(widget.rideDetails['id']);
+
+  }
+
+  Future<void> _printBookingsForRide(int rideId) async {
+    try {
+      // Rufe die Buchungen für die angegebene Fahrt ab
+      final bookings = await _bookingService.getBookingsForRide(rideId);
+
+      if (bookings.isNotEmpty) {
+        // Falls Buchungen vorhanden sind, gebe sie in der Konsole aus
+        print("Buchungen für Fahrt ID $rideId:");
+        bookings.forEach((booking) {
+          print(booking);
+        });
+      } else {
+        print("Keine Buchungen für Fahrt ID $rideId gefunden.");
+      }
+    } catch (e) {
+      print("Fehler beim Abrufen der Buchungen: $e");
+    }
+  }
+
+
+  Future<void> _fetchRatings() async {
+    if (widget.rideDetails.isEmpty) return;
+
+    String driverId = widget.rideDetails['driver_id'];
+
+    try {
+      final ratings = await _ratingService.getRatings(driverId);
+      setState(() {
+        _ratings = ratings;
+        ratingValue = _calculateAverageRating(_ratings);
+      });
+      print("Rating: ");
+      print(ratingValue);
+    } catch (e) {
+      print("Fehler beim Abrufen der Bewertungen: $e");
+    }
+  }
+
+  double _calculateAverageRating(List<Map<String, dynamic>> ratings) {
+    if (ratings.isEmpty) return 0.0; // Falls keine Bewertungen existieren
+
+    double sum = ratings.fold(0, (prev, rating) => prev + (rating['rating'] as num));
+    double average = sum / ratings.length;
+
+    return double.parse(average.toStringAsFixed(1)); // Auf eine Nachkommastelle runden
+  }
+
+  Future<void> _fetchDriverPhoneNumber() async {
+    if (widget.rideDetails.isEmpty) return;
+
+    String driverId = widget.rideDetails['driver_id'];
+
+    try {
+      String? phone = await _userService.getPhoneNumber(driverId);
+      setState(() {
+        phoneNumber = phone ?? "Keine Nummer verfügbar";
+      });
+    } catch (e) {
+      print("Fehler beim Abrufen der Telefonnummer: $e");
+    }
+  }
+  void _callDriver() async {
+    if (phoneNumber != null && phoneNumber!.isNotEmpty) {
+      final Uri telUri = Uri.parse("tel:$phoneNumber");
+
+      if (await canLaunchUrl(telUri)) {
+        await launchUrl(telUri);
+      } else {
+        print("Fehler: Konnte die Telefonnummer nicht anrufen.");
+      }
+    } else {
+      print("Keine Telefonnummer verfügbar.");
+    }
+  }
+  void _sendMessage() async {
+    if (phoneNumber != null && phoneNumber!.isNotEmpty) {
+      final Uri smsUri = Uri.parse("sms:$phoneNumber");
+
+      if (await canLaunchUrl(smsUri)) {
+        await launchUrl(smsUri);
+      } else {
+        print("Fehler: Konnte die SMS-App nicht öffnen.");
+      }
+    } else {
+      print("Keine Telefonnummer verfügbar.");
+    }
+  }
+
+
+  Future<void> _fetchUserCars() async {
+    print("ride List: ");
+    print(widget.rideDetails);
+    if (widget.rideDetails.isEmpty) {
+      return; // Keine Fahrtdetails vorhanden
+    }
+
+    // Extrahiere die driver_id aus den rideDetails
+    String driverId = widget.rideDetails['driver_id'];
+
+    try {
+      final cars = await _carService.getCarsByUser(driverId); // Autos des Fahrers abrufen
+      setState(() {
+        _userCars = cars; // Autos im State speichern
+      });
+      print("cars: ");
+      print(cars);
+    } catch (e) {
+      print("Fehler beim Abrufen der Autos: $e");
+    }
   }
 
   void _updateMapCenter() {
     if (_startMarker != null && _destinationMarker != null) {
-      double midLat = (_startMarker!.latitude + _destinationMarker!.latitude) /
-          2;
-      double midLng = (_startMarker!.longitude +
-          _destinationMarker!.longitude) / 2;
+      double midLat = (_startMarker!.latitude + _destinationMarker!.latitude) / 2;
+      double midLng = (_startMarker!.longitude + _destinationMarker!.longitude) / 2;
       setState(() {
         _mapCenter = LatLng(midLat, midLng);
       });
@@ -78,8 +208,7 @@ class _RidePickupPageState extends State<RidePickupPage> {
   void firstMarker() async {
     try {
       GeoCoder geoCoder = GeoCoder();
-      List<LookupAddress> suggestions =
-      await geoCoder.getAddressSuggestions(address: widget.starteingabe);
+      List<LookupAddress> suggestions = await geoCoder.getAddressSuggestions(address: widget.starteingabe);
       if (suggestions.isNotEmpty) {
         LookupAddress suggestion = suggestions.first;
         setState(() {
@@ -99,8 +228,7 @@ class _RidePickupPageState extends State<RidePickupPage> {
   void secondMarker() async {
     try {
       GeoCoder geoCoder = GeoCoder();
-      List<LookupAddress> suggestions =
-      await geoCoder.getAddressSuggestions(address: widget.zieleingabe);
+      List<LookupAddress> suggestions = await geoCoder.getAddressSuggestions(address: widget.zieleingabe);
       if (suggestions.isNotEmpty) {
         LookupAddress suggestion = suggestions.first;
         setState(() {
@@ -122,21 +250,15 @@ class _RidePickupPageState extends State<RidePickupPage> {
     if (_startMarker == null || _destinationMarker == null) return;
 
     final String url =
-        "https://router.project-osrm.org/route/v1/driving/${_startMarker!
-        .longitude},${_startMarker!.latitude};${_destinationMarker!
-        .longitude},${_destinationMarker!
-        .latitude}?overview=full&geometries=geojson";
+        "https://router.project-osrm.org/route/v1/driving/${_startMarker!.longitude},${_startMarker!.latitude};${_destinationMarker!.longitude},${_destinationMarker!.latitude}?overview=full&geometries=geojson";
 
     final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-      final List<dynamic> coordinates =
-      data['routes'][0]['geometry']['coordinates'];
+      final List<dynamic> coordinates = data['routes'][0]['geometry']['coordinates'];
       setState(() {
-        _routePoints = coordinates
-            .map((coord) => LatLng(coord[1], coord[0]))
-            .toList();
+        _routePoints = coordinates.map((coord) => LatLng(coord[1], coord[0])).toList();
       });
     } else {
       print("Fehler beim Abrufen der Route: ${response.statusCode}");
@@ -157,8 +279,7 @@ class _RidePickupPageState extends State<RidePickupPage> {
   void _getDestAddress(String address) async {
     try {
       GeoCoder geoCoder = GeoCoder();
-      List<LookupAddress> suggestions =
-      await geoCoder.getAddressSuggestions(address: address);
+      List<LookupAddress> suggestions = await geoCoder.getAddressSuggestions(address: address);
       if (suggestions.isNotEmpty) {
         LookupAddress suggestion = suggestions.first;
         setState(() {
@@ -173,11 +294,11 @@ class _RidePickupPageState extends State<RidePickupPage> {
       print("Fehler beim Geocoding: $e");
     }
   }
+
   void _getStartAddress(String address) async {
     try {
       GeoCoder geoCoder = GeoCoder();
-      List<LookupAddress> suggestions =
-      await geoCoder.getAddressSuggestions(address: address);
+      List<LookupAddress> suggestions = await geoCoder.getAddressSuggestions(address: address);
       if (suggestions.isNotEmpty) {
         LookupAddress suggestion = suggestions.first;
         setState(() {
@@ -192,6 +313,7 @@ class _RidePickupPageState extends State<RidePickupPage> {
       print("Fehler beim Geocoding: $e");
     }
   }
+
   @override
   Widget build(BuildContext context) {
     Sizes.initialize(context);
@@ -223,8 +345,51 @@ class _RidePickupPageState extends State<RidePickupPage> {
             SizedBox(height: Sizes.paddingSmall),
             _buildMap(context),
             SizedBox(height: Sizes.paddingSmall),
-            _buildDriverInfo(context),
-            SizedBox(height: Sizes.paddingSmall),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: Sizes.paddingRegular),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Abfahrt: ${widget.rideDetails['date']}', // Formatiere das Datum
+                  style: TextStyle(
+                    fontSize: Sizes.textSubText,
+                    fontWeight: FontWeight.bold,
+                    color: dark_blue,
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: Sizes.paddingSmall), // Abstand zwischen dem Text und der Fahrerinfo
+            _buildDriverInfo(context), // Zeige die Fahrerdaten an
+            SizedBox(height: Sizes.paddingSmall), // Abstand zwischen Fahrerinfo und Button
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: Sizes.paddingRegular),
+              child: ElevatedButton(
+                onPressed: () {
+                  // Navigiere zur FahrtBeendet-Seite und übergib die notwendigen Daten
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => FahrtBeendet(
+                          rideDetails: widget.rideDetails
+                      ),
+                      // TODO: Start- und Zielmarker hier übergeben, falls benötigt
+                    ),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: dark_blue, // Hintergrundfarbe
+                  foregroundColor: Colors.white, // Textfarbe
+                  padding: EdgeInsets.symmetric(vertical: Sizes.paddingRegular), // Innenabstand
+                  textStyle: TextStyle(
+                    fontSize: Sizes.textSubText,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  minimumSize: Size(double.infinity, 50), // Volle Breite und Höhe
+                ),
+                child: Text('Fahrt abschließen'),
+              ),
+            ),
           ],
         ),
       ),
@@ -363,6 +528,19 @@ class _RidePickupPageState extends State<RidePickupPage> {
   }
 
   Widget _buildDriverInfo(BuildContext context) {
+    if (_userCars.isEmpty) {
+      return Center(child: Text("Keine Autos gefunden"));
+    }
+
+    // Nehme das erste Auto aus der Liste (kann angepasst werden)
+    Map<String, dynamic> car = _userCars[0];
+    print(car);
+    Map<String, dynamic> ride = widget.rideDetails;
+    String driverName = ride['driver']?['first_name'] ?? 'Unbekannter Fahrer';
+    double rating = ratingValue; // Beispiel-Bewertung (kann aus rideDetails geholt werden, falls vorhanden)
+    String carModel = car['car_name'] ?? 'Unbekanntes Modell';
+    String licensePlate = car['license_plate'] ?? 'Unbekanntes Kennzeichen';
+
     return Container(
       margin: EdgeInsets.symmetric(horizontal: Sizes.paddingRegular),
       padding: EdgeInsets.all(Sizes.paddingRegular),
@@ -386,7 +564,7 @@ class _RidePickupPageState extends State<RidePickupPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Sascha',
+                        driverName, // Zeige den Namen des Fahrers an
                         style: TextStyle(
                           fontSize: Sizes.textSubText,
                           fontWeight: FontWeight.bold,
@@ -395,7 +573,10 @@ class _RidePickupPageState extends State<RidePickupPage> {
                       Row(
                         children: [
                           Icon(Icons.star, color: Colors.black38, size: Sizes.textSubText),
-                          Text('4,0', style: TextStyle(fontSize: Sizes.textSubText)),
+                          Text(
+                            rating.toStringAsFixed(1), // Zeige die Bewertung an
+                            style: TextStyle(fontSize: Sizes.textSubText),
+                          ),
                         ],
                       ),
                     ],
@@ -404,9 +585,15 @@ class _RidePickupPageState extends State<RidePickupPage> {
               ),
               Row(
                 children: [
-                  Icon(Icons.message, color: Colors.black, size: Sizes.textSubText * 1.5),
+                  IconButton(
+                    icon: Icon(Icons.message, color: Colors.black, size: Sizes.textSubText * 1.5),
+                    onPressed: _sendMessage, // Ruft die Nummer an
+                  ),
                   SizedBox(width: Sizes.paddingSmall),
-                  Icon(Icons.phone, color: Colors.black, size: Sizes.textSubText * 1.5),
+                  IconButton(
+                    icon: Icon(Icons.phone, color: Colors.black, size: Sizes.textSubText * 1.5),
+                    onPressed: _callDriver, // Ruft die Nummer an
+                  ),
                 ],
               ),
             ],
@@ -422,7 +609,7 @@ class _RidePickupPageState extends State<RidePickupPage> {
                   Icon(Icons.directions_car, color: Colors.black54),
                   SizedBox(width: Sizes.paddingSmall),
                   Text(
-                    'Opel Corsa',
+                    carModel, // Zeige das Automodell an
                     style: TextStyle(
                       fontSize: Sizes.textSubText,
                       fontWeight: FontWeight.bold,
@@ -431,7 +618,7 @@ class _RidePickupPageState extends State<RidePickupPage> {
                 ],
               ),
               Text(
-                'B-BB 1312',
+                licensePlate, // Zeige das Kennzeichen an
                 style: TextStyle(
                   fontSize: Sizes.textSubText,
                   fontWeight: FontWeight.bold,

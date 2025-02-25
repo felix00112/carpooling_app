@@ -11,9 +11,9 @@ class RatingService{
 
     await _supabase.from("ratings").insert({
       "rating": rating,
-      "for_user_id": forUserId,
+      "to_user": forUserId,
       "review": review,
-      "from_user_id": fromUser.id
+      "from_user": fromUser.id
     });
   }
 
