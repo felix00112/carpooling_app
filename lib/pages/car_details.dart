@@ -2,9 +2,6 @@ import 'package:carpooling_app/constants/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:carpooling_app/constants/navigationBar.dart';
-import 'package:image_picker/image_picker.dart';
-import 'dart:io'; // Import für File
-import 'package:flutter/foundation.dart' show kIsWeb; // Import für kIsWeb
 
 import '../constants/constants.dart';
 
@@ -22,41 +19,11 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
   final TextEditingController _modelController = TextEditingController();
   final TextEditingController _colorController = TextEditingController(); // Controller für Farbe
 
-  // Image picker
-  final ImagePicker _picker = ImagePicker();
-  XFile? _imageFile;
-
-  void _onTabTapped(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
-
-    // Navigation zu den entsprechenden Seiten basierend auf dem Index
-    switch (index) {
-      case 0:
-        Navigator.pushNamed(context, '/home');
-        break;
-      case 1:
-        Navigator.pushNamed(context, '/fahrten');
-        break;
-      case 2:
-        Navigator.pushNamed(context, '/profil');
-        break;
-    }
-  }
-
-  Future<void> _pickImage() async {
-    final XFile? pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-    setState(() {
-      _imageFile = pickedFile;
-    });
-  }
-
   @override
   void dispose() {
     _licensePlateController.dispose();
     _modelController.dispose();
-    _colorController.dispose(); // Dispose color controller
+    _colorController.dispose(); 
     super.dispose();
   }
 
@@ -66,7 +33,24 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
     return Scaffold(
       bottomNavigationBar: CustomBottomNavigationBar(
         currentIndex: _currentIndex,
-        onTap: _onTabTapped,
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+
+          // Navigation zu den entsprechenden Seiten basierend auf dem Index
+          switch (index) {
+            case 0:
+              Navigator.pushNamed(context, '/home');
+              break;
+            case 1:
+              Navigator.pushNamed(context, '/fahrten');
+              break;
+            case 2:
+              Navigator.pushNamed(context, '/profil');
+              break;
+          }
+        },
       ),
       appBar: AppBar( //header
         backgroundColor: background_grey,
@@ -101,8 +85,8 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
               child: Center(
                 child: SvgPicture.asset(
                   'assets/images/undraw_city_driver.svg',
-                  width: Sizes.width, // Passe Breite an
-                  height: Sizes.height, // Passe Höhe an
+                  width: Sizes.width,
+                  height: Sizes.height, 
                   fit: BoxFit.contain,
                 ),
               ),
@@ -168,37 +152,6 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
                         ),
                       ),
                       cursorColor: button_blue,
-                    ),
-                    SizedBox(height: Sizes.paddingRegular),
-                    Row(
-                      children: [
-                        ElevatedButton(
-                          onPressed: _pickImage,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: button_lightblue, // Hintergrundfarbe des Buttons
-                            foregroundColor: Colors.white, // Textfarbe des Buttons
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(Sizes.borderRadius10), // Abrundung des Buttons
-                            ),
-                          ),
-                          child: Text('Foto hochladen'),
-                        ),
-                        SizedBox(width: Sizes.paddingRegular), // Abstand zwischen Button und Bild
-                        if (_imageFile != null)
-                          kIsWeb
-                              ? Image.network(
-                                  _imageFile!.path,
-                                  width: 150,
-                                  height: 150,
-                                  fit: BoxFit.contain,
-                                )
-                              : Image.file(
-                                  File(_imageFile!.path),
-                                  width: 150,
-                                  height: 150,
-                                  fit: BoxFit.contain,
-                                ),
-                      ],
                     ),
                   ],
                 ),
