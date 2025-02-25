@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:carpooling_app/constants/navigationBar.dart';
 import 'package:carpooling_app/constants/sizes.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import '../services/user_service.dart';
 
 
 class ProfileSettingsPage extends StatefulWidget {
@@ -12,15 +13,66 @@ class ProfileSettingsPage extends StatefulWidget {
 }
 
 class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserData();
+  }
+
+
+
   // Variablen
+  Map<String, dynamic>? userData;
   bool hasPet = false;
-  bool flinta = false;
-  bool smoker = false;
+  bool isFlinta = false;
+  bool isSmoker = false;
+  String? avatarUrl;
 
   // TextEditingController für die Eingabefelder
   TextEditingController firstNameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
   TextEditingController phoneNumberController = TextEditingController();
+
+  // Fetch user data
+  Future<void> _fetchUserData() async {
+    final userService = UserService();
+    final data = await userService.getUserProfile();
+    setState(() {
+      userData = {...?data,};
+      firstNameController.text = userData?['first_name'] ?? '';
+      lastNameController.text = userData?['last_name'] ?? '';
+      phoneNumberController.text = userData?['phone_number'] ?? '';
+      hasPet = userData?['has_pets'] ?? false;
+      isFlinta = userData?['is_flinta'] ?? false;
+      isSmoker = userData?['is_smoker'] ?? false;
+      avatarUrl = userData?['avatar_url'];
+    });
+    print(userData.toString());
+  }
+
+  Future<void> saveProfileChanges() async {
+    try {
+      Map<String, dynamic> updates = {
+        'first_name': firstNameController.text,
+        'last_name': lastNameController.text,
+        'phone_number': phoneNumberController.text,
+        'has_pets': hasPet,
+        'is_flinta': isFlinta,
+        'is_smoker': isSmoker,
+      };
+      final userService = UserService();
+      await userService.updateUserProfile(updates);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Profil erfolgreich aktualisiert")),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Fehler beim Aktualisieren des Profils: $e")),
+      );
+    }
+  }
 
 
   // Navigation bar index
@@ -45,6 +97,15 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    // indicator if data is not yet loaded
+    if (userData == null) {
+      return Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
     Sizes.initialize(context);
     return Scaffold(
       bottomNavigationBar: CustomBottomNavigationBar(
@@ -172,16 +233,16 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
                         children: [
                           Row(
                             children: [
-                              Icon(FontAwesomeIcons.peopleRoof, color: Colors.black),
+                              Icon(FontAwesomeIcons.transgender, color: Colors.black),
                               SizedBox(width: Sizes.paddingRegular),
                               Text("Gehörst du zu Flinta?"),
                             ],
                           ),
                           Switch(
-                            value: flinta,
+                            value: isFlinta,
                             onChanged: (value) {
                               setState(() {
-                                flinta = value;
+                                isFlinta = value;
                               });
                             },
                             activeColor: green,
@@ -201,14 +262,14 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
                             children: [
                               Icon(FontAwesomeIcons.smoking, color: Colors.black),
                               SizedBox(width: Sizes.paddingRegular),
-                              Text("Gehörst du zu Flinta?"),
+                              Text("Bist du Raucher?"),
                             ],
                           ),
                           Switch(
-                            value: smoker,
+                            value: isSmoker,
                             onChanged: (value) {
                               setState(() {
-                                smoker = value;
+                                isSmoker = value;
                               });
                             },
                             activeColor: green,
@@ -228,6 +289,14 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
                         border: OutlineInputBorder(),
                       ),
                     ),
+
+                    SizedBox(height: Sizes.paddingRegular),
+
+                    ElevatedButton(
+                      onPressed: saveProfileChanges,
+                      child: Text("Speichern"),
+                    ),
+
                   ]
                 ),
               ),
