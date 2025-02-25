@@ -55,6 +55,21 @@ class RideService{
     return response ?? [];
   }
 
+  Future<List<Map<String, dynamic>>> getRideById(String rideId) async {
+    print("GET RIDE BY ID");
+    print(rideId);
+
+    final response = await _supabase
+        .from('rides')
+        .select('id, driver_id, start_location, end_location, date, seats_available, driver:carpoolusers(first_name)') // Fahrer-Name direkt laden
+        .eq('id', rideId)
+        .single(); // Da wir nur eine Fahrt zurückbekommen, verwenden wir .single()
+
+    print(response);
+    return [response] ?? []; // Rückgabe als Liste, um die gleiche Struktur wie getRides zu haben
+  }
+
+
   Future<List<Map<String, dynamic>>> getAllRides() async {
     final response = await _supabase
         .from('rides')
