@@ -35,6 +35,7 @@ class _OfferRidePageState extends State<OfferRidePage> {
   String _zielLabel = "Ziel";
   LatLng? _startMarker;
   LatLng? _destinationMarker;
+  int rideId = 0;
 
   int _currentIndex = 0;
 
@@ -133,12 +134,7 @@ class _OfferRidePageState extends State<OfferRidePage> {
   void _onOfferRide() async {
     // Hole alle Werte, die du für createRide benötigst
     String start = _startLabel;
-    print("start: ");
-    print(_startLabel);
     String stop = _zielLabel;
-    print("ziel: ");
-    print(_zielLabel);
-    // Hier sicherstellen, dass das Datum korrekt formatiert ist
     String date = convertToSupabaseFormat(widget.Zeitpunkt);  // Beispiel: "2025-02-22T20:00:00"
     int seats = _freeSeats;
     bool flintaOnly = false; // Beispielwert
@@ -146,12 +142,10 @@ class _OfferRidePageState extends State<OfferRidePage> {
     bool luggageAllowed = _isLuggageAllowed;
     int maxStops = _stops;
     List<String> paymentMethods = _selectedPaymentMethods.toList();
-    print("paymentMEthods: ");
-    print(paymentMethods);
 
     try {
       // Rufe die Methode auf, um die Fahrt zu erstellen
-      await _rideService.createRide(
+      rideId = await _rideService.createRide(
         start,
         stop,
         date,
@@ -165,8 +159,10 @@ class _OfferRidePageState extends State<OfferRidePage> {
 
       // Zeige eine Erfolgsmeldung an
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Fahrt erfolgreich angeboten!')),
+        SnackBar(content: Text('Fahrt erfolgreich angeboten! Ride ID: $rideId')),
       );
+
+      // Weitere Aktionen mit der rideId durchführen, z. B. Navigation oder Buchungen hinzufügen
     } catch (e) {
       // Zeige eine Fehlermeldung an, falls die Fahrt nicht erstellt werden konnte
       ScaffoldMessenger.of(context).showSnackBar(
@@ -404,7 +400,8 @@ class _OfferRidePageState extends State<OfferRidePage> {
                 context,
                 MaterialPageRoute(builder: (context) =>
                     RideDetailsPage(Starteingabe: widget.Starteingabe,
-                        Zieleingabe: widget.Zieleingabe)),
+                        Zieleingabe: widget.Zieleingabe,
+                        rideId: rideId)),
               );
             },
             color: button_blue,
