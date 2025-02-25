@@ -1,4 +1,5 @@
 import 'package:carpooling_app/pages/car_details.dart';
+import 'package:carpooling_app/constants/colors.dart';
 import 'package:carpooling_app/pages/faq.dart';
 import 'package:carpooling_app/pages/gebuchteFahrtenListe.dart';
 import 'package:carpooling_app/pages/homepage.dart';
@@ -53,6 +54,13 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Carpooling App',
+      theme: ThemeData( //default Hintergrund
+        scaffoldBackgroundColor: background_default,
+        appBarTheme: AppBarTheme(
+          backgroundColor: background_default,
+          titleTextStyle: TextStyle(color: dark_blue, fontWeight: FontWeight.bold), //fontSize: Sizes.textHeading,
+        ),
+      ),
       home: AuthGate(),
       routes: {
         //hier die drei routen für die bottom navigation bar
@@ -60,6 +68,7 @@ class MyApp extends StatelessWidget {
         // '/': (context) => HomePage(),
         '/fahrten': (context) => GebuchteFahrtenListe(),
         '/profil': (context) => ProfilePage(),
+        '/home': (context) => HomePage(),
 
         //suche starten
         //'/Suchen': (context) => FindRide(),
