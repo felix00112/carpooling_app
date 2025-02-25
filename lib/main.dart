@@ -70,7 +70,7 @@ class MyApp extends StatelessWidget {
         //'/RideDetails': (context) => RideDetailsPage(),
         // weitere routen:
         '/Settings': (context) => SettingsPage(),
-        '/goal': (context) => FahrtBeendet(),
+        //'/goal': (context) => FahrtBeendet(),
         '/signup' : (context) => SignupPage(),
         '/complete-profile': (context) => ProfileCompletionPage(),
       },
