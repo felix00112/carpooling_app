@@ -315,6 +315,7 @@ class _RidePickupPageState extends State<RidePickupPage> {
   }
 
   @override
+  @override
   Widget build(BuildContext context) {
     Sizes.initialize(context);
     return Scaffold(
@@ -326,18 +327,28 @@ class _RidePickupPageState extends State<RidePickupPage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
+            // Überschrift mit Mülltonnensymbol
             Padding(
               padding: EdgeInsets.all(Sizes.paddingRegular),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Du wirst abgeholt',
-                  style: TextStyle(
-                    fontSize: Sizes.textHeading,
-                    fontWeight: FontWeight.bold,
-                    color: dark_blue,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Du wirst abgeholt',
+                    style: TextStyle(
+                      fontSize: Sizes.textHeading,
+                      fontWeight: FontWeight.bold,
+                      color: dark_blue,
+                    ),
                   ),
-                ),
+                  IconButton(
+                    icon: Icon(Icons.delete, color: dark_blue), // Mülltonnensymbol
+                    onPressed: () {
+                      // Bestätigungsdialog anzeigen
+                      _confirmDeleteBooking();
+                    },
+                  ),
+                ],
               ),
             ),
             _buildAddressBox(),
@@ -393,6 +404,44 @@ class _RidePickupPageState extends State<RidePickupPage> {
           ],
         ),
       ),
+    );
+  }
+
+// Methode zum Anzeigen des Bestätigungsdialogs
+  void _confirmDeleteBooking() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Buchung löschen'),
+          content: Text('Möchtest du diese Buchung wirklich löschen?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Dialog schließen
+              },
+              child: Text('Abbrechen'),
+            ),
+            TextButton(
+              onPressed: () async {
+                Navigator.of(context).pop(); // Dialog schließen
+                try {
+                  await _bookingService.deleteBookingForCurrentUser(widget.rideDetails['id']);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Buchung erfolgreich gelöscht')),
+                  );
+                  Navigator.pop(context); // Zurück zur vorherigen Seite navigieren
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Fehler beim Löschen der Buchung: $e')),
+                  );
+                }
+              },
+              child: Text('Löschen'),
+            ),
+          ],
+        );
+      },
     );
   }
 
