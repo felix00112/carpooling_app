@@ -70,6 +70,18 @@ class CarService{
     return List<Map<String, dynamic>>.from(response);
   }
 
+  Future<void> updateCarData(Map<String, dynamic> updates) async {
+    final user = _supabase.auth.currentUser;
+    if (user == null) {
+      throw new Exception("User not logged in");
+    }
+    await _supabase
+        .from('cars')
+        .update(updates)
+        .eq('owner', user.id);
+
+  }
+
   Future<void> deleteCar(String carId) async {
     await _supabase.from('cars').delete().eq('id', carId);
   }
