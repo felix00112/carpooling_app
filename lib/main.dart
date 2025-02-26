@@ -80,7 +80,7 @@ class MyApp extends StatelessWidget {
         //'/goal': (context) => FahrtBeendet(),
         '/signup' : (context) => SignupPage(),
         '/complete-profile': (context) => ProfileCompletionPage(),
-        '/car_details': (context) => CarDetailsPage()
+        '/car_details': (context) => CarDetailsPage(),
 
         //einstellungsseiten
         '/profileBearbeiten' : (context) => ProfileSettingsPage()
