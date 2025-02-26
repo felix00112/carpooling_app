@@ -45,6 +45,8 @@ dependencies:
   url_launcher: ^6.0.10
   flutter_typeahead: ^4.0.0
   geocoding: ^2.0.0  # oder eine passende Version je nach Bedarf
+  image_picker: ^1.0.5
+  uuid: ^4.2.1
 
 
 

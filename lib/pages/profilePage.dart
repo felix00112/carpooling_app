@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:carpooling_app/constants/colors.dart';
 import '../auth/auth_service.dart';
+import '../constants/constants.dart';
 import '../constants/navigationBar.dart'; // Import der NavigationBar
 import '../services/car_service.dart';
 import '../services/rating_service.dart';
@@ -156,7 +157,12 @@ Future<void> _fetchUserData() async {
                   CircleAvatar(
                     radius: 50,
                     backgroundColor: Colors.grey.shade300,
-                    child: Icon(FontAwesomeIcons.user, size: 50, color: Colors.black),
+                    backgroundImage: realUserData?['avatar_url'] != null
+                        ? NetworkImage(realUserData?['avatar_url'])
+                        : null,
+                    child: realUserData?['avatar_url'] == null
+                        ? Icon(FontAwesomeIcons.user, size: 50, color: Colors.black)
+                        : null,
                   ),
                 ],
               ),

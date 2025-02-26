@@ -6,20 +6,20 @@ import 'package:carpooling_app/constants/sizes.dart';
 
 List<Map<String,dynamic>> settings_inhalt = [
   {
-    "title":"Persönliche & Zahlungsdaten",
-    "routing":"'/personal'"
+    "title":"Persönliche Daten",
+    "routing":"/profileBearbeiten"
   },
   {
     "title":"Angaben zum eigenen Auto",
-    "routing":"'/car_details'"
+    "routing":"/car_details"
   },
   {
     "title":"Konto",
-    "routing":"'/account'"
+    "routing":"/account"
   },
   {
     "title":"Sucheinstellungen",
-    "routing":"'/search_settings'"
+    "routing":"/search_settings"
   }
 ];
 

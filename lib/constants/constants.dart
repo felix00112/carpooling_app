@@ -17,6 +17,8 @@ class Sizes {
 
   static const double borderRadius10 = 10;
 
+  static var deviceWidth;
+
   static void initialize(BuildContext context) {
     MediaQueryData m = MediaQuery.of(context);
     width = m.size.width;

@@ -1,4 +1,8 @@
+import 'dart:io';
+
+import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:uuid/uuid.dart';
 
 class UserService {
   final SupabaseClient _supabase = Supabase.instance.client;
@@ -75,6 +79,43 @@ class UserService {
         .from('carpoolusers')
         .update(updates)
         .eq('id', user.id);
+  }
+
+  // Upload profile image
+  Future<String?> uploadProfileImage(XFile pickedFile) async {
+    final user = _supabase.auth.currentUser;
+    if (user == null) throw Exception("No logged in user found");
+
+    // Datei-Pfad überprüfen
+    if (pickedFile.path.isEmpty) {
+      print("Error: Kein Dateipfad gefunden");
+      return null;
+    }
+    var uuid = Uuid();
+    final String uuid4 = uuid.v4();
+    final File file = File(pickedFile.path);
+    final String fileName = '${user.id}/$uuid4';
+    print(fileName);
+
+    try {
+      // Datei hochladen
+      await _supabase.storage.from('avatars').upload(
+        fileName,
+        file,
+        fileOptions: const FileOptions(cacheControl: '3600', upsert: true),
+      );
+
+      // URL abrufen
+      final String publicUrl = _supabase.storage.from('avatars').getPublicUrl(fileName);
+
+      // URL in der Datenbank speichern
+      await updateUserProfile({'avatar_url': publicUrl});
+
+      return publicUrl;
+    } catch (e) {
+      print("Fehler beim Hochladen des Bildes: $e");
+      return null;
+    }
   }
 
   // Get user by id
