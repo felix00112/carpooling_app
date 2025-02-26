@@ -44,7 +44,7 @@ class BookingService{
       print("Total Bookings for Ride $rideId: $totalBookings");
 
       // Berechne die verfügbaren Sitze
-      int updatedSeatsAvailable = totalSeats - totalBookings;
+      int updatedSeatsAvailable = totalSeats-1 - totalBookings;
 
       // Stelle sicher, dass die verfügbaren Sitze nicht negativ werden
       if (updatedSeatsAvailable < 0) {
