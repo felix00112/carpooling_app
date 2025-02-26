@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:carpooling_app/constants/navigationBar.dart';
 
 import '../constants/constants.dart';
+import '../services/car_service.dart';
 
 class CarDetailsPage extends StatefulWidget {
   @override
@@ -13,6 +14,48 @@ class CarDetailsPage extends StatefulWidget {
 class _CarDetailsPageState extends State<CarDetailsPage> {
   // Navigation bar index
   int _currentIndex = 2;
+
+  Map<String, dynamic>? carData;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchCarData();
+  }
+
+  Future<void> _fetchCarData() async {
+    final carService = CarService();
+    final data = await carService.getCar();
+    final car = data.first;
+    setState(() {
+      carData = car;
+      _licensePlateController.text = car['license_plate'];
+      _modelController.text = car['car_name'];
+      _colorController.text = car['colour'];
+    });
+    print("Car Data: $carData.toString()");
+  }
+
+  Future<void> saveCarChanges() async {
+    try{
+      Map<String, dynamic> updates = {
+        'license_plate': _licensePlateController.text,
+        'car_name': _modelController.text,
+        'colour': _colorController.text,
+      };
+      final carService = CarService();
+      await carService.updateCarData(updates);
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Auto erfolgreich aktualisiert")),
+      );
+    }catch(e){
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Fehler beim Aktualisieren des Autos: $e")),
+      );
+    }
+  }
+
 
   // Input field controllers
   final TextEditingController _licensePlateController = TextEditingController();
@@ -156,6 +199,10 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
                   ],
                 ),
               ),
+            ),
+            ElevatedButton(
+              onPressed: saveCarChanges,
+              child: Text("Speichern"),
             ),
           ],
         ),
