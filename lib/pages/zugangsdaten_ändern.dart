@@ -1,6 +1,8 @@
-import 'package:carpooling_app/auth/auth_service.dart';
+//import 'package:carpooling_app/auth/auth_service.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../constants/button2.dart';
 import '../constants/colors.dart';
 import '../constants/navigationBar.dart';
 import '../constants/sizes.dart';
@@ -13,9 +15,11 @@ class ZugangsdatenPage extends StatefulWidget{
 }
 
 class _ZugangsdatenPageState extends State<ZugangsdatenPage>{
+  TextEditingController emailinputcontroller = TextEditingController();
+  TextEditingController passwortinputcontroller = TextEditingController();
+
   // Navigation bar index
   int _currentIndex = 2;
-
   void _onTabTapped(int index) {
 
     setState(() {
@@ -58,6 +62,65 @@ class _ZugangsdatenPageState extends State<ZugangsdatenPage>{
         ),
         centerTitle: true,
       ),
+
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            children: [
+              //Mail
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: Sizes.paddingRegular),
+                child: TextField(
+                  controller: emailinputcontroller,
+                  decoration: InputDecoration(
+                    labelText: "alte e-Mail Adresse",
+                    prefixIcon: Icon(FontAwesomeIcons.envelope),
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+              ),
+
+              //Passwort
+              /*Padding(
+                  padding: EdgeInsets.symmetric(horizontal: Sizes.paddingRegular),
+                  child: TextField(
+                    controller: passwortinputcontroller,
+                    decoration: InputDecoration(
+                      labelText: "altes Passwort",
+                      prefixIcon: Icon(FontAwesomeIcons.lock),
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+              ),*/
+
+              //SpeichernButton
+              Stack(
+                children: [
+                  CustomButton2(
+                    label: 'Speichern',
+                    onPressed: (){
+                      //was soll passieren wenn man auf den speichern klickt
+                      //übergabe/aktualisieren neuer Daten
+                      //zurück zur homePage?
+                      //bestätigungsnachricht?
+                    },
+                    color: button_blue,
+                    textColor: Colors.white,
+                    width: MediaQuery
+                        .of(context)
+                        .size
+                        .width * 0.925,
+                    height: MediaQuery
+                        .of(context)
+                        .size
+                        .width * 0.12,
+                  )
+                ],
+              ),
+            ],
+          ),
+        ),
+      )
     );
   }
 }
