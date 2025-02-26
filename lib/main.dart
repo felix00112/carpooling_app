@@ -1,4 +1,3 @@
-import 'package:carpooling_app/pages/car_details.dart';
 import 'package:carpooling_app/constants/colors.dart';
 import 'package:carpooling_app/pages/faq.dart';
 import 'package:carpooling_app/pages/gebuchteFahrtenListe.dart';
@@ -17,6 +16,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter/material.dart';
 
 import 'auth/auth_gate.dart';
+import 'pages/zugangsdaten_ändern.dart';
 import 'pages/profile_settings.dart';
 
 
@@ -84,6 +84,8 @@ class MyApp extends StatelessWidget {
 
         //einstellungsseiten
         '/profileBearbeiten' : (context) => ProfileSettingsPage()
+
+        '/change_credentials': (context) => ZugangsdatenPage(),
       },
 
     );
