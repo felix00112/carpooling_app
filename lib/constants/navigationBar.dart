@@ -17,8 +17,10 @@ class CustomBottomNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width; //screenwidth parameter for icons
     return BottomNavigationBar(
       currentIndex: currentIndex, // Highlight the selected page
+
       onTap: (index) {
         onTap(index); // Notify the parent widget when a tab is tapped
         switch (index) {
@@ -33,17 +35,17 @@ class CustomBottomNavigationBar extends StatelessWidget {
             break;
         }
       },
-      items: const [
+      items:  [
         BottomNavigationBarItem(
-          icon: Icon(Icons.home),
+          icon: Icon(Icons.home, size: screenWidth * 0.08), //adjusts icon based on screenwidth dynamically
           label: 'Home',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.list),
+          icon: Icon(Icons.list, size: screenWidth * 0.08),
           label: 'Fahrten',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.person),
+          icon: Icon(Icons.person, size: screenWidth * 0.08),
           label: 'Profil',
         ),
       ],
