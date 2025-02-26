@@ -1,11 +1,14 @@
 import 'package:carpooling_app/constants/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:carpooling_app/constants/colors.dart';
 
 /*
 Indexing required to color the correct item corresponding to page
  */
 
 class CustomBottomNavigationBar extends StatelessWidget {
+
   final int currentIndex;
   final Function(int) onTap;
 
@@ -19,6 +22,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width; //screenwidth parameter for icons
     return BottomNavigationBar(
+      backgroundColor: background_box_white,
       currentIndex: currentIndex, // Highlight the selected page
 
       onTap: (index) {
@@ -37,20 +41,41 @@ class CustomBottomNavigationBar extends StatelessWidget {
       },
       items:  [
         BottomNavigationBarItem(
-          icon: Icon(Icons.home, size: screenWidth * 0.08), //adjusts icon based on screenwidth dynamically
+          icon: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(FontAwesomeIcons.house, size: screenWidth * 0.07),
+              SizedBox(height: 2), // small gap between icon and label
+            ],
+          ),
           label: 'Home',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.list, size: screenWidth * 0.08),
+          icon: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(FontAwesomeIcons.list, size: screenWidth * 0.07),
+              SizedBox(height: 2), // small gap between icon and label
+            ],
+          ),
           label: 'Fahrten',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.person, size: screenWidth * 0.08),
+          icon: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(FontAwesomeIcons.solidUser, size: screenWidth * 0.07),
+              SizedBox(height: 2), // small gap between icon and label
+            ],
+          ),
           label: 'Profil',
         ),
       ],
       selectedItemColor: button_blue, // Color for selected item
       unselectedItemColor: text_sekundr, // Color for unselected items
+      selectedLabelStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+      unselectedLabelStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.normal),
+
     );
   }
 }
