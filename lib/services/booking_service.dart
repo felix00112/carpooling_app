@@ -44,7 +44,7 @@ class BookingService{
       print("Total Bookings for Ride $rideId: $totalBookings");
 
       // Berechne die verfügbaren Sitze
-      int updatedSeatsAvailable = totalSeats - totalBookings;
+      int updatedSeatsAvailable = totalSeats-1 - totalBookings;
 
       // Stelle sicher, dass die verfügbaren Sitze nicht negativ werden
       if (updatedSeatsAvailable < 0) {
@@ -78,6 +78,34 @@ class BookingService{
     updateSeatsForRide(rideId);
   }
 
+  Future<void> deleteBookingForCurrentUser(int rideId) async {
+    try {
+      // Hole den aktuellen Benutzer
+      final user = _supabase.auth.currentUser;
+      if (user == null) {
+        throw Exception("User not logged in");
+      }
+
+      // Lösche das Booking für den aktuellen Benutzer und die gegebene Fahrt
+      final response = await _supabase
+          .from('bookings')
+          .delete()
+          .eq('ride_id', rideId) // Filtere nach der Fahrt-ID
+          .eq('passenger_id', user.id); // Filtere nach der Benutzer-ID
+
+      if (response != null) {
+        print("Booking für Fahrt $rideId und Benutzer ${user.id} wurde gelöscht.");
+      } else {
+        print("Kein Booking gefunden für Fahrt $rideId und Benutzer ${user.id}.");
+      }
+
+      // Aktualisiere die verfügbaren Sitzplätze nach dem Löschen
+      //await updateSeatsForRide(rideId);
+    } catch (e) {
+      print("Fehler beim Löschen des Bookings für Fahrt $rideId: $e");
+      throw Exception("Fehler beim Löschen des Bookings: $e");
+    }
+  }
 
 
 

@@ -5,6 +5,7 @@ import 'package:carpooling_app/constants/sizes.dart';
 import '../constants/navigationBar.dart'; // Import der NavigationBar
 import 'package:intl/intl.dart';
 import '../services/ride_service.dart';
+import 'fahrtFahrerin.dart';
 import 'fahrtMitfahrerin.dart';
 
 class GebuchteFahrtenListe extends StatefulWidget {
@@ -82,36 +83,53 @@ class _GebuchteFahrtenListeState extends State<GebuchteFahrtenListe> with Single
 
   void _onRideClicked(Map<String, dynamic> rideDetails) async {
     print("onrideclicked ");
-    print(rideDetails['ride_id']);
+    print(rideDetails['id']);
 
-    // Rufe die Methode auf, um die vollständigen Fahrtdetails basierend auf der rideId zu erhalten
-    try {
-      List<Map<String, dynamic>> rideData = await _rideService.getRideById(rideDetails['ride_id'].toString());
+    // Überprüfen, ob es sich um eine angebotene Fahrt handelt
+    bool isOfferedRide = offeredRides.contains(rideDetails);
 
-      if (rideData.isNotEmpty) {
-        // Füge die rideId in rideDetails ein, falls noch nicht vorhanden
-        rideDetails['id'] = rideDetails['ride_id'];
-        print("rideDetails['id'] = ");
-        print(rideDetails);
-
-        // Kombiniere die erhaltenen Daten mit den vorhandenen rideDetails
-        Map<String, dynamic> fullRideDetails = {...rideDetails, ...rideData.first};
-
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => RidePickupPage(
-              starteingabe: fullRideDetails['start_location'] ?? 'Unbekannter Startort',  // Fallback-Wert hinzugefügt
-              zieleingabe: fullRideDetails['end_location'] ?? 'Unbekanntes Ziel', // Fallback-Wert hinzugefügt
-              rideDetails: fullRideDetails, // Ganze rideDetails inklusive rideId und zusätzlicher Daten
-            ),
+    if (isOfferedRide) {
+      // Navigiere zur RideDetailsPage für angebotene Fahrten
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => RideDetailsPage(
+            Starteingabe: rideDetails['start_location'] ?? 'Unbekannter Startort',
+            Zieleingabe: rideDetails['end_location'] ?? 'Unbekanntes Ziel',
+            rideId: rideDetails['id'],
           ),
-        );
-      } else {
-        print("Keine Daten für die angegebene rideId gefunden.");
+        ),
+      );
+    } else {
+      // Rufe die Methode auf, um die vollständigen Fahrtdetails basierend auf der rideId zu erhalten
+      try {
+        List<Map<String, dynamic>> rideData = await _rideService.getRideById(rideDetails['ride_id'].toString());
+
+        if (rideData.isNotEmpty) {
+          // Füge die rideId in rideDetails ein, falls noch nicht vorhanden
+          rideDetails['id'] = rideDetails['ride_id'];
+          print("rideDetails['id'] = ");
+          print(rideDetails);
+
+          // Kombiniere die erhaltenen Daten mit den vorhandenen rideDetails
+          Map<String, dynamic> fullRideDetails = {...rideDetails, ...rideData.first};
+
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => RidePickupPage(
+                starteingabe: fullRideDetails['start_location'] ?? 'Unbekannter Startort',  // Fallback-Wert hinzugefügt
+                zieleingabe: fullRideDetails['end_location'] ?? 'Unbekanntes Ziel', // Fallback-Wert hinzugefügt
+                rideDetails: fullRideDetails, // Ganze rideDetails inklusive rideId und zusätzlicher Daten
+              ),
+            ),
+          );
+        } else {
+          print("Keine Daten für die angegebene rideId gefunden.");
+        }
+      } catch (e) {
+        print("Fehler beim Abrufen der Fahrtdetails: $e");
       }
-    } catch (e) {
-      print("Fehler beim Abrufen der Fahrtdetails: $e");
     }
   }
 

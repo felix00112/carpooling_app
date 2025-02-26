@@ -1,16 +1,19 @@
 import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../services/booking_service.dart';
 
 class RideService{
   final SupabaseClient _supabase = Supabase.instance.client;
+  BookingService _bookingService = BookingService();
 
-  Future<void> createRide(String start, String stop, String date, int seats, bool flintaOnly, bool petsAllowed, bool luggageAllowed, int maxStops, List<String> paymentMethod) async {
+  Future<int> createRide(String start, String stop, String date, int seats, bool flintaOnly, bool petsAllowed, bool luggageAllowed, int maxStops, List<String> paymentMethod) async {
     final user = _supabase.auth.currentUser;
     if (user == null) {
       throw new Exception("User not logged in");
     }
 
-    await _supabase.from('rides').insert({
+    // Füge die Fahrt ein und erhalte die eingefügte Zeile zurück
+    final response = await _supabase.from('rides').insert({
       'driver_id': user.id,
       'start_location': start,
       'end_location': stop,
@@ -21,8 +24,14 @@ class RideService{
       'luggage_allowed': luggageAllowed,
       'max_stopovers': maxStops,
       'payment_method': paymentMethod
-    });
+    }).select(); // Wähle die eingefügte Zeile aus
 
+    // Extrahiere die ride_id aus der Antwort
+    if (response != null && response.isNotEmpty) {
+      return response[0]['id'] as int; // Rückgabe der ride_id
+    } else {
+      throw new Exception("Fehler beim Erstellen der Fahrt: Keine ID zurückgegeben");
+    }
   }
 
   Future<void> updateSeatsAvailable(String rideId) async {
@@ -132,5 +141,21 @@ class RideService{
   }
 
 //   Todo: Delete and update ride
+
+  Future<void> deleteRide(int rideId) async {
+    try {
+      // Lösche die Fahrt mit der angegebenen rideId
+      await _supabase
+          .from('rides')
+          .delete()
+          .eq('id', rideId); // Filtere nach der Fahrt-ID
+
+      print("Fahrt mit ID $rideId erfolgreich gelöscht.");
+      _bookingService.deleteAllBookingsForRide(rideId);
+    } catch (e) {
+      print("Fehler beim Löschen der Fahrt: $e");
+      throw Exception("Fehler beim Löschen der Fahrt");
+    }
+  }
 
 }
