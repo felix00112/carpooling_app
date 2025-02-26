@@ -117,174 +117,176 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
   Sizes.initialize(context);
-  return Scaffold(
-    bottomNavigationBar: CustomBottomNavigationBar(
-      currentIndex: _currentIndex,
-      onTap: _onTabTapped,
-    ),
-    body: SingleChildScrollView(
-      padding: EdgeInsets.all(Sizes.paddingRegular),
-      child: Form(
-        key: _formKey, // Formular mit Key um Validierung zu ermöglichen
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              height: Sizes.topBarHeight,
-              child: Center(
-                child: SvgPicture.asset(
-                  'assets/images/undraw_city_driver.svg',
-                  width: Sizes.deviceWidth,
-                  fit: BoxFit.contain,
+  return SafeArea(
+    child: Scaffold(
+      bottomNavigationBar: CustomBottomNavigationBar(
+        currentIndex: _currentIndex,
+        onTap: _onTabTapped,
+      ),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.all(Sizes.paddingRegular),
+        child: Form(
+          key: _formKey, // Formular mit Key um Validierung zu ermöglichen
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                height: Sizes.topBarHeight,
+                child: Center(
+                  child: SvgPicture.asset(
+                    'assets/images/undraw_city_driver.svg',
+                    width: Sizes.deviceWidth,
+                    fit: BoxFit.contain,
+                  ),
                 ),
               ),
-            ),
-            SizedBox(height: Sizes.paddingRegular),
-            Text(
-              "Wohin möchtest du fahren?",
-              style: TextStyle(
-                fontSize: Sizes.textHeading,
-                fontWeight: FontWeight.bold,
-                color: dark_blue,
+              SizedBox(height: Sizes.paddingRegular),
+              Text(
+                "Wohin möchtest du fahren?",
+                style: TextStyle(
+                  fontSize: Sizes.textHeading,
+                  fontWeight: FontWeight.bold,
+                  color: dark_blue,
+                ),
               ),
-            ),
-            SizedBox(height: Sizes.paddingBig),
-            DecoratedBox(
-              decoration: BoxDecoration(
-                color: background_box_white,
-                borderRadius: BorderRadius.circular(Sizes.borderRadius),
-              ),
-              child: Column(
-                children: [
-                  SizedBox(height: Sizes.paddingRegular),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: Sizes.paddingSmall),
-                    child: TextField(
-                      controller: Startinputcontroller,
-                      decoration: InputDecoration(
-                        labelText: "Start",
-                        prefixIcon: Icon(Icons.gps_fixed),
-                        border: OutlineInputBorder(),
-                        labelStyle: TextStyle(
-                          color: Startinputcontroller.text == "Bitte ausfüllen!" ? text_error : dark_blue,
+              SizedBox(height: Sizes.paddingBig),
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  color: background_box_white,
+                  borderRadius: BorderRadius.circular(Sizes.borderRadius),
+                ),
+                child: Column(
+                  children: [
+                    SizedBox(height: Sizes.paddingRegular),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: Sizes.paddingSmall),
+                      child: TextField(
+                        controller: Startinputcontroller,
+                        decoration: InputDecoration(
+                          labelText: "Start",
+                          prefixIcon: Icon(Icons.gps_fixed),
+                          border: OutlineInputBorder(),
+                          labelStyle: TextStyle(
+                            color: Startinputcontroller.text == "Bitte ausfüllen!" ? text_error : dark_blue,
+                          ),
                         ),
+                        onChanged: (text) {
+                          setState(() {}); // Aktualisiert nur die Farbe des Labels
+                        },
                       ),
-                      onChanged: (text) {
-                        setState(() {}); // Aktualisiert nur die Farbe des Labels
-                      },
                     ),
-                  ),
 
-                  SizedBox(height: Sizes.paddingSmall),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: Sizes.paddingSmall),
-                    child: TextField(
-                      controller: Zielinputcontroller,
-                      decoration: InputDecoration(
-                        labelText: "Ziel",
-                        prefixIcon: Icon(Icons.location_on),
-                        border: OutlineInputBorder(),
-                        labelStyle: TextStyle(
-                          color: Zielinputcontroller.text == "Bitte ausfüllen!" ? text_error : dark_blue,
+                    SizedBox(height: Sizes.paddingSmall),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: Sizes.paddingSmall),
+                      child: TextField(
+                        controller: Zielinputcontroller,
+                        decoration: InputDecoration(
+                          labelText: "Ziel",
+                          prefixIcon: Icon(Icons.location_on),
+                          border: OutlineInputBorder(),
+                          labelStyle: TextStyle(
+                            color: Zielinputcontroller.text == "Bitte ausfüllen!" ? text_error : dark_blue,
+                          ),
                         ),
+                        onChanged: (text) {
+                          setState(() {}); // Aktualisiert nur die Farbe des Labels
+                        },
                       ),
-                      onChanged: (text) {
-                        setState(() {}); // Aktualisiert nur die Farbe des Labels
-                      },
                     ),
-                  ),
 
-                  SizedBox(height: Sizes.paddingSmall),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: Sizes.paddingSmall),
-                    child: TextField(
-                      controller: _dateTimeController,
-                      readOnly: true,
-                      decoration: InputDecoration(
-                        labelText: "Zeitpunkt",
-                        fillColor: dark_blue,
-                        prefixIcon: Icon(Icons.calendar_today),
-                        border: OutlineInputBorder(),
+                    SizedBox(height: Sizes.paddingSmall),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: Sizes.paddingSmall),
+                      child: TextField(
+                        controller: _dateTimeController,
+                        readOnly: true,
+                        decoration: InputDecoration(
+                          labelText: "Zeitpunkt",
+                          fillColor: dark_blue,
+                          prefixIcon: Icon(Icons.calendar_today),
+                          border: OutlineInputBorder(),
+                        ),
+                        onTap: () => _selectDateTime(context),
                       ),
-                      onTap: () => _selectDateTime(context),
                     ),
-                  ),
-                  SizedBox(height: Sizes.paddingSmall),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: RadioListTile(
-                          title: Text(
-                            "Anbieten",
-                            style: TextStyle(
-                              fontSize: Sizes.textNormal,
-                              fontWeight: FontWeight.bold,
-                              color: dark_blue,
+                    SizedBox(height: Sizes.paddingSmall),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: RadioListTile(
+                            title: Text(
+                              "Anbieten",
+                              style: TextStyle(
+                                fontSize: Sizes.textNormal,
+                                fontWeight: FontWeight.bold,
+                                color: dark_blue,
+                              ),
+                            ),
+                            value: "Anbieten",
+                            groupValue: _selectedOption,
+                            onChanged: (value) {
+                              setState(() {
+                                _selectedOption = value.toString();
+                              });
+                            },
+                          ),
+                        ),
+                        Expanded(
+                          child: RadioListTile(
+                            title: Text(
+                              "Suchen",
+                              style: TextStyle(
+                                fontSize: Sizes.textNormal,
+                                fontWeight: FontWeight.bold,
+                                color: dark_blue,
+                              ),
+                            ),
+                            value: "Suchen",
+                            groupValue: _selectedOption,
+                            onChanged: (value) {
+                              setState(() {
+                                _selectedOption = value.toString();
+                              });
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: Sizes.paddingSmall),
+                    Center(
+                      child: ElevatedButton.icon(
+                        onPressed: _handleStart,
+                        icon: SvgPicture.asset(
+                          'assets/icons/route.svg',
+                          height: 24,
+                          colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                        ),
+                        label: Text(
+                          "Start",
+                          style: TextStyle(
+                            fontSize: Sizes.textSubheading,
+                            color: Colors.white,
+                          ),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: button_blue,
+                          padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                          minimumSize: Size(double.infinity, 60),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(Sizes.borderRadius),
+                              bottomRight: Radius.circular(Sizes.borderRadius),
                             ),
                           ),
-                          value: "Anbieten",
-                          groupValue: _selectedOption,
-                          onChanged: (value) {
-                            setState(() {
-                              _selectedOption = value.toString();
-                            });
-                          },
-                        ),
-                      ),
-                      Expanded(
-                        child: RadioListTile(
-                          title: Text(
-                            "Suchen",
-                            style: TextStyle(
-                              fontSize: Sizes.textNormal,
-                              fontWeight: FontWeight.bold,
-                              color: dark_blue,
-                            ),
-                          ),
-                          value: "Suchen",
-                          groupValue: _selectedOption,
-                          onChanged: (value) {
-                            setState(() {
-                              _selectedOption = value.toString();
-                            });
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: Sizes.paddingSmall),
-                  Center(
-                    child: ElevatedButton.icon(
-                      onPressed: _handleStart,
-                      icon: SvgPicture.asset(
-                        'assets/icons/route.svg',
-                        height: 24,
-                        colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcIn),
-                      ),
-                      label: Text(
-                        "Start",
-                        style: TextStyle(
-                          fontSize: Sizes.textSubheading,
-                          color: Colors.white,
-                        ),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: button_blue,
-                        padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                        minimumSize: Size(double.infinity, 60),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(Sizes.borderRadius),
-                            bottomRight: Radius.circular(Sizes.borderRadius),
-                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     ),

@@ -34,44 +34,46 @@ final _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context){
-  return Scaffold(
-    appBar: AppBar(
-      title: const Text("Login"),
+  return SafeArea(
+    child: Scaffold(
+      appBar: AppBar(
+        title: const Text("Login"),
+      ),
+      body: ListView(
+        padding: const EdgeInsets.all(20),
+        children: [
+          TextField(
+            controller: _emailController,
+            decoration: const InputDecoration(
+              hintText: "Email"
+            ),
+          ),
+          TextField(
+            controller: _passwordController,
+              obscureText: true,
+            decoration: const InputDecoration(
+
+                hintText: "Password"
+            ),
+          ),
+
+          const SizedBox(height: 20),
+
+          ElevatedButton(
+              onPressed: login,
+              child: const Text("Login")
+          ),
+
+          const SizedBox(height: 5),
+
+          GestureDetector(
+              onTap: () => Navigator.pushNamed(context, "/signup"),
+              child: Center(child: Text("Don't have an account? Sign up")),
+          ),
+
+        ],
+      )
     ),
-    body: ListView(
-      padding: const EdgeInsets.all(20),
-      children: [
-        TextField(
-          controller: _emailController,
-          decoration: const InputDecoration(
-            hintText: "Email"
-          ),
-        ),
-        TextField(
-          controller: _passwordController,
-            obscureText: true,
-          decoration: const InputDecoration(
-
-              hintText: "Password"
-          ),
-        ),
-
-        const SizedBox(height: 20),
-
-        ElevatedButton(
-            onPressed: login,
-            child: const Text("Login")
-        ),
-
-        const SizedBox(height: 5),
-
-        GestureDetector(
-            onTap: () => Navigator.pushNamed(context, "/signup"),
-            child: Center(child: Text("Don't have an account? Sign up")),
-        ),
-
-      ],
-    )
   );
   }
 }

@@ -77,12 +77,11 @@ class _FindRideState extends State<FindRide> {
     secondMarker();
     printAllRides();
     fetchUserId();
-
   }
 
   Future<void> fetchUserId() async {
     final userProfile = await _userService.getUserProfile();
-    print("Hallloo");// Benutzerdaten abrufen
+    print("Hallloo"); // Benutzerdaten abrufen
     print(userProfile);
 
     if (userProfile != null) {
@@ -501,11 +500,8 @@ class _FindRideState extends State<FindRide> {
   }
 
   Widget _buildDriverList(BuildContext context) {
-    // Filtere die Fahrten, um nur die anzuzeigen, die nicht vom aktuellen Benutzer erstellt wurden
-    List filteredRides = _rides.where((ride) => ride['driver_id'] != userId).toList();
-
     return Expanded(
-      child: filteredRides.isEmpty
+      child: _rides.isEmpty
           ? Center(
         child: Text(
           "Keine Fahrten gefunden",
@@ -513,9 +509,9 @@ class _FindRideState extends State<FindRide> {
         ),
       )
           : ListView.builder(
-        itemCount: filteredRides.length,
+        itemCount: _rides.length,
         itemBuilder: (context, index) {
-          var ride = filteredRides[index];
+          var ride = _rides[index];
           _bookingService.updateSeatsForRide(ride['id']);
 
           // Sicherstellen, dass die Sitzplätze nicht null sind.
@@ -554,9 +550,6 @@ class _FindRideState extends State<FindRide> {
     );
   }
 
-
-
-
   Widget _buildDriverCard(BuildContext context, String name, double rating,
       String time, String seats, int index) {
     DateTime now = DateTime.now();
@@ -571,33 +564,33 @@ class _FindRideState extends State<FindRide> {
 
     // Wenn die Zeit in der Vergangenheit liegt
     if (minutesDiff < 0) {
-      timeText = "vor ${-minutesDiff} min";  // Differenz als positive Zahl anzeigen
-      timeColor = Colors.red;  // Rot für vergangene Zeiten
+      timeText = "vor ${-minutesDiff} min"; // Differenz als positive Zahl anzeigen
+      timeColor = Colors.red; // Rot für vergangene Zeiten
     }
     // Wenn die Zeit jetzt oder in den nächsten 10 Minuten liegt
     else if (minutesDiff <= 10) {
       timeText = "jetzt";
-      timeColor = Colors.red;  // Rot für "jetzt"
+      timeColor = Colors.red; // Rot für "jetzt"
     }
     // Wenn die Zeit in weniger als einer Stunde liegt
     else if (minutesDiff < 60) {
       timeText = "in $minutesDiff min";
-      timeColor = Colors.orange;  // Orange für Zeiten in der nahen Zukunft
+      timeColor = Colors.orange; // Orange für Zeiten in der nahen Zukunft
     }
     // Wenn die Zeit in weniger als einem Tag liegt (unter 1440 Minuten)
     else if (minutesDiff < 1440) {
-      int hours = minutesDiff ~/ 60;  // Ganze Stunden
-      int minutes = minutesDiff % 60;  // Übrige Minuten
+      int hours = minutesDiff ~/ 60; // Ganze Stunden
+      int minutes = minutesDiff % 60; // Übrige Minuten
       timeText = minutes > 0 ? "in ${hours}h ${minutes}min" : "in ${hours}h";
-      timeColor = Colors.green;  // Grün für Zeiten in der Zukunft
+      timeColor = Colors.green; // Grün für Zeiten in der Zukunft
     }
     // Wenn die Zeit in mehr als einem Tag liegt
     else {
-      int days = minutesDiff ~/ 1440;  // Ganze Tage
-      int remainingMinutes = minutesDiff % 1440;  // Übrige Minuten
-      int hours = remainingMinutes ~/ 60;  // Übrige Stunden
+      int days = minutesDiff ~/ 1440; // Ganze Tage
+      int remainingMinutes = minutesDiff % 1440; // Übrige Minuten
+      int hours = remainingMinutes ~/ 60; // Übrige Stunden
       timeText = hours > 0 ? "in ${days} Tagen ${hours}h" : "in ${days} Tagen";
-      timeColor = Colors.green;  // Grün für lange Zukunft
+      timeColor = Colors.green; // Grün für lange Zukunft
     }
 
     // Farbe für die Anzahl der freien Plätze
@@ -607,8 +600,7 @@ class _FindRideState extends State<FindRide> {
     if (seatsInt == 0) {
       seatsColor = Colors.red;
       pluralOrSingular = ' freie Plätze';
-    }
-    else if (seatsInt == 1) {
+    } else if (seatsInt == 1) {
       seatsColor = Colors.red;
       pluralOrSingular = ' freier Platz';
     } else if (seatsInt == 2) {
@@ -618,6 +610,11 @@ class _FindRideState extends State<FindRide> {
       seatsColor = Colors.green;
       pluralOrSingular = ' freie Plätze';
     }
+
+    // Überprüfe, ob die Fahrt vom aktuellen Benutzer angeboten wird
+    final ride = _rides[index];
+    final driverId = ride['driver_id'];
+    final isCurrentUser = userId == driverId;
 
     return Padding(
       padding: EdgeInsets.symmetric(vertical: Sizes.paddingSmall),
@@ -637,25 +634,46 @@ class _FindRideState extends State<FindRide> {
                 Row(
                   children: [
                     CircleAvatar(
-                        radius: Sizes.textSubText * 1.5,
-                        backgroundColor: Colors.grey[400],
-                        child: Icon(Icons.person, color: Colors.black)),
+                      radius: Sizes.textSubText * 1.5,
+                      backgroundColor: Colors.grey[400],
+                      child: Icon(Icons.person, color: Colors.black),
+                    ),
                     SizedBox(width: Sizes.paddingSmall),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(name,
-                            style: TextStyle(
-                                fontSize: Sizes.textSubText,
-                                fontWeight: FontWeight.bold)),
                         Row(
                           children: [
-                            Icon(Icons.star,
-                                color: Colors.black, size: Sizes.textSubText),
+                            Text(
+                              name,
+                              style: TextStyle(
+                                fontSize: Sizes.textSubText,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            if (isCurrentUser) // Zeige "(Du)" an, wenn die Fahrt vom aktuellen Benutzer ist
+                              Text(
+                                " (Du)",
+                                style: TextStyle(
+                                  fontSize: Sizes.textSubText,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.star,
+                              color: Colors.black,
+                              size: Sizes.textSubText,
+                            ),
                             SizedBox(width: 4),
-                            Text(rating.toStringAsFixed(1),
-                                style:
-                                TextStyle(fontSize: Sizes.textSubText)),
+                            Text(
+                              rating.toStringAsFixed(1),
+                              style: TextStyle(fontSize: Sizes.textSubText),
+                            ),
                           ],
                         ),
                       ],
@@ -665,6 +683,19 @@ class _FindRideState extends State<FindRide> {
                 GestureDetector(
                   onTap: () async {
                     final rideId = _rides[index]['id'];
+                    final driverId = _rides[index]['driver_id'];
+
+                    // Überprüfe, ob der Benutzer der Fahrer der Fahrt ist
+                    if (userId == driverId) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text("Du kannst deine eigene Fahrt nicht buchen."),
+                          duration: Duration(seconds: 2),
+                        ),
+                      );
+                      return;
+                    }
+
                     int seatsInt = int.tryParse(seats) ?? 0;
 
                     if (seatsInt == 0) {
@@ -699,12 +730,17 @@ class _FindRideState extends State<FindRide> {
                   },
                   child: Column(
                     children: [
-                      Icon(Icons.directions_car,
-                          size: Sizes.textSubText * 1.5, color: Colors.black),
+                      Icon(
+                        Icons.directions_car,
+                        size: Sizes.textSubText * 1.5,
+                        color: Colors.black,
+                      ),
                       Text(
                         "Buchen",
                         style: TextStyle(
-                            fontSize: Sizes.textSubText, color: Colors.grey),
+                          fontSize: Sizes.textSubText,
+                          color: Colors.grey,
+                        ),
                       ),
                     ],
                   ),
@@ -721,35 +757,50 @@ class _FindRideState extends State<FindRide> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Start",
-                        style: TextStyle(
-                            fontSize: Sizes.textSubText * 1.2,
-                            fontWeight: FontWeight.bold)),
+                    Text(
+                      "Start",
+                      style: TextStyle(
+                        fontSize: Sizes.textSubText * 1.2,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                     Row(
                       children: [
-                        Text(time,
-                            style: TextStyle(
-                                fontSize: Sizes.textSubText,
-                                fontWeight: FontWeight.bold)),
+                        Text(
+                          time,
+                          style: TextStyle(
+                            fontSize: Sizes.textSubText,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                         SizedBox(width: 8),
-                        Icon(Icons.hourglass_empty,
-                            size: Sizes.textSubText, color: timeColor),
+                        Icon(
+                          Icons.hourglass_empty,
+                          size: Sizes.textSubText,
+                          color: timeColor,
+                        ),
                         SizedBox(width: 4),
-                        Text(timeText,
-                            style: TextStyle(
-                                fontSize: Sizes.textSubText * 0.9,
-                                color: timeColor)),
+                        Text(
+                          timeText,
+                          style: TextStyle(
+                            fontSize: Sizes.textSubText * 0.9,
+                            color: timeColor,
+                          ),
+                        ),
                       ],
                     ),
                   ],
                 ),
                 Row(
                   children: [
-                    Text(seats + pluralOrSingular,
-                        style: TextStyle(
-                            fontSize: Sizes.textSubText,
-                            color: seatsColor,
-                            fontWeight: FontWeight.bold)),
+                    Text(
+                      seats + pluralOrSingular,
+                      style: TextStyle(
+                        fontSize: Sizes.textSubText,
+                        color: seatsColor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ],
                 ),
               ],
@@ -759,5 +810,4 @@ class _FindRideState extends State<FindRide> {
       ),
     );
   }
-
 }

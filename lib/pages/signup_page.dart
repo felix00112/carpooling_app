@@ -52,42 +52,44 @@ class _SignupPageState extends State<SignupPage>{
 
   @override
   Widget build(BuildContext context){
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Sign Up"),
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text("Sign Up"),
+        ),
+          body: ListView(
+            padding: const EdgeInsets.all(20),
+            children: [
+              TextField(
+                controller: _emailController,
+                decoration: const InputDecoration(
+                    hintText: "Email"
+                ),
+              ),
+              TextField(
+                controller: _passwordController,
+                obscureText: true,
+                decoration: const InputDecoration(
+                    hintText: "Password"
+                ),
+              ),
+              TextField(
+                controller: _confirmPasswordController,
+                obscureText: true,
+                decoration: const InputDecoration(
+                    hintText: "Confirm Password"
+                ),
+              ),
+
+              const SizedBox(height: 20),
+
+              ElevatedButton(
+                  onPressed: signup,
+                  child: const Text("Sign Up")
+              ),
+            ],
+          )
       ),
-        body: ListView(
-          padding: const EdgeInsets.all(20),
-          children: [
-            TextField(
-              controller: _emailController,
-              decoration: const InputDecoration(
-                  hintText: "Email"
-              ),
-            ),
-            TextField(
-              controller: _passwordController,
-              obscureText: true,
-              decoration: const InputDecoration(
-                  hintText: "Password"
-              ),
-            ),
-            TextField(
-              controller: _confirmPasswordController,
-              obscureText: true,
-              decoration: const InputDecoration(
-                  hintText: "Confirm Password"
-              ),
-            ),
-
-            const SizedBox(height: 20),
-
-            ElevatedButton(
-                onPressed: signup,
-                child: const Text("Sign Up")
-            ),
-          ],
-        )
     );
   }
 }

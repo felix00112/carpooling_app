@@ -365,77 +365,79 @@ class _GebuchteFahrtenListeState extends State<GebuchteFahrtenListe> with Single
   @override
   Widget build(BuildContext context) {
     Sizes.initialize(context);
-    return Scaffold(
-      bottomNavigationBar: CustomBottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-      ),
-      body: Padding(
-        padding: EdgeInsets.all(Sizes.paddingRegular),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              child: Center(
-                child: SvgPicture.asset(
-                  'assets/images/undraw_order_ride.svg',
-                  width: Sizes.deviceWidth,
-                  fit: BoxFit.contain,
+    return SafeArea(
+      child: Scaffold(
+        bottomNavigationBar: CustomBottomNavigationBar(
+          currentIndex: _currentIndex,
+          onTap: (index) {
+            setState(() {
+              _currentIndex = index;
+            });
+          },
+        ),
+        body: Padding(
+          padding: EdgeInsets.all(Sizes.paddingRegular),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                child: Center(
+                  child: SvgPicture.asset(
+                    'assets/images/undraw_order_ride.svg',
+                    width: Sizes.deviceWidth,
+                    fit: BoxFit.contain,
+                  ),
                 ),
               ),
-            ),
-            SizedBox(height: Sizes.paddingRegular),
-            Text(
-              "Gebuchte Fahrten",
-              style: TextStyle(
-                fontSize: Sizes.textHeading,
-                fontWeight: FontWeight.w900,
-                color: dark_blue,
+              SizedBox(height: Sizes.paddingRegular),
+              Text(
+                "Gebuchte Fahrten",
+                style: TextStyle(
+                  fontSize: Sizes.textHeading,
+                  fontWeight: FontWeight.w900,
+                  color: dark_blue,
+                ),
               ),
-            ),
-            SizedBox(height: Sizes.paddingBig),
-            Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(Sizes.borderRadius),
-              ),
-              elevation: 4,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: background_box_white,
+              SizedBox(height: Sizes.paddingBig),
+              Card(
+                shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(Sizes.borderRadius),
                 ),
-                child: TabBar(
-                  controller: _tabController,
-                  tabs: [
-                    Tab(text: 'Alle'),
-                    Tab(text: 'Mitfahrer*in'),
-                    Tab(text: 'Fahrer*in'),
-                  ],
-                  indicatorColor: button_blue,
-                  labelStyle: TextStyle(fontSize: Sizes.textSubheading),
-                  labelColor: button_blue,
-                  unselectedLabelColor: text_sekundr,
+                elevation: 4,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: background_box_white,
+                    borderRadius: BorderRadius.circular(Sizes.borderRadius),
+                  ),
+                  child: TabBar(
+                    controller: _tabController,
+                    tabs: [
+                      Tab(text: 'Alle'),
+                      Tab(text: 'Mitfahrer*in'),
+                      Tab(text: 'Fahrer*in'),
+                    ],
+                    indicatorColor: button_blue,
+                    labelStyle: TextStyle(fontSize: Sizes.textSubheading),
+                    labelColor: button_blue,
+                    unselectedLabelColor: text_sekundr,
+                  ),
                 ),
               ),
-            ),
-            SizedBox(height: Sizes.paddingRegular),
-            Expanded(
-              child: isLoading
-                  ? Center(child: CircularProgressIndicator())
-                  : TabBarView(
-                controller: _tabController,
-                children: [
-                  _buildRideList([...bookedRides, ...offeredRides]), // Alle Fahrten
-                  _buildRideList(bookedRides), // Nur Mitfahrer-Fahrten
-                  _buildRideList(offeredRides), // Nur Fahrer-Fahrten
-                ],
+              SizedBox(height: Sizes.paddingRegular),
+              Expanded(
+                child: isLoading
+                    ? Center(child: CircularProgressIndicator())
+                    : TabBarView(
+                  controller: _tabController,
+                  children: [
+                    _buildRideList([...bookedRides, ...offeredRides]), // Alle Fahrten
+                    _buildRideList(bookedRides), // Nur Mitfahrer-Fahrten
+                    _buildRideList(offeredRides), // Nur Fahrer-Fahrten
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

@@ -42,59 +42,61 @@ class _FaqDetailPageState extends State<FaqDetailPage> {
   @override
   Widget build(BuildContext context) {
     Sizes.initialize(context);
-    return Scaffold(
-      bottomNavigationBar: CustomBottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: _onTabTapped,
-      ),
-
-
-      appBar: AppBar( //header
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios),
-          onPressed: () {
-            Navigator.pop(context); // Zurück-Navigation
-          },
+    return SafeArea(
+      child: Scaffold(
+        bottomNavigationBar: CustomBottomNavigationBar(
+          currentIndex: _currentIndex,
+          onTap: _onTabTapped,
         ),
-        title: Text(
-          widget.question,
-          style: TextStyle(color: dark_blue, fontSize: Sizes.textHeading, fontWeight: FontWeight.bold),
-        ),
-        centerTitle: true,
-      ),
 
-      body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: Sizes.paddingRegular),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            SizedBox(
-              child: Center(
-                child: SvgPicture.asset(
-                  'assets/images/undraw_faq.svg',
-                  width: Sizes.deviceWidth,
-                  fit: BoxFit.contain,
+
+        appBar: AppBar( //header
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back_ios),
+            onPressed: () {
+              Navigator.pop(context); // Zurück-Navigation
+            },
+          ),
+          title: Text(
+            widget.question,
+            style: TextStyle(color: dark_blue, fontSize: Sizes.textHeading, fontWeight: FontWeight.bold),
+          ),
+          centerTitle: true,
+        ),
+
+        body: SingleChildScrollView(
+          padding: EdgeInsets.symmetric(horizontal: Sizes.paddingRegular),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              SizedBox(
+                child: Center(
+                  child: SvgPicture.asset(
+                    'assets/images/undraw_faq.svg',
+                    width: Sizes.deviceWidth,
+                    fit: BoxFit.contain,
+                  ),
                 ),
               ),
-            ),
 
-            SizedBox(height: Sizes.paddingRegular),
-            Text(
-              widget.question,
-              style: TextStyle(color: dark_blue, fontSize: Sizes.textHeading, fontWeight: FontWeight.bold),),
-            SizedBox(height: Sizes.paddingRegular),
-            Container(
-              padding: EdgeInsets.symmetric(vertical: Sizes.paddingRegular, horizontal: Sizes.paddingSmall),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(Sizes.borderRadius),
-                color: background_box_white,
+              SizedBox(height: Sizes.paddingRegular),
+              Text(
+                widget.question,
+                style: TextStyle(color: dark_blue, fontSize: Sizes.textHeading, fontWeight: FontWeight.bold),),
+              SizedBox(height: Sizes.paddingRegular),
+              Container(
+                padding: EdgeInsets.symmetric(vertical: Sizes.paddingRegular, horizontal: Sizes.paddingSmall),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(Sizes.borderRadius),
+                  color: background_box_white,
+                ),
+                child: Text(widget.answer,style: TextStyle(fontSize: Sizes.textNormal),),
               ),
-              child: Text(widget.answer,style: TextStyle(fontSize: Sizes.textNormal),),
-            ),
-          ],
+            ],
+          ),
         ),
+
       ),
-    
     );
   }
 }

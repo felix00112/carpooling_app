@@ -136,9 +136,11 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
   Widget build(BuildContext context) {
     // indicator if data is not yet loaded
     if (userData == null) {
-      return Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
+      return SafeArea(
+        child: Scaffold(
+          body: Center(
+            child: CircularProgressIndicator(),
+          ),
         ),
       );
     }

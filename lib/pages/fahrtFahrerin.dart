@@ -177,73 +177,75 @@ class _RideDetailsPageState extends State<RideDetailsPage> {
   @override
   Widget build(BuildContext context) {
     Sizes.initialize(context);
-    return Scaffold(
-      backgroundColor: background_grey,
-      bottomNavigationBar: CustomBottomNavigationBar(
-        currentIndex: 1,
-        onTap: (index) {},
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            // Zeile mit "Deine Fahrt" und dem Mülltonnen-Button
-            Padding(
-              padding: EdgeInsets.all(Sizes.paddingRegular),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Deine Fahrt',
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: background_grey,
+        bottomNavigationBar: CustomBottomNavigationBar(
+          currentIndex: 1,
+          onTap: (index) {},
+        ),
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              // Zeile mit "Deine Fahrt" und dem Mülltonnen-Button
+              Padding(
+                padding: EdgeInsets.all(Sizes.paddingRegular),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Deine Fahrt',
+                      style: TextStyle(
+                        fontSize: Sizes.textHeading,
+                        fontWeight: FontWeight.bold,
+                        color: dark_blue,
+                      ),
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.delete, color: dark_blue), // Mülltonnen-Symbol
+                      onPressed: _confirmDelete, // Bestätigungsdialog anzeigen
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(left: Sizes.paddingRegular, top: Sizes.paddingSmall),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Start',
                     style: TextStyle(
-                      fontSize: Sizes.textHeading,
+                      fontSize: Sizes.textSubText,
                       fontWeight: FontWeight.bold,
                       color: dark_blue,
                     ),
                   ),
-                  IconButton(
-                    icon: Icon(Icons.delete, color: dark_blue), // Mülltonnen-Symbol
-                    onPressed: _confirmDelete, // Bestätigungsdialog anzeigen
-                  ),
-                ],
+                ),
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(left: Sizes.paddingRegular, top: Sizes.paddingSmall),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Start',
-                  style: TextStyle(
-                    fontSize: Sizes.textSubText,
-                    fontWeight: FontWeight.bold,
-                    color: dark_blue,
+              _buildAddressBox(),
+              SizedBox(height: Sizes.paddingSmall),
+              isLoading
+                  ? Center(child: CircularProgressIndicator())
+                  : _buildBookingList(context),
+              SizedBox(height: Sizes.paddingSmall),
+              Padding(
+                padding: EdgeInsets.only(left: Sizes.paddingRegular),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Ziel',
+                    style: TextStyle(
+                      fontSize: Sizes.textSubText,
+                      fontWeight: FontWeight.bold,
+                      color: dark_blue,
+                    ),
                   ),
                 ),
               ),
-            ),
-            _buildAddressBox(),
-            SizedBox(height: Sizes.paddingSmall),
-            isLoading
-                ? Center(child: CircularProgressIndicator())
-                : _buildBookingList(context),
-            SizedBox(height: Sizes.paddingSmall),
-            Padding(
-              padding: EdgeInsets.only(left: Sizes.paddingRegular),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Ziel',
-                  style: TextStyle(
-                    fontSize: Sizes.textSubText,
-                    fontWeight: FontWeight.bold,
-                    color: dark_blue,
-                  ),
-                ),
-              ),
-            ),
-            _buildDestinationButton(),
-            SizedBox(height: Sizes.paddingSmall),
-          ],
+              _buildDestinationButton(),
+              SizedBox(height: Sizes.paddingSmall),
+            ],
+          ),
         ),
       ),
     );

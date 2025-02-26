@@ -318,90 +318,92 @@ class _RidePickupPageState extends State<RidePickupPage> {
   @override
   Widget build(BuildContext context) {
     Sizes.initialize(context);
-    return Scaffold(
-      backgroundColor: background_grey,
-      bottomNavigationBar: CustomBottomNavigationBar(
-        currentIndex: 1, // "Fahrten" Tab
-        onTap: (index) {},
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            // Überschrift mit Mülltonnensymbol
-            Padding(
-              padding: EdgeInsets.all(Sizes.paddingRegular),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Du wirst abgeholt',
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: background_grey,
+        bottomNavigationBar: CustomBottomNavigationBar(
+          currentIndex: 1, // "Fahrten" Tab
+          onTap: (index) {},
+        ),
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              // Überschrift mit Mülltonnensymbol
+              Padding(
+                padding: EdgeInsets.all(Sizes.paddingRegular),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Du wirst abgeholt',
+                      style: TextStyle(
+                        fontSize: Sizes.textHeading,
+                        fontWeight: FontWeight.bold,
+                        color: dark_blue,
+                      ),
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.delete, color: dark_blue), // Mülltonnensymbol
+                      onPressed: () {
+                        // Bestätigungsdialog anzeigen
+                        _confirmDeleteBooking();
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              _buildAddressBox(),
+              _buildDestinationButton(),
+              SizedBox(height: Sizes.paddingSmall),
+              _buildMap(context),
+              SizedBox(height: Sizes.paddingSmall),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: Sizes.paddingRegular),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Abfahrt: ${widget.rideDetails['date']}', // Formatiere das Datum
                     style: TextStyle(
-                      fontSize: Sizes.textHeading,
+                      fontSize: Sizes.textSubText,
                       fontWeight: FontWeight.bold,
                       color: dark_blue,
                     ),
                   ),
-                  IconButton(
-                    icon: Icon(Icons.delete, color: dark_blue), // Mülltonnensymbol
-                    onPressed: () {
-                      // Bestätigungsdialog anzeigen
-                      _confirmDeleteBooking();
-                    },
-                  ),
-                ],
-              ),
-            ),
-            _buildAddressBox(),
-            _buildDestinationButton(),
-            SizedBox(height: Sizes.paddingSmall),
-            _buildMap(context),
-            SizedBox(height: Sizes.paddingSmall),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: Sizes.paddingRegular),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Abfahrt: ${widget.rideDetails['date']}', // Formatiere das Datum
-                  style: TextStyle(
-                    fontSize: Sizes.textSubText,
-                    fontWeight: FontWeight.bold,
-                    color: dark_blue,
-                  ),
                 ),
               ),
-            ),
-            SizedBox(height: Sizes.paddingSmall), // Abstand zwischen dem Text und der Fahrerinfo
-            _buildDriverInfo(context), // Zeige die Fahrerdaten an
-            SizedBox(height: Sizes.paddingSmall), // Abstand zwischen Fahrerinfo und Button
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: Sizes.paddingRegular),
-              child: ElevatedButton(
-                onPressed: () {
-                  // Navigiere zur FahrtBeendet-Seite und übergib die notwendigen Daten
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => FahrtBeendet(
-                          rideDetails: widget.rideDetails
+              SizedBox(height: Sizes.paddingSmall), // Abstand zwischen dem Text und der Fahrerinfo
+              _buildDriverInfo(context), // Zeige die Fahrerdaten an
+              SizedBox(height: Sizes.paddingSmall), // Abstand zwischen Fahrerinfo und Button
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: Sizes.paddingRegular),
+                child: ElevatedButton(
+                  onPressed: () {
+                    // Navigiere zur FahrtBeendet-Seite und übergib die notwendigen Daten
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => FahrtBeendet(
+                            rideDetails: widget.rideDetails
+                        ),
+                        // TODO: Start- und Zielmarker hier übergeben, falls benötigt
                       ),
-                      // TODO: Start- und Zielmarker hier übergeben, falls benötigt
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: dark_blue, // Hintergrundfarbe
+                    foregroundColor: Colors.white, // Textfarbe
+                    padding: EdgeInsets.symmetric(vertical: Sizes.paddingRegular), // Innenabstand
+                    textStyle: TextStyle(
+                      fontSize: Sizes.textSubText,
+                      fontWeight: FontWeight.bold,
                     ),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: dark_blue, // Hintergrundfarbe
-                  foregroundColor: Colors.white, // Textfarbe
-                  padding: EdgeInsets.symmetric(vertical: Sizes.paddingRegular), // Innenabstand
-                  textStyle: TextStyle(
-                    fontSize: Sizes.textSubText,
-                    fontWeight: FontWeight.bold,
+                    minimumSize: Size(double.infinity, 50), // Volle Breite und Höhe
                   ),
-                  minimumSize: Size(double.infinity, 50), // Volle Breite und Höhe
+                  child: Text('Fahrt abschließen'),
                 ),
-                child: Text('Fahrt abschließen'),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
