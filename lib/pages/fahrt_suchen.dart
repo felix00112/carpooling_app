@@ -16,6 +16,7 @@ import 'package:carpooling_app/pages/fahrtMitfahrerin.dart';
 import '../services/ride_service.dart';
 import '../services/rating_service.dart';
 import '../services/booking_service.dart';
+import '../services/user_service.dart';
 
 
 class FindRide extends StatefulWidget {
@@ -40,12 +41,14 @@ class _FindRideState extends State<FindRide> {
   final RideService _rideService = RideService(); // ride service instance
   final RatingService _ratingService = RatingService();
   final BookingService _bookingService = BookingService();
+  final UserService _userService = UserService();
   String _startLabel = "Start";
   String _zielLabel = "Ziel";
   int _currentIndex = 1;
   List<Map<String, dynamic>> _ratings = [];
   double? ratingValue = 0;
   Map<int, double> _ratingsMap = {};
+  String? userId;
 
   final MapController _mapController = MapController();
 
@@ -73,7 +76,22 @@ class _FindRideState extends State<FindRide> {
     firstMarker();
     secondMarker();
     printAllRides();
+    fetchUserId();
 
+  }
+
+  Future<void> fetchUserId() async {
+    final userProfile = await _userService.getUserProfile();
+    print("Hallloo");// Benutzerdaten abrufen
+    print(userProfile);
+
+    if (userProfile != null) {
+      // Extrahiere die Benutzer-ID aus den Benutzerdaten
+      userId = userProfile['id'];
+      print('Benutzer-ID: $userId');
+    } else {
+      print('Benutzer nicht gefunden oder nicht eingeloggt.');
+    }
   }
 
 
@@ -483,20 +501,23 @@ class _FindRideState extends State<FindRide> {
   }
 
   Widget _buildDriverList(BuildContext context) {
-    return Expanded(
-      child: _rides.isEmpty
-          ? Center(child: Text("Keine Fahrten gefunden",
-          style: TextStyle(fontSize: Sizes.textSubText, color: Colors.grey)))
-          : ListView.builder(
-        itemCount: _rides.length,
-        itemBuilder: (context, index) {
-          var ride = _rides[index];
+    // Filtere die Fahrten, um nur die anzuzeigen, die nicht vom aktuellen Benutzer erstellt wurden
+    List filteredRides = _rides.where((ride) => ride['driver_id'] != userId).toList();
 
+    return Expanded(
+      child: filteredRides.isEmpty
+          ? Center(
+        child: Text(
+          "Keine Fahrten gefunden",
+          style: TextStyle(fontSize: Sizes.textSubText, color: Colors.grey),
+        ),
+      )
+          : ListView.builder(
+        itemCount: filteredRides.length,
+        itemBuilder: (context, index) {
+          var ride = filteredRides[index];
           _bookingService.updateSeatsForRide(ride['id']);
-          print("fahrt_suchen.dart  seats: ");
-          print(ride['seats_available']);
-          print("for: ");
-          print(ride);
+
           // Sicherstellen, dass die Sitzplätze nicht null sind.
           String seats = ride['seats_available'] != null
               ? ride['seats_available'].toString()
@@ -516,28 +537,15 @@ class _FindRideState extends State<FindRide> {
               ? ride['driver']['first_name']
               : "Unbekannter Fahrer";
 
-          // Den Button für die Fahrt und die weiteren Informationen erstellen
           return Column(
             children: [
               _buildDriverCard(
                 context,
                 driverName,
-                driverRating, // Verwende das Rating aus der Map
+                driverRating,
                 DateFormat("HH:mm").format(DateTime.parse(ride['date'])),
-                seats, // Beispiel für Sitzplätze, ersetze mit echten Daten
-                index, // Index an den Button weitergeben
-              ),
-              // Button zum Löschen aller Buchungen
-              ElevatedButton(
-                onPressed: () async {
-                  // Den Test-Button verwenden, um alle Buchungen für diese Fahrt zu löschen
-                  int rideId = ride['id'];
-                  await BookingService().deleteAllBookingsForRide(rideId);
-                },
-                child: Text("Alle Buchungen löschen"),
-                style: ElevatedButton.styleFrom(
-                  // Button Hintergrundfarbe
-                ),
+                seats,
+                index,
               ),
             ],
           );
@@ -545,6 +553,7 @@ class _FindRideState extends State<FindRide> {
       ),
     );
   }
+
 
 
 
