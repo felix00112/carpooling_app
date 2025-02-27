@@ -14,14 +14,6 @@ List<Map<String,dynamic>> settings_inhalt = [
     "routing":"/car_details"
   },
   {
-    "title":"Konto",
-    "routing":"/account"
-  },
-  {
-    "title":"Sucheinstellungen",
-    "routing":"'/search_settings'"
-  },
-  {
     "title":"Passwort / Mail ändern",
     "routing":"/change_credentials"
   }
