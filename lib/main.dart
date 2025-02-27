@@ -14,6 +14,7 @@ import 'package:carpooling_app/pages/Einstellungen.dart';
 import 'package:carpooling_app/pages/fahrtBeendet.dart';
 import 'package:carpooling_app/pages/profile_completion_page.dart';
 import 'package:carpooling_app/pages/signup_page.dart';
+import 'package:carpooling_app/pages/zugangsdaten_%C3%A4ndern.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter/material.dart';
 
@@ -85,6 +86,7 @@ class MyApp extends StatelessWidget {
 
         //einstellungsseiten
         '/profileBearbeiten' : (context) => ProfileSettingsPage(),
+        '/change_credentials' : (context) => ZugangsdatenPage(),
       },
 
     );
