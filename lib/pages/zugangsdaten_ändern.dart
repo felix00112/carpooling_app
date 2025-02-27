@@ -155,6 +155,7 @@ class _ZugangsdatenPageState extends State<ZugangsdatenPage> {
                     obscureText: true,
                     decoration: InputDecoration(
                       labelText: "altes Passwort",
+                      labelStyle: TextStyle(color: dark_blue),
                       prefixIcon: Icon(FontAwesomeIcons.lock),
                       border: OutlineInputBorder(),
                     ),
@@ -167,6 +168,7 @@ class _ZugangsdatenPageState extends State<ZugangsdatenPage> {
                     obscureText: true,
                     decoration: InputDecoration(
                       labelText: "neues Passwort",
+                      labelStyle: TextStyle(color: dark_blue),
                       prefixIcon: Icon(FontAwesomeIcons.key),
                       border: OutlineInputBorder(),
                     ),
