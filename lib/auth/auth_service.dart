@@ -30,4 +30,52 @@ String? getCurrentUserEmail() {
     return user?.email;
 }
 
+  Future<void> changePassword(String oldPassword, String newPassword) async {
+    final supabase = Supabase.instance.client;
+
+    try {
+      // Aktuelle User-E-Mail abrufen
+      final user = supabase.auth.currentUser;
+      if (user == null) throw Exception('Kein User eingeloggt');
+
+      // 1. Altes Passwort durch erneute Anmeldung überprüfen
+      final signInResponse = await supabase.auth.signInWithPassword(
+        email: user.email!,
+        password: oldPassword,
+      );
+
+      // 2. Falls erfolgreich, Passwort ändern
+      if (signInResponse.user != null) {
+        await supabase.auth.updateUser(
+          UserAttributes(password: newPassword),
+        );
+        print('Passwort erfolgreich geändert');
+      }
+    } catch (e) {
+      print('Fehler beim Ändern des Passworts: $e');
+    }
+  }
+
+// Update account information
+  Future<void> changeEmail(String newEmail) async {
+    final user = _supabase.auth.currentUser;
+    if (user == null) throw Exception("User not logged in");
+
+    print("Aktuelle User-E-Mail: ${user.email}");
+    print("Neue E-Mail: $newEmail");
+
+    // 1. E-Mail ändern
+    await _supabase.auth.updateUser(UserAttributes(email: newEmail));
+
+    print("E-Mail erfolgreich geändert");
+  }
+
+
+  String? getCurrentUserPendingEmail() {
+    final session = _supabase.auth.currentSession;
+    final user = session?.user;
+    return user?.newEmail;
+  }
+
+
 }
