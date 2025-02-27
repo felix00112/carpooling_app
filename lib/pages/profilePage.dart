@@ -128,7 +128,7 @@ Future<void> _fetchUserData() async {
                   Row(
                     children: [
                       IconButton(
-                        icon: Icon(FontAwesomeIcons.circleInfo, size: 24),
+                        icon: Icon(FontAwesomeIcons.solidCircleQuestion, size: 24),
                         onPressed: () {
                           Navigator.push(
                             context,
