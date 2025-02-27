@@ -159,7 +159,7 @@ class _OfferRidePageState extends State<OfferRidePage> {
 
       // Zeige eine Erfolgsmeldung an
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Fahrt erfolgreich angeboten! Ride ID: $rideId')),
+        SnackBar(content: Text('Fahrt erfolgreich angeboten!'))
       );
 
       // Weitere Aktionen mit der rideId durchführen, z. B. Navigation oder Buchungen hinzufügen
