@@ -9,21 +9,24 @@ import 'faq_detail.dart';
 List<Map<String,dynamic>> faq_inhalt = [
   {
     "question": "Wie kann ich eine Fahrt anbieten?",
-    "answer": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."
+    "answer": "Gehe auf die HomePage und gebe dort Start und Ziel deiner Fahrt in das jeweilige Kästchen. Gebe auch an, wann du losfahren möchtest, indem Kästchen mit dem Zeitpunkt. Wähle bei der Option Anbieten oder Suchen, Anbieten aus und betätige auf den Start Button."
   },
   {
     "question": "Wie suche ich Fahrten?",
-    "answer": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."
+    "answer": "Gehe auf die HomePage und gebe dort Start und Ziel deiner Fahrt in das jeweilige Kästchen. Gebe auch an, wann du mitgenommen werden möchtest, indem Kästchen mit dem Zeitpunkt. Wähle bei der Option Anbieten oder Suchen, Suchen aus und betätige auf den Start Button."
   },
   {
     "question": "Wie kann ich Feedback vergeben?",
-    "answer": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."
+    "answer": "Nach der Fahrt erscheint die Option. Momentan ist es nicht möglich im Nachhinein Feedback zu geben."
   },
   {
-    "question": "Wie kann ich bei der Fahrer/in Suche filtern?",
-    "answer": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."
+    "question": "Wo sehe ich meine Fahrten?",
+    "answer": "Wenn du Fahrten ausählst, kannst du alle deine Fahrten sehen. Die bei denen du selber fährst, und die bei denen du Mitfahrer*in bist, werden dir dort angezeigt. Du kannst dort auch filtern, und dir nur die anzeigen lassen, bei denen du mitfährst, oder die, bei denen du der Fahrer bist. Sie sind außerdem nach Datum sortiert."
   },
-
+  {
+    "question": "Wo sehe ich meine Fahrten?",
+    "answer": "Wenn du Fahrten ausählst, kannst du alle deine Fahrten sehen. Gehe auf die Fahrt die du löschen willst. Damit du diese leichter findest, kannst du die Fahrten filtern, in dem du auf Fahrer*in / Mitfahrer*in gehst. Die Fahrten sind außerdem nach Datum sortiert. Wähle nun die Fahrt aus, die du nichtmehr antreten willst. Oben rechts findest du den Löschbutton."
+  },
 
 ];
 

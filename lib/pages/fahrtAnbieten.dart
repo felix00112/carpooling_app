@@ -10,8 +10,6 @@ import 'package:carpooling_app/services/ride_service.dart';
 import 'package:geocoding_resolver/geocoding_resolver.dart';
 import 'package:latlong2/latlong.dart';
 
-import 'package:carpooling_app/services/ride_service.dart';
-
 
 class OfferRidePage extends StatefulWidget {
   final String Starteingabe;
@@ -24,6 +22,7 @@ class OfferRidePage extends StatefulWidget {
 }
 
 class _OfferRidePageState extends State<OfferRidePage> {
+  String _who = "Alle";
   bool _isLuggageAllowed = true;
   bool _isPetAllowed = false;
   int _freeSeats = 1;
@@ -210,12 +209,14 @@ class _OfferRidePageState extends State<OfferRidePage> {
                           children: [
                             Text('Mitnahme:', style: TextStyle(fontSize: Sizes.textSubheading)),
                             DropdownButton<String>(
-                              value: 'Alle',
+                              value: _who,
                               items: const [
-                                DropdownMenuItem(value: 'Alle', child: Text('Alle')),
+                                DropdownMenuItem(value: 'Alle', child: Text('Alle'),),
                                 DropdownMenuItem(value: 'Flinta*', child: Text('Nur Flinta*')),
                               ],
-                              onChanged: (value) {},
+                              onChanged: (value) {setState(() {
+                                _who = value!;
+                              });},
                             ),
                           ],
                         ),
@@ -355,11 +356,12 @@ class _OfferRidePageState extends State<OfferRidePage> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              CustomTextField(labelText: 'Kennzeichen', backgroundColor: Colors.grey),
                               SizedBox(height: Sizes.paddingSmall),
-                              CustomTextField(labelText: 'Autofarbe', backgroundColor: Colors.grey),
+                              CustomTextField(labelText: 'Kennzeichen', backgroundColor: background_box_white),
                               SizedBox(height: Sizes.paddingSmall),
-                              CustomTextField(labelText: 'Automodell', backgroundColor: Colors.grey),
+                              CustomTextField(labelText: 'Autofarbe', backgroundColor: background_box_white),
+                              SizedBox(height: Sizes.paddingSmall),
+                              CustomTextField(labelText: 'Automodell', backgroundColor: background_box_white),
                             ],
                           ),
                         SizedBox(height: Sizes.paddingSmall),

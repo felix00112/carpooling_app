@@ -358,6 +358,7 @@ class _RidePickupPageState extends State<RidePickupPage> {
           child: Column(
             children: [
               // Überschrift mit Mülltonnensymbol
+              SizedBox(height: Sizes.paddingXL),
               Padding(
                 padding: EdgeInsets.all(Sizes.paddingRegular),
                 child: Row(
