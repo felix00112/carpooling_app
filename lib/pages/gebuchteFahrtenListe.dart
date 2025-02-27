@@ -55,7 +55,7 @@ class _GebuchteFahrtenListeState extends State<GebuchteFahrtenListe> with Single
     if (_isSameDay(rideDate, now)) {
       return 'Heute';
     } else if (_isSameDay(rideDate, tomorrow)) {
-      return 'Übermorgen';
+      return 'Morgen';
     } else if (_isThisWeek(rideDate, now)) {
       return 'Diese Woche';
     } else if (_isNextWeek(rideDate, now)) {
@@ -137,7 +137,7 @@ class _GebuchteFahrtenListeState extends State<GebuchteFahrtenListe> with Single
   Map<String, List<Map<String, dynamic>>> _groupRidesByDate(List<Map<String, dynamic>> rides) {
     Map<String, List<Map<String, dynamic>>> groupedRides = {
       'Heute': [],
-      'Übermorgen': [],
+      'Morgen': [],
       'Diese Woche': [],
       'Nächste Woche': [],
       'Später': [],
@@ -382,7 +382,7 @@ class _GebuchteFahrtenListeState extends State<GebuchteFahrtenListe> with Single
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: Sizes.paddingRegular),
+              SizedBox(height: Sizes.paddingXL),
               SizedBox(
                 child: Center(
                   child: SvgPicture.asset(
