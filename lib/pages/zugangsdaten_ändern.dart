@@ -129,6 +129,10 @@ class _ZugangsdatenPageState extends State<ZugangsdatenPage> {
                         labelText: "alte E-Mail Adresse",
                         prefixIcon: Icon(FontAwesomeIcons.envelope),
                         border: OutlineInputBorder(),
+                        focusedBorder: OutlineInputBorder( //Man hat in das Feld geklickt
+                          borderSide: BorderSide(color: button_blue),
+                        ),
+                        floatingLabelStyle: TextStyle(color: button_blue), //maus hovered über dem Feld
                       ),
                     ),
                   ),
@@ -140,6 +144,10 @@ class _ZugangsdatenPageState extends State<ZugangsdatenPage> {
                         labelText: "neue E-Mail Adresse",
                         prefixIcon: Icon(FontAwesomeIcons.envelope),
                         border: OutlineInputBorder(),
+                        focusedBorder: OutlineInputBorder( //Man hat in das Feld geklickt
+                          borderSide: BorderSide(color: button_blue),
+                        ),
+                        floatingLabelStyle: TextStyle(color: button_blue), //maus hovered über dem Feld
                       ),
                     ),
                   ),
@@ -158,6 +166,10 @@ class _ZugangsdatenPageState extends State<ZugangsdatenPage> {
                       labelStyle: TextStyle(color: dark_blue),
                       prefixIcon: Icon(FontAwesomeIcons.lock),
                       border: OutlineInputBorder(),
+                      focusedBorder: OutlineInputBorder( //Man hat in das Feld geklickt
+                        borderSide: BorderSide(color: button_blue),
+                      ),
+                      floatingLabelStyle: TextStyle(color: button_blue), //maus hovered über dem Feld
                     ),
                   ),
                 ),
@@ -171,6 +183,10 @@ class _ZugangsdatenPageState extends State<ZugangsdatenPage> {
                       labelStyle: TextStyle(color: dark_blue),
                       prefixIcon: Icon(FontAwesomeIcons.key),
                       border: OutlineInputBorder(),
+                      focusedBorder: OutlineInputBorder( //Man hat in das Feld geklickt
+                        borderSide: BorderSide(color: button_blue),
+                      ),
+                      floatingLabelStyle: TextStyle(color: button_blue), //maus hovered über dem Feld
                     ),
                     onChanged: (text) {
                       setState(() {
