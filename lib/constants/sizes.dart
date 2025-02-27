@@ -7,6 +7,7 @@ class Sizes {
   static late double paddingSmall;
   static late double paddingRegular;
   static late double paddingBig;
+  static late double paddingXL;
 
   static late double textSubText;
   static late double textNormal; //normaler text
@@ -31,6 +32,7 @@ class Sizes {
     paddingSmall = deviceWidth * 0.02;
     paddingRegular = deviceWidth * 0.04;
     paddingBig = deviceWidth * 0.06;
+    paddingXL = deviceWidth * 0.08;
 
     bottomBarHeight = deviceHeight * 0.06;
     topBarHeight = deviceHeight * 0.25;
