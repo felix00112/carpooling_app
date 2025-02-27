@@ -1,5 +1,6 @@
 import 'package:carpooling_app/pages/car_details.dart';
 import 'package:carpooling_app/constants/colors.dart';
+import 'package:carpooling_app/pages/car_details.dart';
 import 'package:carpooling_app/pages/faq.dart';
 import 'package:carpooling_app/pages/gebuchteFahrtenListe.dart';
 import 'package:carpooling_app/pages/homepage.dart';
@@ -83,7 +84,7 @@ class MyApp extends StatelessWidget {
         '/car_details': (context) => CarDetailsPage(),
 
         //einstellungsseiten
-        '/profileBearbeiten' : (context) => ProfileSettingsPage()
+        '/profileBearbeiten' : (context) => ProfileSettingsPage(),
       },
 
     );
