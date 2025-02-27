@@ -35,6 +35,8 @@ final _passwordController = TextEditingController();
   @override
   Widget build(BuildContext context){
   return SafeArea(
+    bottom: false,
+    top: false,
     child: Scaffold(
       appBar: AppBar(
         title: const Text("Login"),

@@ -319,6 +319,8 @@ class _RidePickupPageState extends State<RidePickupPage> {
   Widget build(BuildContext context) {
     Sizes.initialize(context);
     return SafeArea(
+      bottom: false,
+      top: false,
       child: Scaffold(
         backgroundColor: background_grey,
         bottomNavigationBar: CustomBottomNavigationBar(

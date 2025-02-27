@@ -266,6 +266,8 @@ class _FindRideState extends State<FindRide> {
     Sizes.initialize(context);
 
     return SafeArea(
+      bottom: false,
+      top: false,
       child: Scaffold(
         backgroundColor: background_grey,
         appBar: AppBar(

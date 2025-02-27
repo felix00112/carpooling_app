@@ -53,6 +53,8 @@ class _SignupPageState extends State<SignupPage>{
   @override
   Widget build(BuildContext context){
     return SafeArea(
+      bottom: false,
+      top: false,
       child: Scaffold(
         appBar: AppBar(
           title: const Text("Sign Up"),

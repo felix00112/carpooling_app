@@ -43,6 +43,8 @@ class _FaqDetailPageState extends State<FaqDetailPage> {
   Widget build(BuildContext context) {
     Sizes.initialize(context);
     return SafeArea(
+      bottom: false,
+      top: false,
       child: Scaffold(
         bottomNavigationBar: CustomBottomNavigationBar(
           currentIndex: _currentIndex,
