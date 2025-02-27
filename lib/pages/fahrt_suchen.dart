@@ -1,5 +1,6 @@
 import 'package:carpooling_app/constants/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:carpooling_app/constants/button.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -173,7 +174,8 @@ class _FindRideState extends State<FindRide> {
             "end_location": ride["end_location"],
             "date": ride["date"],
             "seats_available": ride["seats_available"],
-            "driver": ride["driver"] ?? {"first_name": "Unbekannter Fahrer"}
+            "driver": ride["driver"] ?? {"first_name": "Unbekannter Fahrer"},
+            "driver_avatar": ride["driver"] ?? {"avatar_url": null},
             // If `driver` is null
           };
         }).toList();
@@ -536,6 +538,11 @@ class _FindRideState extends State<FindRide> {
               ride['driver']['first_name'] != null)
               ? ride['driver']['first_name']
               : "Unbekannter Fahrer";
+          // Avatar URL
+          String driverAvatarUrl = (ride['driver'] != null &&
+              ride['driver']['avatar_url'] != null)
+              ? ride['driver']['avatar_url']
+              : "";
 
           return Column(
             children: [
@@ -546,6 +553,7 @@ class _FindRideState extends State<FindRide> {
                 DateFormat("HH:mm").format(DateTime.parse(ride['date'])),
                 seats,
                 index,
+                driverAvatarUrl,
               ),
             ],
           );
@@ -558,7 +566,7 @@ class _FindRideState extends State<FindRide> {
 
 
   Widget _buildDriverCard(BuildContext context, String name, double rating,
-      String time, String seats, int index) {
+      String time, String seats, int index, String driverAvatarUrl) {
     DateTime now = DateTime.now();
     DateTime startTime = DateFormat("HH:mm").parse(time);
     startTime = DateTime(now.year, now.month, now.day, startTime.hour, startTime.minute);
@@ -639,7 +647,13 @@ class _FindRideState extends State<FindRide> {
                     CircleAvatar(
                         radius: Sizes.textSubText * 1.5,
                         backgroundColor: Colors.grey[400],
-                        child: Icon(Icons.person, color: Colors.black)),
+                        backgroundImage: driverAvatarUrl != ""
+                          ? NetworkImage(driverAvatarUrl)
+                          : null,
+                      child: driverAvatarUrl == ""
+                          ? Icon(FontAwesomeIcons.user, size: 16, color: Colors.black)
+                          : null,
+                    ),
                     SizedBox(width: Sizes.paddingSmall),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
