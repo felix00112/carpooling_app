@@ -355,11 +355,18 @@ class _OfferRidePageState extends State<OfferRidePage> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              CustomTextField(labelText: 'Kennzeichen', backgroundColor: Colors.grey),
                               SizedBox(height: Sizes.paddingSmall),
-                              CustomTextField(labelText: 'Autofarbe', backgroundColor: Colors.grey),
+                              TextField(decoration: InputDecoration(
+                                  labelText: 'Kennzeichen', border: OutlineInputBorder(),
+                                  focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: button_blue)))),
                               SizedBox(height: Sizes.paddingSmall),
-                              CustomTextField(labelText: 'Automodell', backgroundColor: Colors.grey),
+                              TextField(decoration: InputDecoration(
+                                  labelText: 'Autofarbe', border: OutlineInputBorder(),
+                                  focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: button_blue)))),
+                              SizedBox(height: Sizes.paddingSmall),
+                              TextField(decoration: InputDecoration(
+                                  labelText: 'Automodell', border: OutlineInputBorder(),
+                                  focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: button_blue)))),
                             ],
                           ),
                         SizedBox(height: Sizes.paddingSmall),
