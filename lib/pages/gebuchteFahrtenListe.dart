@@ -382,6 +382,7 @@ class _GebuchteFahrtenListeState extends State<GebuchteFahrtenListe> with Single
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              SizedBox(height: Sizes.paddingRegular),
               SizedBox(
                 child: Center(
                   child: SvgPicture.asset(
