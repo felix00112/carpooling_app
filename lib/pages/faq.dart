@@ -23,10 +23,8 @@ List<Map<String,dynamic>> faq_inhalt = [
     "question": "Wie kann ich bei der Fahrer/in Suche filtern?",
     "answer": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."
   },
-  {
-    "question": "Neue Farge stellen",
-    "answer": "..."
-  },
+
+
 ];
 
 class FaqsPage extends StatefulWidget {
@@ -64,6 +62,8 @@ class _FaqsPageState extends State<FaqsPage> {
   Widget build(BuildContext context) {
     Sizes.initialize(context);
     return SafeArea(
+      bottom: false,
+      top: false,
       child: Scaffold(
         bottomNavigationBar: CustomBottomNavigationBar(
           currentIndex: _currentIndex,

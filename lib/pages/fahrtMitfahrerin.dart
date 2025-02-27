@@ -1,5 +1,6 @@
 import 'package:carpooling_app/services/user_service.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geocoding_resolver/geocoding_resolver.dart';
 import 'package:carpooling_app/constants/sizes.dart';
 import 'package:carpooling_app/constants/colors.dart';
@@ -37,6 +38,7 @@ class _RidePickupPageState extends State<RidePickupPage> {
   String? _destinationAddress;
   LatLng _mapCenter = LatLng(52.5200, 13.4050);
   List<LatLng> _routePoints = [];
+  List<String> _paymentMethods = [];
 
   final CarService _carService = CarService();
   final UserService _userService = UserService();
@@ -80,6 +82,7 @@ class _RidePickupPageState extends State<RidePickupPage> {
     _fetchDriverPhoneNumber();
     _fetchRatings();
     _printBookingsForRide(widget.rideDetails['id']);
+    _fetchPaymentMethods();
 
   }
 
@@ -120,6 +123,30 @@ class _RidePickupPageState extends State<RidePickupPage> {
       print("Fehler beim Abrufen der Bewertungen: $e");
     }
   }
+
+  void _fetchPaymentMethods() {
+    print("DEBUG: rideDetails: ${widget.rideDetails}");
+    print("DEBUG: rideDetails['ride']: ${widget.rideDetails['ride']}");
+
+    if (widget.rideDetails.isNotEmpty &&
+        widget.rideDetails['ride'] != null &&
+        widget.rideDetails['ride']['payment_method'] != null) {
+
+      var rawPaymentData = widget.rideDetails['ride']['payment_method'];
+
+      if (rawPaymentData is List) {
+        _paymentMethods = List<String>.from(rawPaymentData);
+      } else {
+        print("DEBUG: Unerwartetes Format für payment_method: $rawPaymentData");
+      }
+
+      setState(() {});
+    } else {
+      print("DEBUG: payment_method ist null oder nicht vorhanden!");
+    }
+  }
+
+
 
   double _calculateAverageRating(List<Map<String, dynamic>> ratings) {
     if (ratings.isEmpty) return 0.0; // Falls keine Bewertungen existieren
@@ -319,6 +346,8 @@ class _RidePickupPageState extends State<RidePickupPage> {
   Widget build(BuildContext context) {
     Sizes.initialize(context);
     return SafeArea(
+      bottom: false,
+      top: false,
       child: Scaffold(
         backgroundColor: background_grey,
         bottomNavigationBar: CustomBottomNavigationBar(
@@ -589,7 +618,7 @@ class _RidePickupPageState extends State<RidePickupPage> {
     Map<String, dynamic> ride = widget.rideDetails;
     String driverName = ride['driver']?['first_name'] ?? 'Unbekannter Fahrer';
     double rating = ratingValue; // Beispiel-Bewertung (kann aus rideDetails geholt werden, falls vorhanden)
-    String carModel = car['car_name'] ?? 'Unbekanntes Modell';
+    String carModel = '${car['car_name'] ?? 'Unbekanntes Modell'} (${car['colour'] ?? 'Unbekannte Farbe'})';
     String licensePlate = car['license_plate'] ?? 'Unbekanntes Kennzeichen';
 
     return Container(
@@ -647,6 +676,28 @@ class _RidePickupPageState extends State<RidePickupPage> {
                   ),
                 ],
               ),
+            ],
+          ),
+          SizedBox(height: Sizes.paddingSmall),
+          Divider(color: Colors.grey),
+          SizedBox(height: Sizes.paddingSmall),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  Icon(FontAwesomeIcons.coins, color: Colors.black54),
+                  SizedBox(width: Sizes.paddingSmall),
+                  Text(
+                    _paymentMethods.isNotEmpty ? _paymentMethods.join(", ") : "Keine Zahlungsmethoden", // Zahlungsmethoden anzeigen
+                    style: TextStyle(
+                      fontSize: Sizes.textSubText,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+
             ],
           ),
           SizedBox(height: Sizes.paddingSmall),

@@ -137,6 +137,8 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage> {
     // indicator if data is not yet loaded
     if (userData == null) {
       return SafeArea(
+        bottom: false,
+        top: false,
         child: Scaffold(
           body: Center(
             child: CircularProgressIndicator(),

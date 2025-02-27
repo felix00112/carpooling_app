@@ -70,6 +70,8 @@ class _ProfileCompletionPageState extends State<ProfileCompletionPage> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
+      bottom: false,
+      top: false,
       child: Scaffold(
         appBar: AppBar(title: const Text("Profil vervollständigen")),
         body: Padding(

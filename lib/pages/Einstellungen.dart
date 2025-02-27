@@ -14,14 +14,6 @@ List<Map<String,dynamic>> settings_inhalt = [
     "routing":"/car_details"
   },
   {
-    "title":"Konto",
-    "routing":"/account"
-  },
-  {
-    "title":"Sucheinstellungen",
-    "routing":"'/search_settings'"
-  },
-  {
     "title":"Passwort / Mail ändern",
     "routing":"/change_credentials"
   }
@@ -59,6 +51,8 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     Sizes.initialize(context);
     return SafeArea(
+      bottom: false,
+      top: false,
       child: Scaffold(
         bottomNavigationBar: CustomBottomNavigationBar(
           currentIndex: _currentIndex,

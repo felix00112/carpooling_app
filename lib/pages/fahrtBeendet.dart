@@ -22,6 +22,8 @@ class _FahrtBeendetState extends State<FahrtBeendet> with SingleTickerProviderSt
   Widget build(BuildContext context) {
     Sizes.initialize(context);
     return SafeArea(
+      bottom: false,
+      top: false,
       child: Scaffold(
         body: Padding(
           padding: EdgeInsets.all(Sizes.paddingSmall), // allgemeiner Rand zwischen Inhalt und Handyrand

@@ -159,7 +159,7 @@ class _OfferRidePageState extends State<OfferRidePage> {
 
       // Zeige eine Erfolgsmeldung an
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Fahrt erfolgreich angeboten! Ride ID: $rideId')),
+        SnackBar(content: Text('Fahrt erfolgreich angeboten!'))
       );
 
       // Weitere Aktionen mit der rideId durchführen, z. B. Navigation oder Buchungen hinzufügen
@@ -175,6 +175,8 @@ class _OfferRidePageState extends State<OfferRidePage> {
   Widget build(BuildContext context) {
     Sizes.initialize(context);
     return SafeArea(
+      bottom: false,
+      top: false,
       child: Scaffold(
         appBar: AppBar(
           title: Text(

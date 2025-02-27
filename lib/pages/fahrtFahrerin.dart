@@ -178,6 +178,8 @@ class _RideDetailsPageState extends State<RideDetailsPage> {
   Widget build(BuildContext context) {
     Sizes.initialize(context);
     return SafeArea(
+      bottom: false,
+      top: false,
       child: Scaffold(
         backgroundColor: background_grey,
         bottomNavigationBar: CustomBottomNavigationBar(
