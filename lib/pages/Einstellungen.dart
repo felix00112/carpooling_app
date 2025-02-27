@@ -19,7 +19,11 @@ List<Map<String,dynamic>> settings_inhalt = [
   },
   {
     "title":"Sucheinstellungen",
-    "routing":"/search_settings"
+    "routing":"'/search_settings'"
+  },
+  {
+    "title":"Passwort / Mail ändern",
+    "routing":"/change_credentials"
   }
 ];
 
