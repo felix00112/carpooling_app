@@ -215,7 +215,7 @@ Future<void> _fetchUserData() async {
                           Icon(FontAwesomeIcons.car, size: 18),
                           SizedBox(width: 5),
                           Text(realUserData?['car'] != null && realUserData!['car'].isNotEmpty
-                              ? realUserData!['car'][0]['car_name']
+                              ? '${realUserData!['car'][0]['car_name']} (${realUserData!['car'][0]['colour']})'
                               : 'Kein Auto angegeben'),
                         ],
                       ),

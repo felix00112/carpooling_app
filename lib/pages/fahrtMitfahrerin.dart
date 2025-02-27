@@ -591,7 +591,7 @@ class _RidePickupPageState extends State<RidePickupPage> {
     Map<String, dynamic> ride = widget.rideDetails;
     String driverName = ride['driver']?['first_name'] ?? 'Unbekannter Fahrer';
     double rating = ratingValue; // Beispiel-Bewertung (kann aus rideDetails geholt werden, falls vorhanden)
-    String carModel = car['car_name'] ?? 'Unbekanntes Modell';
+    String carModel = '${car['car_name'] ?? 'Unbekanntes Modell'} (${car['colour'] ?? 'Unbekannte Farbe'})';
     String licensePlate = car['license_plate'] ?? 'Unbekanntes Kennzeichen';
 
     return Container(
