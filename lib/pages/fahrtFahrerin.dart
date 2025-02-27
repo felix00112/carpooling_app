@@ -9,6 +9,7 @@ import 'package:url_launcher/url_launcher.dart'; // Zum Öffnen der URL
 import 'package:geocoding_resolver/geocoding_resolver.dart';
 import 'package:latlong2/latlong.dart';
 import '../services/booking_service.dart';
+import '../services/rating_service.dart';
 import '../services/user_service.dart';
 import '../services/ride_service.dart'; // Stelle sicher, dass du einen RideService hast
 
@@ -30,6 +31,7 @@ class _RideDetailsPageState extends State<RideDetailsPage> {
   final BookingService _bookingService = BookingService();
   final UserService _userService = UserService();
   final RideService _rideService = RideService(); // RideService hinzufügen
+  final RatingService _ratingService = RatingService();
   List<Map<String, dynamic>> bookings = [];
   bool isLoading = true;
 
@@ -69,10 +71,12 @@ class _RideDetailsPageState extends State<RideDetailsPage> {
         final userResponse = await _userService.getUserById(booking['passenger_id']);
         if (userResponse.isNotEmpty) {
           final user = userResponse[0];
+          final ratings = await _ratingService.getRatings(user['id']);
           bookingDetails.add({
             ...booking,
             'user_name': user['first_name'] ?? 'Unbekannt',
-            'phone_number': user['phone_number'] ?? 'Keine Nummer verfügbar'
+            'phone_number': user['phone_number'] ?? 'Keine Nummer verfügbar',
+            'user_rating': _calculateAverageRating(ratings).toString(),
           });
         } else {
           bookingDetails.add({
@@ -284,13 +288,14 @@ class _RideDetailsPageState extends State<RideDetailsPage> {
           context,
           booking['user_name'],
           booking['phone_number'],
+          booking['user_rating'],
           index,
         );
       }).toList(),
     );
   }
 
-  Widget _buildBookingCard(BuildContext context, String userName, String phoneNumber, int index) {
+  Widget _buildBookingCard(BuildContext context, String userName, String phoneNumber, String rating, int index) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -341,7 +346,7 @@ class _RideDetailsPageState extends State<RideDetailsPage> {
                               Icon(FontAwesomeIcons.solidStar, color: Colors.black38, size: Sizes.textSubText),
                               SizedBox(height: Sizes.paddingSmall,),
                               Text(
-                                "4.5",
+                                rating,
                                 style: TextStyle(fontSize: Sizes.textSubText),
                               ),
                             ],
@@ -425,5 +430,16 @@ class _RideDetailsPageState extends State<RideDetailsPage> {
     } else {
       throw 'Konnte Google Maps nicht öffnen';
     }
+  }
+
+  double _calculateAverageRating(List<Map<String, dynamic>> ratings) {
+    if (ratings.isEmpty) return 0.0; // Falls keine Bewertungen existieren
+
+    double sum = ratings.fold(
+        0, (prev, rating) => prev + (rating['rating'] as num));
+    double average = sum / ratings.length;
+
+    return double.parse(
+        average.toStringAsFixed(1)); // Auf eine Nachkommastelle runden
   }
 }
