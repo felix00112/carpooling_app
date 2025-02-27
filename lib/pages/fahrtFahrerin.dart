@@ -4,6 +4,7 @@ import 'package:carpooling_app/constants/button.dart';
 import 'package:carpooling_app/constants/navigationBar.dart';
 import 'package:carpooling_app/constants/sizes.dart';
 import 'package:carpooling_app/constants/button2.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart'; // Zum Öffnen der URL
 import 'package:geocoding_resolver/geocoding_resolver.dart';
 import 'package:latlong2/latlong.dart';
@@ -71,7 +72,7 @@ class _RideDetailsPageState extends State<RideDetailsPage> {
           bookingDetails.add({
             ...booking,
             'user_name': user['first_name'] ?? 'Unbekannt',
-            'phone_number': user['phone_number'] ?? 'Keine Nummer verfügbar',
+            'phone_number': user['phone_number'] ?? 'Keine Nummer verfügbar'
           });
         } else {
           bookingDetails.add({
@@ -190,6 +191,7 @@ class _RideDetailsPageState extends State<RideDetailsPage> {
           child: Column(
             children: [
               // Zeile mit "Deine Fahrt" und dem Mülltonnen-Button
+              SizedBox(height: Sizes.paddingXL),
               Padding(
                 padding: EdgeInsets.all(Sizes.paddingRegular),
                 child: Row(
@@ -336,7 +338,8 @@ class _RideDetailsPageState extends State<RideDetailsPage> {
                           ),
                           Row(
                             children: [
-                              Icon(Icons.star, color: Colors.black38, size: Sizes.textSubText),
+                              Icon(FontAwesomeIcons.solidStar, color: Colors.black38, size: Sizes.textSubText),
+                              SizedBox(height: Sizes.paddingSmall,),
                               Text(
                                 "4.5",
                                 style: TextStyle(fontSize: Sizes.textSubText),
@@ -350,14 +353,14 @@ class _RideDetailsPageState extends State<RideDetailsPage> {
                   Row(
                     children: [
                       IconButton(
-                        icon: Icon(Icons.message, color: Colors.black, size: Sizes.textSubText * 1.5),
+                        icon: Icon(FontAwesomeIcons.solidMessage, color: Colors.black, size: Sizes.textSubText * 1.5),
                         onPressed: () {
                           print('Nachricht an $userName');
                         },
                       ),
                       SizedBox(width: Sizes.paddingSmall),
                       IconButton(
-                        icon: Icon(Icons.phone, color: Colors.black, size: Sizes.textSubText * 1.5),
+                        icon: Icon(FontAwesomeIcons.phone, color: Colors.black, size: Sizes.textSubText * 1.5),
                         onPressed: () {
                           print('Anruf an $userName');
                         },
@@ -374,7 +377,7 @@ class _RideDetailsPageState extends State<RideDetailsPage> {
                 children: [
                   Row(
                     children: [
-                      Icon(Icons.phone, color: Colors.black54),
+                      Icon(FontAwesomeIcons.phone, color: Colors.black54),
                       SizedBox(width: Sizes.paddingSmall),
                       Text(
                         phoneNumber,
