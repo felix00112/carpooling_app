@@ -44,7 +44,16 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
         'colour': _colorController.text,
       };
       final carService = CarService();
-      await carService.updateCarData(updates);
+      if(carData != null) {
+        await carService.updateCarData(updates);
+      } else {
+        await carService.createCar(
+        _modelController.text,
+        _licensePlateController.text,
+        _colorController.text,
+        4,
+      );
+      }
       Navigator.pop(context);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Auto erfolgreich aktualisiert")),
