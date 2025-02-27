@@ -76,7 +76,7 @@ class CustomTextField extends StatelessWidget {
               : (icon != null ? Icon(icon) : null), // Fallback zu IconData, wenn SVG nicht vorhanden
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8), // Abgerundete Ecken für das Textfeld
-            borderSide: BorderSide.none, // Entferne die Standard-Rahmenlinie
+            //borderSide: BorderSide.none, // Entferne die Standard-Rahmenlinie
           ),
           contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
         ),
