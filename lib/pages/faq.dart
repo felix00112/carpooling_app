@@ -63,74 +63,76 @@ class _FaqsPageState extends State<FaqsPage> {
   @override
   Widget build(BuildContext context) {
     Sizes.initialize(context);
-    return Scaffold(
-      bottomNavigationBar: CustomBottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: _onTabTapped,
-      ),
-
-
-      appBar: AppBar( //header
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios),
-          onPressed: () {
-            Navigator.pop(context); // Zurück-Navigation
-          },
+    return SafeArea(
+      child: Scaffold(
+        bottomNavigationBar: CustomBottomNavigationBar(
+          currentIndex: _currentIndex,
+          onTap: _onTabTapped,
         ),
-        title: Text(
-          'FAQ',
-          style: TextStyle(color: dark_blue, fontSize: Sizes.textHeading, fontWeight: FontWeight.bold),
+
+
+        appBar: AppBar( //header
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back_ios),
+            onPressed: () {
+              Navigator.pop(context); // Zurück-Navigation
+            },
+          ),
+          title: Text(
+            'FAQ',
+            style: TextStyle(color: dark_blue, fontSize: Sizes.textHeading, fontWeight: FontWeight.bold),
+          ),
+          centerTitle: true,
         ),
-        centerTitle: true,
-      ),
 
 
-      body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: Sizes.paddingRegular),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            SizedBox(
-              child: Center(
-                child: SvgPicture.asset(
-                  'assets/images/undraw_faq.svg',
-                  width: Sizes.deviceWidth,
-                  fit: BoxFit.contain,
+        body: SingleChildScrollView(
+          padding: EdgeInsets.symmetric(horizontal: Sizes.paddingRegular),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              SizedBox(
+                child: Center(
+                  child: SvgPicture.asset(
+                    'assets/images/undraw_faq.svg',
+                    width: Sizes.deviceWidth,
+                    fit: BoxFit.contain,
+                  ),
                 ),
               ),
-            ),
 
-            SizedBox(height: Sizes.paddingRegular),
-            ...faq_inhalt.map((entry) {
-              return Padding(
-                padding: EdgeInsets.only(bottom: Sizes.paddingSmall),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: background_box_white,
-                    borderRadius: BorderRadius.circular(Sizes.borderRadius),
-                  ),
-                  child: ListTile(
-                    title: Text(entry["question"],style: TextStyle(fontSize: Sizes.textNormal),),
-                    trailing: Icon(Icons.arrow_forward_ios),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => FaqDetailPage(
-                            question: entry["question"],
-                            answer: entry["answer"],
+              SizedBox(height: Sizes.paddingRegular),
+              ...faq_inhalt.map((entry) {
+                return Padding(
+                  padding: EdgeInsets.only(bottom: Sizes.paddingSmall),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: background_box_white,
+                      borderRadius: BorderRadius.circular(Sizes.borderRadius),
+                    ),
+                    child: ListTile(
+                      title: Text(entry["question"],style: TextStyle(fontSize: Sizes.textNormal),),
+                      trailing: Icon(Icons.arrow_forward_ios),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => FaqDetailPage(
+                              question: entry["question"],
+                              answer: entry["answer"],
+                            ),
                           ),
-                        ),
-                      );
-                    },
+                        );
+                      },
+                    ),
                   ),
-                ),
-              );
-            }),
-          ],
+                );
+              }),
+            ],
+          ),
         ),
-      ),
 
+      ),
     );
   }
 }

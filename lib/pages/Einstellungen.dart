@@ -58,66 +58,68 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     Sizes.initialize(context);
-    return Scaffold(
-      bottomNavigationBar: CustomBottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: _onTabTapped,
-      ),
-
-
-      appBar: AppBar( //header
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios),
-          onPressed: () {
-            Navigator.pop(context); // Zurück-Navigation
-          },
+    return SafeArea(
+      child: Scaffold(
+        bottomNavigationBar: CustomBottomNavigationBar(
+          currentIndex: _currentIndex,
+          onTap: _onTabTapped,
         ),
-        title: Text(
-          'Einstellungen',
-          style: TextStyle(fontSize: Sizes.textHeading),
+
+
+        appBar: AppBar( //header
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back_ios),
+            onPressed: () {
+              Navigator.pop(context); // Zurück-Navigation
+            },
+          ),
+          title: Text(
+            'Einstellungen',
+            style: TextStyle(fontSize: Sizes.textHeading),
+          ),
+          centerTitle: true,
         ),
-        centerTitle: true,
-      ),
 
 
-      body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: Sizes.paddingRegular, vertical: Sizes.paddingSmall),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            SizedBox( //Bild
-              child: Center(
-                child: SvgPicture.asset(
-                  'assets/images/undraw_settings.svg',
-                  width: Sizes.deviceWidth,
-                  fit: BoxFit.contain,
+        body: SingleChildScrollView(
+          padding: EdgeInsets.symmetric(horizontal: Sizes.paddingRegular, vertical: Sizes.paddingSmall),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              SizedBox( //Bild
+                child: Center(
+                  child: SvgPicture.asset(
+                    'assets/images/undraw_settings.svg',
+                    width: Sizes.deviceWidth,
+                    fit: BoxFit.contain,
+                  ),
                 ),
               ),
-            ),
 
-            //Inhalt
-            SizedBox(height: Sizes.paddingRegular),
-            ...settings_inhalt.map((entry){
-              return Padding(
-                padding: EdgeInsets.only(bottom: Sizes.paddingSmall),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: background_box_white,
-                    borderRadius: BorderRadius.circular(Sizes.borderRadius),
+              //Inhalt
+              SizedBox(height: Sizes.paddingRegular),
+              ...settings_inhalt.map((entry){
+                return Padding(
+                  padding: EdgeInsets.only(bottom: Sizes.paddingSmall),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: background_box_white,
+                      borderRadius: BorderRadius.circular(Sizes.borderRadius),
+                    ),
+                    child: ListTile(
+                      title: Text(entry["title"],style: TextStyle(fontSize: Sizes.textNormal),),
+                      trailing: Icon(Icons.arrow_forward_ios),
+                      onTap: () {
+                        Navigator.pushNamed(context, entry["routing"]);
+                      },
+                    ),
                   ),
-                  child: ListTile(
-                    title: Text(entry["title"],style: TextStyle(fontSize: Sizes.textNormal),),
-                    trailing: Icon(Icons.arrow_forward_ios),
-                    onTap: () {
-                      Navigator.pushNamed(context, entry["routing"]);
-                    },
-                  ),
-                ),
-              );
-            }),
-          ],
+                );
+              }),
+            ],
+          )
         )
-      )
+      ),
     );
   }
 }

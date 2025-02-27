@@ -69,33 +69,35 @@ class _ProfileCompletionPageState extends State<ProfileCompletionPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text("Profil vervollständigen")),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          children: [
-            TextField(
-              controller: _firstNameController,
-              decoration: const InputDecoration(hintText: "Vorname"),
-            ),
-            const SizedBox(height: 10),
-            TextField(
-              controller: _lastNameController,
-              decoration: const InputDecoration(hintText: "Nachname"),
-            ),
-            const SizedBox(height: 10),
-            TextField(
-              controller: _phoneNumberController,
-              decoration: const InputDecoration(hintText: "Telefonnummer (optional)"),
-              keyboardType: TextInputType.phone,
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: saveUserProfile,
-              child: const Text("Speichern und fortfahren"),
-            ),
-          ],
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(title: const Text("Profil vervollständigen")),
+        body: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            children: [
+              TextField(
+                controller: _firstNameController,
+                decoration: const InputDecoration(hintText: "Vorname"),
+              ),
+              const SizedBox(height: 10),
+              TextField(
+                controller: _lastNameController,
+                decoration: const InputDecoration(hintText: "Nachname"),
+              ),
+              const SizedBox(height: 10),
+              TextField(
+                controller: _phoneNumberController,
+                decoration: const InputDecoration(hintText: "Telefonnummer (optional)"),
+                keyboardType: TextInputType.phone,
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: saveUserProfile,
+                child: const Text("Speichern und fortfahren"),
+              ),
+            ],
+          ),
         ),
       ),
     );
