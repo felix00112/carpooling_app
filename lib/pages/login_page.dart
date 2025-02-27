@@ -1,6 +1,8 @@
 import 'package:carpooling_app/auth/auth_service.dart';
 import 'package:flutter/material.dart';
 
+import '../constants/sizes.dart';
+
 class LoginPage extends StatefulWidget{
   const LoginPage({super.key});
   @override
@@ -37,7 +39,7 @@ final _passwordController = TextEditingController();
   return SafeArea(
     child: Scaffold(
       appBar: AppBar(
-        title: const Text("Login"),
+        title: Text("Login", style: TextStyle(fontSize: Sizes.textHeading)),
       ),
       body: ListView(
         padding: const EdgeInsets.all(20),
