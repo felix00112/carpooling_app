@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:carpooling_app/constants/navigationBar.dart';
 
-import '../constants/constants.dart';
+import '../constants/button2.dart';
+import '../constants/sizes.dart';
 import '../services/car_service.dart';
 
 class CarDetailsPage extends StatefulWidget {
@@ -14,6 +15,25 @@ class CarDetailsPage extends StatefulWidget {
 class _CarDetailsPageState extends State<CarDetailsPage> {
   // Navigation bar index
   int _currentIndex = 2;
+  void _onTabTapped(int index) {
+
+    setState(() {
+      _currentIndex = index;
+    });
+
+    // Navigation zu den entsprechenden Seiten basierend auf dem Index
+    switch (index) {
+      case 0:
+        Navigator.pushNamed(context, '/home');
+        break;
+      case 1:
+        Navigator.pushNamed(context, '/fahrten');
+        break;
+      case 2:
+        Navigator.pushNamed(context, '/profil');
+        break;
+    }
+  }
 
   Map<String, dynamic>? carData;
 
@@ -83,84 +103,61 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
   Widget build(BuildContext context) {
     Sizes.initialize(context);
     return SafeArea(
+      top: false,
+      bottom: false,
       child: Scaffold(
         bottomNavigationBar: CustomBottomNavigationBar(
           currentIndex: _currentIndex,
-          onTap: (index) {
-            setState(() {
-              _currentIndex = index;
-            });
-
-            // Navigation zu den entsprechenden Seiten basierend auf dem Index
-            switch (index) {
-              case 0:
-                Navigator.pushNamed(context, '/home');
-                break;
-              case 1:
-                Navigator.pushNamed(context, '/fahrten');
-                break;
-              case 2:
-                Navigator.pushNamed(context, '/profil');
-                break;
-            }
-          },
+          onTap: _onTabTapped,
         ),
+
         appBar: AppBar( //header
-          backgroundColor: background_grey,
-          elevation: 0,
           leading: IconButton(
-            icon: SvgPicture.asset(
-              'assets/icons/arrowLeft.svg',
-              height: 24,
-              colorFilter: ColorFilter.mode(dark_blue, BlendMode.srcIn),
-            ),
+            icon: Icon(Icons.arrow_back_ios),
             onPressed: () {
               Navigator.pop(context); // Zurück-Navigation
             },
           ),
           title: Text(
-            'Einstellungen',
-            style: TextStyle(color: dark_blue),
+            'Mein Auto',
+            style: TextStyle(fontSize: Sizes.textHeading),
           ),
           centerTitle: true,
         ),
+
         body: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // Header image and illustration
-              Container(
-                height: 200,
-                decoration: BoxDecoration( //box around picture
-                  //color: background_box_white,
-                  borderRadius: BorderRadius.circular(Sizes.borderRadius10),
-                ),
-                child: Center(
-                  child: SvgPicture.asset(
-                    'assets/images/undraw_city_driver.svg',
-                    width: Sizes.width,
-                    height: Sizes.height,
-                    fit: BoxFit.contain,
-                  ),
-                ),
-              ),
-              SizedBox(height: Sizes.paddingRegular), // Platz über Überschrift
-                Text(
-                  "Mein Auto",
-                  style: TextStyle(
-                    fontSize: Sizes.textSizeRegular,
-                    fontWeight: FontWeight.w900,
-                    color: dark_blue,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: Sizes.paddingRegular, vertical: Sizes.paddingSmall),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Header image and illustration
+                SizedBox(
+                  child: Center(
+                    child: SvgPicture.asset(
+                      'assets/images/undraw_city_driver.svg',
+                      width: Sizes.deviceWidth,
+                      fit: BoxFit.contain,
+                    ),
                   ),
                 ),
 
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: Sizes.paddingMediumLarge),
-                child: Container(
+                /*Text(
+                  "Mein Auto",
+                  style: TextStyle(
+                    fontSize: Sizes.textSubheading,
+                    fontWeight: FontWeight.bold,
+                    color: dark_blue,
+                  ),
+                ),*/
+                SizedBox(height: Sizes.paddingRegular),
+
+                Container(
                   padding: EdgeInsets.all(Sizes.paddingRegular),
                   decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(Sizes.borderRadius10),
+                    color: background_box_white,
+                    borderRadius: BorderRadius.circular(Sizes.borderRadius),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -169,52 +166,56 @@ class _CarDetailsPageState extends State<CarDetailsPage> {
                         controller: _licensePlateController,
                         decoration: InputDecoration(
                           labelText: 'Kennzeichen',
-                          labelStyle: TextStyle(color: Colors.grey), // Standardfarbe des Labels
+                          labelStyle: TextStyle(color: dark_blue), // Standardfarbe des Labels
                           floatingLabelStyle: TextStyle(color: button_blue), // Farbe des Labels, wenn fokussiert
                           border: OutlineInputBorder(),
                           focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: button_blue),
                           ),
                         ),
-                        cursorColor: button_blue,
                       ),
                       SizedBox(height: Sizes.paddingRegular),
                       TextField(
                         controller: _modelController,
                         decoration: InputDecoration(
                           labelText: 'Modell',
-                          labelStyle: TextStyle(color: Colors.grey), // Standardfarbe des Labels
+                          labelStyle: TextStyle(color: dark_blue), // Standardfarbe des Labels
                           floatingLabelStyle: TextStyle(color: button_blue), // Farbe des Labels, wenn fokussiert
                           border: OutlineInputBorder(),
                           focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: button_blue),
                           ),
                         ),
-                        cursorColor: button_blue,
                       ),
                       SizedBox(height: Sizes.paddingRegular),
                       TextField(
                         controller: _colorController,
                         decoration: InputDecoration(
                           labelText: 'Farbe',
-                          labelStyle: TextStyle(color: Colors.grey), // Standardfarbe des Labels
+                          labelStyle: TextStyle(color: dark_blue), // Standardfarbe des Labels
                           floatingLabelStyle: TextStyle(color: button_blue), // Farbe des Labels, wenn fokussiert
                           border: OutlineInputBorder(),
                           focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: button_blue),
                           ),
                         ),
-                        cursorColor: button_blue,
                       ),
                     ],
                   ),
                 ),
-              ),
-              ElevatedButton(
-                onPressed: saveCarChanges,
-                child: Text("Speichern"),
-              ),
-            ],
+
+                SizedBox(height: Sizes.paddingRegular),
+
+                CustomButton2(
+                  label: 'Speichern',
+                  onPressed: saveCarChanges,
+                  color: button_blue,
+                  textColor: Colors.white,
+                  width: MediaQuery.of(context).size.width * 0.925,
+                  height: MediaQuery.of(context).size.width * 0.12,
+                ),
+              ],
+            ),
           ),
         ),
       ),

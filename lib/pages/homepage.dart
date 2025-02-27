@@ -169,6 +169,10 @@ class _HomePageState extends State<HomePage> {
                           labelStyle: TextStyle(
                             color: Startinputcontroller.text == "Bitte ausfüllen!" ? text_error : dark_blue,
                           ),
+                          focusedBorder: OutlineInputBorder( //Man hat in das Feld geklickt
+                            borderSide: BorderSide(color: button_blue),
+                          ),
+                          floatingLabelStyle: TextStyle(color: button_blue), //maus hovered über dem Feld
                         ),
                         onChanged: (text) {
                           setState(() {}); // Aktualisiert nur die Farbe des Labels
@@ -188,6 +192,10 @@ class _HomePageState extends State<HomePage> {
                           labelStyle: TextStyle(
                             color: Zielinputcontroller.text == "Bitte ausfüllen!" ? text_error : dark_blue,
                           ),
+                          focusedBorder: OutlineInputBorder( //Man hat in das Feld geklickt
+                            borderSide: BorderSide(color: button_blue),
+                          ),
+                          floatingLabelStyle: TextStyle(color: button_blue), //maus hovered über dem Feld
                         ),
                         onChanged: (text) {
                           setState(() {}); // Aktualisiert nur die Farbe des Labels
@@ -206,6 +214,10 @@ class _HomePageState extends State<HomePage> {
                           fillColor: dark_blue,
                           prefixIcon: Icon(Icons.calendar_today),
                           border: OutlineInputBorder(),
+                          focusedBorder: OutlineInputBorder( //Man hat in das Feld geklickt
+                            borderSide: BorderSide(color: button_blue),
+                          ),
+                          floatingLabelStyle: TextStyle(color: button_blue), //maus hovered über dem Feld
                         ),
                         onTap: () => _selectDateTime(context),
                       ),
