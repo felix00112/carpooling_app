@@ -36,6 +36,7 @@ final _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context){
+    Sizes.initialize(context);
   return SafeArea(
     child: Scaffold(
       appBar: AppBar(

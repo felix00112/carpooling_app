@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../auth/auth_service.dart';
+import '../constants/sizes.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -52,10 +53,11 @@ class _SignupPageState extends State<SignupPage>{
 
   @override
   Widget build(BuildContext context){
+    Sizes.initialize(context);
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: const Text("Sign Up"),
+          title: Text("Sign Up", style: TextStyle(fontSize: Sizes.textHeading),),
         ),
           body: ListView(
             padding: const EdgeInsets.all(20),
