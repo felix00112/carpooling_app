@@ -10,9 +10,9 @@ class CarService{
     }
 
     await _supabase.from('cars').insert({
-      "name": carName,
+      "car_name": carName,
       "license_plate": licensePlate,
-      "color": color,
+      "colour": color,
       "seats": seats,
       "owner": user.id,
     });
